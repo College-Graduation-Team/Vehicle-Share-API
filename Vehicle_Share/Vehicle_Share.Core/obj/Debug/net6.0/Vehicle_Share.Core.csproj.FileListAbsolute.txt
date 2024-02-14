@@ -1,0 +1,49 @@
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\bin\Debug\net6.0\Vehicle_Share.Core.deps.json
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\bin\Debug\net6.0\Vehicle_Share.Core.dll
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\bin\Debug\net6.0\Vehicle_Share.Core.pdb
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.AssemblyInfoInputs.cache
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.AssemblyInfo.cs
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.csproj.CoreCompileInputs.cache
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.dll
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\refint\Vehicle_Share.Core.dll
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.pdb
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\ref\Vehicle_Share.Core.dll
+C:\Users\pc\Downloads\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\bin\Debug\net6.0\Vehicle_Share.Core.deps.json
+C:\Users\pc\Downloads\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\bin\Debug\net6.0\Vehicle_Share.Core.dll
+C:\Users\pc\Downloads\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\bin\Debug\net6.0\Vehicle_Share.Core.pdb
+C:\Users\pc\Downloads\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.csproj.AssemblyReference.cache
+C:\Users\pc\Downloads\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pc\Downloads\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.AssemblyInfoInputs.cache
+C:\Users\pc\Downloads\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.AssemblyInfo.cs
+C:\Users\pc\Downloads\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.csproj.CoreCompileInputs.cache
+C:\Users\pc\Downloads\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.dll
+C:\Users\pc\Downloads\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\refint\Vehicle_Share.Core.dll
+C:\Users\pc\Downloads\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.pdb
+C:\Users\pc\Downloads\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\ref\Vehicle_Share.Core.dll
+D:\desk\Final\New folder\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\bin\Debug\net6.0\Vehicle_Share.Core.deps.json
+D:\desk\Final\New folder\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\bin\Debug\net6.0\Vehicle_Share.Core.dll
+D:\desk\Final\New folder\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\bin\Debug\net6.0\Vehicle_Share.Core.pdb
+D:\desk\Final\New folder\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.csproj.AssemblyReference.cache
+D:\desk\Final\New folder\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\desk\Final\New folder\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.AssemblyInfoInputs.cache
+D:\desk\Final\New folder\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.AssemblyInfo.cs
+D:\desk\Final\New folder\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.csproj.CoreCompileInputs.cache
+D:\desk\Final\New folder\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.dll
+D:\desk\Final\New folder\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\refint\Vehicle_Share.Core.dll
+D:\desk\Final\New folder\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.pdb
+D:\desk\Final\New folder\Vehicle_Share (2)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\ref\Vehicle_Share.Core.dll
+C:\Users\pc\Downloads\Vehicle_Share (3)\Vehicle_Share\Vehicle_Share.Core\bin\Debug\net6.0\Vehicle_Share.Core.deps.json
+C:\Users\pc\Downloads\Vehicle_Share (3)\Vehicle_Share\Vehicle_Share.Core\bin\Debug\net6.0\Vehicle_Share.Core.dll
+C:\Users\pc\Downloads\Vehicle_Share (3)\Vehicle_Share\Vehicle_Share.Core\bin\Debug\net6.0\Vehicle_Share.Core.pdb
+C:\Users\pc\Downloads\Vehicle_Share (3)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.csproj.AssemblyReference.cache
+C:\Users\pc\Downloads\Vehicle_Share (3)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pc\Downloads\Vehicle_Share (3)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.AssemblyInfoInputs.cache
+C:\Users\pc\Downloads\Vehicle_Share (3)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.AssemblyInfo.cs
+C:\Users\pc\Downloads\Vehicle_Share (3)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.csproj.CoreCompileInputs.cache
+C:\Users\pc\Downloads\Vehicle_Share (3)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.dll
+C:\Users\pc\Downloads\Vehicle_Share (3)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\refint\Vehicle_Share.Core.dll
+C:\Users\pc\Downloads\Vehicle_Share (3)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.pdb
+C:\Users\pc\Downloads\Vehicle_Share (3)\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\ref\Vehicle_Share.Core.dll
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.csproj.AssemblyReference.cache
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.sourcelink.json

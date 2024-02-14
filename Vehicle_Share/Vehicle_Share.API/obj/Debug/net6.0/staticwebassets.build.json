@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "KldwBVIILX6RMl9KviHE5EBLxndNcuqP4dJTLMdoq4g=",
+  "Source": "Vehicle_Share.API",
+  "BasePath": "_content/Vehicle_Share.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
