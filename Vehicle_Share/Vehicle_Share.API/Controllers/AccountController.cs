@@ -57,7 +57,7 @@ namespace Vehicle_Share.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("Send-Code")] // for reset password and resend code 
+        [HttpPost("Send-Code")] //  resend code 
         public async Task<IActionResult> SendCodeAsync([FromBody] SendCodeModel model)
         {
             if (!ModelState.IsValid)
@@ -68,6 +68,17 @@ namespace Vehicle_Share.API.Controllers
             return Ok(result);
         }
 
+        [HttpPost("Reset-Password")] // for reset password 
+        public async Task<IActionResult> ResetPasswordAsync(ResetPassModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var result = await _autherRepo.ResetPasswordAsync(model);
+            if (!result.IsAuth)
+                return BadRequest(result.Message);
+            return Ok(result.Message);
+
+        }
         [HttpPost("Phone-Is-Confimed")]
         public async Task<IActionResult> IsPhoneConfirmedAsync([FromBody] PhoneModel model)
         {
@@ -77,6 +88,15 @@ namespace Vehicle_Share.API.Controllers
             if (!result.PhoneConfirmed)
                 return BadRequest(" Phone is not Confirm  ...");
             return Ok((new { result.PhoneConfirmed, result.Message }));
+        }
+        [HttpPost("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+
+            var result = await _autherRepo.LogoutAsync();
+            if (result.IsAuth)
+                return BadRequest(result.Message);
+            return Ok(result.Message);
         }
     }
 }

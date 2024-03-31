@@ -40,6 +40,10 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Http": {
+              "target": "Package",
+              "version": "[2.1.34, )"
+            },
             "Twilio": {
               "target": "Package",
               "version": "[6.16.1, )"

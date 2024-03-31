@@ -16,8 +16,8 @@ namespace Vehicle_Share.EF.Data
         public DbSet<UserData> UserData { get; set; }
         public DbSet<Car> Car { get; set; }
         public DbSet<Trip> Trip { get; set; }
-        public DbSet<LicenseUser> LicenseUser { get; set; }
         public DbSet<Request> Request { get; set; }
+        public DbSet<License> License { get; set; }
         public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options):base(options)
         {
             

@@ -29,8 +29,9 @@ namespace Vehicle_Share.EF.ImpRepo.SendOTPImplement
 					from: new Twilio.Types.PhoneNumber(_twilio.TwilioPhoneNumber),
 					to: mobileNumber
 				);
-
 			return result;
-		}
+          
+
+        }
 	}
 }

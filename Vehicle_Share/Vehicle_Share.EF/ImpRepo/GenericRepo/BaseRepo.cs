@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Vehicle_Share.Core.Repository.GenericRepo;
@@ -13,64 +15,108 @@ namespace Vehicle_Share.EF.ImpRepo.GenericRepo
     public class BaseRepo <T> : IBaseRepo<T> where T : class
     {
         public ApplicationDbContext _context { get; set; }
+       
         private readonly DbSet<T> _dbSet;
-        public BaseRepo(ApplicationDbContext context)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public BaseRepo(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _dbSet = _context.Set<T>();
+            _webHostEnvironment = webHostEnvironment;
         }
-        public async Task<List<T>> GetAll() 
+        public async Task<List<T>> GetAllAsync() 
         {
             return _dbSet.ToList();
         }
-       public async  Task<T> GetById(string id)
+        public async  Task<T> GetByIdAsync(string id)
         {
             return await _dbSet.FindAsync(id);
         }
         public async Task<T> AddAsync(T entity) 
         {
-             await _context.Set<T>().AddAsync(entity);
+             await _dbSet.AddAsync(entity);
              await _context.SaveChangesAsync();
             return entity;
         }
-       public async  Task<T> UpdateAsync(T entity)
+        public async  Task<T> UpdateAsync(T entity)
         {
             _context.Set<T>().Update(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
 
-        public async Task DeleteAsync(T entity)
+        public async Task<int> DeleteAsync(T entity)
         {
            _dbSet.Remove(entity);
-            await _context.SaveChangesAsync();
+          return  await _context.SaveChangesAsync();
         }
-        public async Task<byte[]> GetImageAsync(Guid id)
+        
+        public async Task<string> UploadImageAsync(string Folder, IFormFile file)
         {
-            var entity = await _dbSet.FindAsync(id);
-
-            if (entity != null)
+            var path = _webHostEnvironment.WebRootPath + "/" + Folder + "/";
+           // var extention = Path.GetExtension(file.FileName);
+            var fileName = Guid.NewGuid().ToString()+"."+ file.FileName ;
+            if (file.Length > 0)
             {
-                var imageData = (byte[])entity.GetType().GetProperty("Images").GetValue(entity);
-                return imageData;
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+                using(FileStream stream = File.Create(path + fileName))
+                {
+                    await file.CopyToAsync(stream);
+                    await stream.FlushAsync();
+                    return $"/{Folder}/{fileName}";
+                }
+
+            }
+            else
+            {
+
+            return "failed to upload . ";
+            }
+        }
+
+        public async Task RemoveImageAsync(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return;
+            }
+                          // folder/ file name 
+            var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, filePath.TrimStart('/'));
+
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
+        }
+
+        public async Task<T> FindAsync(Expression<Func<T,bool>> match)
+        {
+
+            return await _dbSet.FirstOrDefaultAsync(match);
+        }
+        public async Task<T> FindAsync(Expression<Func<T, bool>> match, params Expression<Func<T, object>>[] includeProperties)
+        {
+            IQueryable<T> query = _dbSet;
+
+            // Include related entities specified by the caller
+            foreach (var includeProperty in includeProperties)
+            {
+                query = query.Include(includeProperty);
             }
 
-            return null;
-        }
+            // Apply filter
+            query = query.Where(match);
 
-        public async Task<Guid> UploadImageAsync(Guid id, byte[] imageData)
-        {
-            var entity = await _dbSet.FindAsync(id);
-
-            if (entity != null)
+            // Eagerly load related entities
+            foreach (var includeProperty in includeProperties)
             {
-                entity.GetType().GetProperty("Images").SetValue(entity, imageData);
-                await _context.SaveChangesAsync();
-                return id;
+                query = query.Include(includeProperty);
             }
 
-            return Guid.Empty; // Return an empty GUID or throw an exception if the entity is not found
+            return await query.FirstOrDefaultAsync();
         }
+
     }
 
 }

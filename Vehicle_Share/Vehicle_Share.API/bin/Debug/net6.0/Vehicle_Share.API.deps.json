@@ -14,7 +14,8 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "6.0.26",
           "Microsoft.EntityFrameworkCore.Tools": "6.0.26",
           "Swashbuckle.AspNetCore": "6.5.0",
-          "Vehicle_Share.EF": "1.0.0"
+          "Vehicle_Share.EF": "1.0.0",
+          "Vehicle_Share.Service": "1.0.0"
         },
         "runtime": {
           "Vehicle_Share.API.dll": {}
@@ -58,6 +59,26 @@
           }
         }
       },
+      "Microsoft.AspNetCore.Http/2.1.34": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Http.Abstractions": "2.1.1",
+          "Microsoft.AspNetCore.WebUtilities": "2.1.1",
+          "Microsoft.Extensions.ObjectPool": "2.1.1",
+          "Microsoft.Extensions.Options": "7.0.0",
+          "Microsoft.Net.Http.Headers": "2.1.1"
+        }
+      },
+      "Microsoft.AspNetCore.Http.Abstractions/2.1.1": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Http.Features": "2.1.1",
+          "System.Text.Encodings.Web": "4.7.2"
+        }
+      },
+      "Microsoft.AspNetCore.Http.Features/2.1.1": {
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "7.0.0"
+        }
+      },
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore/6.0.26": {
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Relational": "6.0.26",
@@ -68,6 +89,12 @@
             "assemblyVersion": "6.0.26.0",
             "fileVersion": "6.0.2623.60506"
           }
+        }
+      },
+      "Microsoft.AspNetCore.WebUtilities/2.1.1": {
+        "dependencies": {
+          "Microsoft.Net.Http.Headers": "2.1.1",
+          "System.Text.Encodings.Web": "4.7.2"
         }
       },
       "Microsoft.CSharp/4.5.0": {},
@@ -320,6 +347,7 @@
           }
         }
       },
+      "Microsoft.Extensions.ObjectPool/2.1.1": {},
       "Microsoft.Extensions.Options/7.0.0": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0",
@@ -421,6 +449,12 @@
           }
         }
       },
+      "Microsoft.Net.Http.Headers/2.1.1": {
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "7.0.0",
+          "System.Buffers": "4.5.0"
+        }
+      },
       "Microsoft.NETCore.Platforms/3.1.0": {},
       "Microsoft.NETCore.Targets/1.1.0": {},
       "Microsoft.OpenApi/1.2.3": {
@@ -502,6 +536,7 @@
           }
         }
       },
+      "System.Buffers/4.5.0": {},
       "System.Collections.Immutable/6.0.0": {
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
@@ -817,6 +852,7 @@
       },
       "Vehicle_Share.Core/1.0.0": {
         "dependencies": {
+          "Microsoft.AspNetCore.Http": "2.1.34",
           "Twilio": "6.16.1"
         },
         "runtime": {
@@ -835,6 +871,14 @@
         },
         "runtime": {
           "Vehicle_Share.EF.dll": {}
+        }
+      },
+      "Vehicle_Share.Service/1.0.0": {
+        "dependencies": {
+          "Vehicle_Share.EF": "1.0.0"
+        },
+        "runtime": {
+          "Vehicle_Share.Service.dll": {}
         }
       }
     }
@@ -873,12 +917,40 @@
       "path": "microsoft.aspnetcore.cryptography.keyderivation/6.0.26",
       "hashPath": "microsoft.aspnetcore.cryptography.keyderivation.6.0.26.nupkg.sha512"
     },
+    "Microsoft.AspNetCore.Http/2.1.34": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-d1U34fyniRrDW0SD7KryDhXq1KWEjeE1XuLgk/qcdFHUjkjY6XztmhEmQJicGlPYKEZOe+3UMWz5EZChLwnrvQ==",
+      "path": "microsoft.aspnetcore.http/2.1.34",
+      "hashPath": "microsoft.aspnetcore.http.2.1.34.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Http.Abstractions/2.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kQUEVOU4loc8CPSb2WoHFTESqwIa8Ik7ysCBfTwzHAd0moWovc9JQLmhDIHlYLjHbyexqZAlkq/FPRUZqokebw==",
+      "path": "microsoft.aspnetcore.http.abstractions/2.1.1",
+      "hashPath": "microsoft.aspnetcore.http.abstractions.2.1.1.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Http.Features/2.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-VklZ7hWgSvHBcDtwYYkdMdI/adlf7ebxTZ9kdzAhX+gUs5jSHE9mZlTamdgf9miSsxc1QjNazHXTDJdVPZKKTw==",
+      "path": "microsoft.aspnetcore.http.features/2.1.1",
+      "hashPath": "microsoft.aspnetcore.http.features.2.1.1.nupkg.sha512"
+    },
     "Microsoft.AspNetCore.Identity.EntityFrameworkCore/6.0.26": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-VT4i57mhGISbzPf0MEZscBeL9mnu6ivETZQq3ehvX06LmCGezyLqYgci0Y9k9Brnyt/vkTcJipHi2AK9Koef3g==",
       "path": "microsoft.aspnetcore.identity.entityframeworkcore/6.0.26",
       "hashPath": "microsoft.aspnetcore.identity.entityframeworkcore.6.0.26.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.WebUtilities/2.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-PGKIZt4+412Z/XPoSjvYu/QIbTxcAQuEFNoA1Pw8a9mgmO0ZhNBmfaNyhgXFf7Rq62kP0tT/2WXpxdcQhkFUPA==",
+      "path": "microsoft.aspnetcore.webutilities/2.1.1",
+      "hashPath": "microsoft.aspnetcore.webutilities.2.1.1.nupkg.sha512"
     },
     "Microsoft.CSharp/4.5.0": {
       "type": "package",
@@ -1034,6 +1106,13 @@
       "path": "microsoft.extensions.logging.abstractions/7.0.0",
       "hashPath": "microsoft.extensions.logging.abstractions.7.0.0.nupkg.sha512"
     },
+    "Microsoft.Extensions.ObjectPool/2.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-SErON45qh4ogDp6lr6UvVmFYW0FERihW+IQ+2JyFv1PUyWktcJytFaWH5zarufJvZwhci7Rf1IyGXr9pVEadTw==",
+      "path": "microsoft.extensions.objectpool/2.1.1",
+      "hashPath": "microsoft.extensions.objectpool.2.1.1.nupkg.sha512"
+    },
     "Microsoft.Extensions.Options/7.0.0": {
       "type": "package",
       "serviceable": true,
@@ -1096,6 +1175,13 @@
       "sha512": "sha512-RN7lvp7s3Boucg1NaNAbqDbxtlLj5Qeb+4uSS1TeK5FSBVM40P4DKaTKChT43sHyKfh7V0zkrMph6DdHvyA4bg==",
       "path": "microsoft.identitymodel.tokens/6.35.0",
       "hashPath": "microsoft.identitymodel.tokens.6.35.0.nupkg.sha512"
+    },
+    "Microsoft.Net.Http.Headers/2.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lPNIphl8b2EuhOE9dMH6EZDmu7pS882O+HMi5BJNsigxHaWlBrYxZHFZgE18cyaPp6SSZcTkKkuzfjV/RRQKlA==",
+      "path": "microsoft.net.http.headers/2.1.1",
+      "hashPath": "microsoft.net.http.headers.2.1.1.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/3.1.0": {
       "type": "package",
@@ -1166,6 +1252,13 @@
       "sha512": "sha512-OvbvxX+wL8skxTBttcBsVxdh73Fag4xwqEU2edh4JMn7Ws/xJHnY/JB1e9RoCb6XpDxUF3hD9A0Z1lEUx40Pfw==",
       "path": "swashbuckle.aspnetcore.swaggerui/6.5.0",
       "hashPath": "swashbuckle.aspnetcore.swaggerui.6.5.0.nupkg.sha512"
+    },
+    "System.Buffers/4.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pL2ChpaRRWI/p4LXyy4RgeWlYF2sgfj/pnVMvBqwNFr5cXg7CXNnWZWxrOONLg8VGdFB8oB+EG2Qw4MLgTOe+A==",
+      "path": "system.buffers/4.5.0",
+      "hashPath": "system.buffers.4.5.0.nupkg.sha512"
     },
     "System.Collections.Immutable/6.0.0": {
       "type": "package",
@@ -1418,6 +1511,11 @@
       "sha512": ""
     },
     "Vehicle_Share.EF/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Vehicle_Share.Service/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

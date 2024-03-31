@@ -160,36 +160,47 @@ namespace Vehicle_Share.EF.Migrations
                     b.Property<string>("CarID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<byte[]>("Image_Front")
+                    b.Property<string>("Brand")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
-                    b.Property<byte[]>("Image_back")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("Lec")
+                    b.Property<string>("CarImg")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Model")
+                    b.Property<string>("CarPlate")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<DateTime>("EndDataOfCarLic")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LicCarImgBack")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Plate")
+                    b.Property<string>("LicCarImgFront")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Model")
+                        .HasMaxLength(4)
+                        .HasColumnType("int");
+
+                    b.Property<int>("SetsOfCar")
+                        .HasMaxLength(2)
+                        .HasColumnType("int");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("User_DataId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("sets")
-                        .HasColumnType("int");
 
                     b.HasKey("CarID");
 
@@ -198,34 +209,31 @@ namespace Vehicle_Share.EF.Migrations
                     b.ToTable("Car");
                 });
 
-            modelBuilder.Entity("Vehicle_Share.EF.Models.LicenseUser", b =>
+            modelBuilder.Entity("Vehicle_Share.EF.Models.License", b =>
                 {
-                    b.Property<string>("LicenseID")
+                    b.Property<string>("LicID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("EndData")
+                    b.Property<DateTime>("EndDataOfUserLic")
                         .HasColumnType("datetime2");
 
-                    b.Property<byte[]>("Image_Front")
+                    b.Property<string>("LicUserImgBack")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("Image_back")
+                    b.Property<string>("LicUserImgFront")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<DateTime>("StartData")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("User_DataId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("LicenseID");
+                    b.HasKey("LicID");
 
                     b.HasIndex("User_DataId");
 
-                    b.ToTable("LicenseUser");
+                    b.ToTable("License");
                 });
 
             modelBuilder.Entity("Vehicle_Share.EF.Models.Request", b =>
@@ -236,11 +244,17 @@ namespace Vehicle_Share.EF.Migrations
                     b.Property<bool>("IsAccept")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Trip_Id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("User_DataId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("RequestID");
+
+                    b.HasIndex("Trip_Id");
 
                     b.HasIndex("User_DataId");
 
@@ -252,14 +266,10 @@ namespace Vehicle_Share.EF.Migrations
                     b.Property<string>("TripID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("AllSets")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AvilableSets")
+                    b.Property<int?>("AvilableSets")
                         .HasColumnType("int");
 
                     b.Property<string>("Car_Id")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Date")
@@ -267,31 +277,30 @@ namespace Vehicle_Share.EF.Migrations
 
                     b.Property<string>("From")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<bool>("IsFinish")
-                        .HasColumnType("bit");
+                    b.Property<int?>("NumOfSetWant")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Request_Id")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<float>("Recommendprice")
+                        .HasColumnType("real");
 
                     b.Property<string>("To")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("User_DataId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<float>("price")
-                        .HasColumnType("real");
+                    b.Property<string>("car")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("TripID");
 
                     b.HasIndex("Car_Id");
-
-                    b.HasIndex("Request_Id");
 
                     b.HasIndex("User_DataId");
 
@@ -376,35 +385,37 @@ namespace Vehicle_Share.EF.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("BirthData")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Gender")
+                    b.Property<bool>("Gender")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("NationailID")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("NationalcardImgBack")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("Image_Front")
+                    b.Property<string>("NationalcardImgFront")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("Image_back")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<int>("NationailID")
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nationality")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ProfileImg")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -412,13 +423,13 @@ namespace Vehicle_Share.EF.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("nationalCard")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("typeOfUser")
+                        .HasColumnType("bit");
 
                     b.HasKey("UserDataID");
 
-                    b.HasIndex("User_Id");
+                    b.HasIndex("User_Id")
+                        .IsUnique();
 
                     b.ToTable("UserData");
                 });
@@ -477,7 +488,7 @@ namespace Vehicle_Share.EF.Migrations
             modelBuilder.Entity("Vehicle_Share.EF.Models.Car", b =>
                 {
                     b.HasOne("Vehicle_Share.EF.Models.UserData", "UserData")
-                        .WithMany()
+                        .WithMany("car")
                         .HasForeignKey("User_DataId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -485,7 +496,7 @@ namespace Vehicle_Share.EF.Migrations
                     b.Navigation("UserData");
                 });
 
-            modelBuilder.Entity("Vehicle_Share.EF.Models.LicenseUser", b =>
+            modelBuilder.Entity("Vehicle_Share.EF.Models.License", b =>
                 {
                     b.HasOne("Vehicle_Share.EF.Models.UserData", "UserData")
                         .WithMany()
@@ -498,11 +509,19 @@ namespace Vehicle_Share.EF.Migrations
 
             modelBuilder.Entity("Vehicle_Share.EF.Models.Request", b =>
                 {
+                    b.HasOne("Vehicle_Share.EF.Models.Trip", "Trip")
+                        .WithMany("request")
+                        .HasForeignKey("Trip_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Vehicle_Share.EF.Models.UserData", "UserData")
                         .WithMany()
                         .HasForeignKey("User_DataId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Trip");
 
                     b.Navigation("UserData");
                 });
@@ -511,15 +530,7 @@ namespace Vehicle_Share.EF.Migrations
                 {
                     b.HasOne("Vehicle_Share.EF.Models.Car", "Car")
                         .WithMany()
-                        .HasForeignKey("Car_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Vehicle_Share.EF.Models.Request", "Request")
-                        .WithMany()
-                        .HasForeignKey("Request_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Car_Id");
 
                     b.HasOne("Vehicle_Share.EF.Models.UserData", "UserData")
                         .WithMany()
@@ -528,8 +539,6 @@ namespace Vehicle_Share.EF.Migrations
                         .IsRequired();
 
                     b.Navigation("Car");
-
-                    b.Navigation("Request");
 
                     b.Navigation("UserData");
                 });
@@ -574,12 +583,28 @@ namespace Vehicle_Share.EF.Migrations
             modelBuilder.Entity("Vehicle_Share.EF.Models.UserData", b =>
                 {
                     b.HasOne("Vehicle_Share.EF.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("User_Id")
+                        .WithOne("UserData")
+                        .HasForeignKey("Vehicle_Share.EF.Models.UserData", "User_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Vehicle_Share.EF.Models.Trip", b =>
+                {
+                    b.Navigation("request");
+                });
+
+            modelBuilder.Entity("Vehicle_Share.EF.Models.User", b =>
+                {
+                    b.Navigation("UserData")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Vehicle_Share.EF.Models.UserData", b =>
+                {
+                    b.Navigation("car");
                 });
 #pragma warning restore 612, 618
         }

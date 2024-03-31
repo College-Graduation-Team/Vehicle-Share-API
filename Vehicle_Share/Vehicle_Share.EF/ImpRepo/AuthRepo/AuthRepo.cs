@@ -1,22 +1,17 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using Vehicle_Share.Core.Models.AuthModels;
 using Vehicle_Share.Core.Repository.AuthRepo;
 using Vehicle_Share.Core.Repository.SendOTP;
 using Vehicle_Share.EF.Helper;
 using Vehicle_Share.EF.Models;
-using static System.Net.WebRequestMethods;
-
 namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 {
     public class AuthRepo : IAuthRepo
@@ -26,15 +21,21 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JWT _jwt;
         private readonly ISendOTP _smsService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly SignInManager<User> _signInManager;
 
 
-		public AuthRepo(UserManager<User> userManager, IOptions<JWT> jwt, RoleManager<IdentityRole> roleManager, ISendOTP smsService)
+
+
+        public AuthRepo(UserManager<User> userManager, IOptions<JWT> jwt, RoleManager<IdentityRole> roleManager, ISendOTP smsService, IHttpContextAccessor httpContextAccessor , SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _jwt = jwt.Value;
             _roleManager = roleManager;
-			_smsService = smsService;
-		}
+            _smsService = smsService;
+            _httpContextAccessor = httpContextAccessor;
+            _signInManager = signInManager;
+        }
 
 
         public async Task<AuthModel> RegisterAsync(RegisterModel model)
@@ -65,7 +66,16 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 			
 			var otp = GenerateRandomCode();
 
-            _smsService.Send(user.PhoneNumber , otp );
+            try
+            {
+                _smsService.Send(user.PhoneNumber, otp);
+
+            }
+            catch (Exception)
+            {
+
+                return new AuthModel {Message = $"Error when send code to {user.PhoneNumber} ." };
+            }
 
             user.ResetCode = otp;
 
@@ -95,13 +105,16 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 
 		}
 
+
 		public async Task<AuthModel> LoginAsync(LoginModel model)
         {
             var authModel = new AuthModel();
 
             var user = await _userManager.Users.FirstOrDefaultAsync(o => o.PhoneNumber == model.Phone);
 
-            if (user is null || !await _userManager.CheckPasswordAsync(user, model.Password))
+            if (user is null ||
+                !await _userManager.CheckPasswordAsync(user, model.Password))
+                
             {
                 authModel.Message = "PhoneNumber or Password is incorrect!";
                 return authModel;
@@ -112,8 +125,12 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
                 authModel.Message = "Phone Number Is Not Confirmed!";
                 return authModel;
             }
-
-
+            var res = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+            if(!res.Succeeded)
+            {
+                authModel.Message = "error in signInManager ";
+                return authModel;
+            }
             var jwtSecurityToken = await CreateToken(user);
             var rolesList = await _userManager.GetRolesAsync(user);
 
@@ -140,7 +157,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
                  user.RefreshTokens.Add(refreshToken);
                  await _userManager.UpdateAsync(user);
              }
-
+            await _signInManager.RefreshSignInAsync(user);
             return authModel;
         }
        
@@ -158,6 +175,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Sid, user.PhoneNumber),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim("uid", user.Id)
             }
             .Union(userClaims)
@@ -320,8 +338,35 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
                 ? new AuthModel { Message = "Phone is confirmed", PhoneConfirmed = true }
                 : new AuthModel { Message = "Phone not confirmationed", PhoneConfirmed = false };
         }
-       
-        
+
+        public async Task<AuthModel> LogoutAsync()
+        {
+            // Get the current user's ID from HttpContext
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId == null)
+            {
+                return new AuthModel { Message = "User not Authorize" };
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return new AuthModel { Message = "User not found" };
+            }
+            var authModel = new AuthModel(); 
+
+            user.RefreshTokens.Clear();
+
+            await _signInManager.SignOutAsync();
+            authModel.IsAuth = false;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+                return new AuthModel { Message = " Logout failed " };
+              authModel.Message= " Logout successful  ";
+            return authModel;
+        }
         //  private method to create GenerateRandomCode
         private string GenerateRandomCode()
         {
@@ -373,6 +418,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
                 }
 
             }
+            _userManager.FindByIdAsync(jwtToken).Wait();
 
             // Handle decoding errors or invalid tokens
             return "decoding errors or invalid tokens";

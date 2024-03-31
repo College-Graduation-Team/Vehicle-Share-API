@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
@@ -20,6 +19,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Vehicle_Share.EF\Vehicle_Share.EF.csproj" />
+    <ProjectReference Include="..\Vehicle_Share.Service\Vehicle_Share.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Http;
 namespace Vehicle_Share.Core.Repository.GenericRepo
 {
     public interface IBaseRepo<T> where T : class
     {
-        Task<List<T>> GetAll();
-        Task<T> GetById(string id);
+        Task<List<T>> GetAllAsync();
+        Task<T> GetByIdAsync(string id);
         Task<T> AddAsync(T entity);
         Task<T> UpdateAsync(T entity);
-        Task DeleteAsync(T entity);
-        Task<byte[]> GetImageAsync(Guid id);
-        Task<Guid> UploadImageAsync(Guid id, byte[] imageData);
+        Task<int> DeleteAsync(T entity);
+        Task<string> UploadImageAsync(string Folder, IFormFile imageData);
+    //    Task<string> UpdateImageAsync(string folder, IFormFile file, string existingFilePath);
+        Task RemoveImageAsync(string filePath);
+        Task<T> FindAsync(Expression<Func<T, bool>> match);
+        Task<T> FindAsync(Expression<Func<T, bool>> match, params Expression<Func<T, object>>[] includeProperties);
 
 
     }

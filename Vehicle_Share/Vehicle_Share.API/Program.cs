@@ -1,17 +1,25 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
-using System;
+using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
 using Vehicle_Share.Core.Repository.AuthRepo;
+using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Repository.SendOTP;
 using Vehicle_Share.EF.Data;
 using Vehicle_Share.EF.Helper;
 using Vehicle_Share.EF.ImpRepo.AuthRepo;
+using Vehicle_Share.EF.ImpRepo.GenericRepo;
 using Vehicle_Share.EF.ImpRepo.SendOTPImplement;
 using Vehicle_Share.EF.Models;
+using Vehicle_Share.Service.CarService;
+using Vehicle_Share.Service.LicenseService;
+using Vehicle_Share.Service.RequestService;
+using Vehicle_Share.Service.TripService;
+using Vehicle_Share.Service.UserDataService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +40,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
 // inject Repository
-builder.Services.AddScoped<IAuthRepo, AuthRepo>();
+builder.Services.AddScoped <IAuthRepo , AuthRepo>();
+builder.Services.AddScoped (typeof(IBaseRepo<>) , typeof( BaseRepo<>));
+builder.Services.AddScoped <IUserDataServ , UserDataServ>();
+builder.Services.AddScoped <ICarServ , CarServ>();
+builder.Services.AddScoped <ILicServ , LicServ>();
+builder.Services.AddScoped <ITripServ , TripServ>();
+builder.Services.AddScoped <IRequestServ , RequestServ>();
+
+builder. Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+// Or you can also register as follows
+builder.Services.AddHttpContextAccessor();
+
 
 // add core .
 builder.Services.AddCors(options =>
@@ -40,23 +59,48 @@ builder.Services.AddCors(options =>
     options.AddPolicy("CorsPolicy", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
-// Adding Authentication
+
+
+// Adding Jwt Bearer
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(o =>
+    {
+        o.RequireHttpsMetadata = false;
+        o.SaveToken = false;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+
+            ValidateIssuerSigningKey = true,
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+            ValidAudience = builder.Configuration["JWT:ValidAudience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"])),
+            ClockSkew = TimeSpan.FromMinutes(1)
+        };
+    });
+
+/*
+  // Adding Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-
-// Adding Jwt Bearer
 .AddJwtBearer(options =>
 {
     options.SaveToken = false;
     options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = new TokenValidationParameters()
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
+        ValidateIssuer = false,
+        ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ClockSkew = TimeSpan.Zero,
@@ -66,8 +110,36 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
     };
 });
+*/
 
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
 
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
 var app = builder.Build();
 
 // add role in system 
@@ -88,8 +160,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors(policyName: "CorsPolicy");
-
-app.UseAuthorization();
+app.UseStaticFiles(); // to upload image in wwwroot 
+app.UseAuthentication();
 
 app.UseAuthorization();
 
