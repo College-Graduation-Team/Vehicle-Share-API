@@ -241,8 +241,8 @@ namespace Vehicle_Share.EF.Migrations
                     b.Property<string>("RequestID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("IsAccept")
-                        .HasColumnType("bit");
+                    b.Property<int>("RequestStatus")
+                        .HasColumnType("int");
 
                     b.Property<string>("Trip_Id")
                         .IsRequired()
@@ -488,7 +488,7 @@ namespace Vehicle_Share.EF.Migrations
             modelBuilder.Entity("Vehicle_Share.EF.Models.Car", b =>
                 {
                     b.HasOne("Vehicle_Share.EF.Models.UserData", "UserData")
-                        .WithMany("car")
+                        .WithMany("cars")
                         .HasForeignKey("User_DataId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -604,7 +604,7 @@ namespace Vehicle_Share.EF.Migrations
 
             modelBuilder.Entity("Vehicle_Share.EF.Models.UserData", b =>
                 {
-                    b.Navigation("car");
+                    b.Navigation("cars");
                 });
 #pragma warning restore 612, 618
         }

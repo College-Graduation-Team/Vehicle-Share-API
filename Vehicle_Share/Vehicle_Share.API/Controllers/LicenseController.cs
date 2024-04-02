@@ -15,7 +15,17 @@ namespace Vehicle_Share.API.Controllers
         {
             _repo = repo;
         }
+      
+        [HttpGet("Read-License")]  //get from user and userdata 
+        public async Task<IActionResult> GetAllAsync()
+        {
+            var result = await _repo.GetAsync();
+            if (result.IsSuccess)
+                return Ok(new { result.ErrorMesssage });
 
+            return BadRequest(new { result.ErrorMesssage });
+        }
+        
         [HttpPost("Add-License")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddLicenseAsync([FromForm] LicModel model)
@@ -26,38 +36,36 @@ namespace Vehicle_Share.API.Controllers
 
 
             var result = await _repo.AddAsync(model);
-            if (result == "License added successfully ")
-                return Ok(result);
+            if (result.IsSuccess)
+                return Ok(new { result.Messsage });
 
-            return BadRequest(result);
+            return BadRequest(new { result.Messsage });
         }
 
-        [HttpPost("Update-License/{id}")]
+        [HttpPost("Update-License-{id}")]
         public async Task<IActionResult> UpdateLicenseAsync(string id, [FromForm] LicModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var result = await _repo.UpdateAsync(id, model);
-            if (result == "License updated successfully")
+            if (result.IsSuccess)
+                return Ok(new { result.Messsage });
+
+            return BadRequest(new { result.Messsage });
+        }
+
+        [HttpPost("Delete-License-{id}")]
+        public async Task<IActionResult> DeleteLicenseAsync(string id)
+        {
+            var result = await _repo.DeleteAsync(id);
+            if (result > 0)
                 return Ok(result);
 
             return BadRequest(result);
         }
 
 
-        [HttpGet("Read-License")]
-        //get from user and userdata 
-        public async Task<IActionResult> GetAllAsync()
-        {
-           
-
-            var result = await _repo.GetAllAsync();
-            if (result != null)
-                return Ok(result);
-
-            return BadRequest("User or Userdata not found ! ");
-        }
     }
 }
 

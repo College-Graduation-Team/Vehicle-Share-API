@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using Vehicle_Share.Core.Models.CarModels;
 using Vehicle_Share.Core.Repository.GenericRepo;
+using Vehicle_Share.Core.Response;
 using Vehicle_Share.EF.Models;
 
 namespace Vehicle_Share.Service.CarService
@@ -19,26 +20,60 @@ namespace Vehicle_Share.Service.CarService
             _httpContextAccessor = httpContextAccessor;
             _user = user;
         }
-      
-        public async Task<List<GetCarModel>> GetAllAsync()
+
+        public async Task<ResponseForOneModel<GetCarModel>> GetByIdAsync(string id)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return null;
+                return new ResponseForOneModel<GetCarModel> { ErrorMesssage = " User Not Authorize . " };
 
             var userData = await _user.FindAsync(e => e.User_Id == userId);
             if (userData is null)
-                return null;
+                return new ResponseForOneModel<GetCarModel> { ErrorMesssage = " User Not Added data  . " };
+            var car =await _car.GetByIdAsync(id);
+
+            if (car is null)
+                return new ResponseForOneModel<GetCarModel> { ErrorMesssage = "Car Not Found." };
+
+            var result = new ResponseForOneModel<GetCarModel>
+            {
+                Data = new GetCarModel
+                {
+                    Id = car.CarID,
+                    Type = car.Type,
+                    Model = car.Model,
+                    Brand = car.Brand,
+                    CarPlate = car.CarPlate,
+                    SetsOfCar = car.SetsOfCar,
+                    CarImg = car.CarImg,
+                    LicImgCarFront = car.LicCarImgFront,
+                    LicImgCarBack = car.LicCarImgBack,
+                    EndDataOfCarLic = car.EndDataOfCarLic
+                },
+                IsSuccess = true
+            };
+
+            return result;
+    }
+        public async Task<GenResponseModel<GetCarModel>> GetAllAsync()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new GenResponseModel<GetCarModel> { ErrorMesssage=" User Not Authorize . "};
+
+            var userData = await _user.FindAsync(e => e.User_Id == userId);
+            if (userData is null)
+                return new GenResponseModel<GetCarModel> { ErrorMesssage = " User Not Added data  . "};
 
             var allCars = await _car.GetAllAsync();
             var userCars = allCars.Where(t => t.User_DataId == userData.UserDataID).ToList();
-            var result = new List<GetCarModel>();
+            var result = new GenResponseModel<GetCarModel>();
 
             foreach (var car in userCars)
             {
-                result.Add(new GetCarModel
+                result.Data.Add(new GetCarModel
                 {
-                    id = car.CarID,
+                    Id = car.CarID,
                     Type = car.Type,
                     Model = car.Model,
                     Brand = car.Brand,
@@ -50,39 +85,21 @@ namespace Vehicle_Share.Service.CarService
                     EndDataOfCarLic = car.EndDataOfCarLic
                 });
             }
+            result.IsSuccess = true;
             return result;
         }
-        
-        public async Task<List<string>> GetCarBrandsForUser()
+        /**
+         eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBYmRvIiwianRpIjoiMDNjZjIyYmYtNzc5MS00MTFmLThkOTgtYjUzZjMzM2I2YmU1Iiwic2lkIjoiMDExMDAzMTI1MTAiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImZkZDg2MGRkLTM5YzctNDkwNS05ZDYxLWY0NjAyNzVkNjZhZCIsInVpZCI6ImZkZDg2MGRkLTM5YzctNDkwNS05ZDYxLWY0NjAyNzVkNjZhZCIsImV4cCI6MTcxMTk0ODg4MywiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzAxMiIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMTJodHRwOi8vbG9jYWxob3N0OjUwMTUifQ.Q5UgIH89ntYu6F5fjmgpfG68k08qETMmC6j0osd14zE
+         */
+        public async Task<ResponseModel> AddAsync(CarModel model)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new List<string>();
-
-            var userData = await _user.FindAsync(e => e.User_Id == userId);
-            if (userData is null)
-                return new List<string>();
-
-            var cars = await _user.FindAsync(
-                u => u.UserDataID == userData.UserDataID,
-                u => u.cars
-            );
-
-            // Extracting only the brand information from the cars
-            var carBrands = cars?.cars.Select(car => car.Brand).ToList() ?? new List<string>();
-
-            return carBrands;
-        }
-
-        public async Task<string> AddAsync(CarModel model)
-        {
-            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
-            if (userId is null)
-                return "user not Autherize";
+                return new ResponseModel { Messsage = "user not Autherize" };
             var userData = await _user.FindAsync(e => e.User_Id==userId);
 
             if (userData is null)
-                return "user is not found ";
+                return new ResponseModel { Messsage = "user is not found " };
 
          
 
@@ -114,13 +131,13 @@ namespace Vehicle_Share.Service.CarService
 
             await _car.AddAsync(car);
 
-            return "Car add successfully ";
+            return new ResponseModel { Messsage = "Car add successfully ", IsSuccess = true };
         }
 
-        public async Task<string> UpdateAsync(string id, CarModel model)
+        public async Task<ResponseModel> UpdateAsync(string id, CarModel model)
         { 
               var car = await _car.GetByIdAsync(id);
-              if (car == null) return "Car not found . ";
+              if (car == null) new ResponseModel { Messsage = "Car not found . " };
 
 
                 car.Type = model.TypeOfCar;
@@ -143,7 +160,7 @@ namespace Vehicle_Share.Service.CarService
 
             await _car.UpdateAsync(car);
 
-            return "Car updated successfully";
+            return new ResponseModel { Messsage = "Car updated successfully" , IsSuccess=true };
 
         }
 
@@ -152,7 +169,7 @@ namespace Vehicle_Share.Service.CarService
             if (id is null)
                 return 0;
             var car = await _car.FindAsync(e=>e.CarID==id);
-           int res=await _car.DeleteAsync(car);
+            int res=await _car.DeleteAsync(car);
             return res;
         }
 

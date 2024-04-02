@@ -18,6 +18,15 @@ namespace Vehicle_Share.API.Controllers
             _repo = repo;
         }
 
+        [HttpGet("Read-AllRequest")]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            var result = await _repo.GetAllAsync();
+            if (result.IsSuccess)
+                return Ok(new { result.Data });
+
+            return BadRequest(new { result.ErrorMesssage });
+        }
 
         [HttpPost("Send-Request")]
         public async Task<IActionResult> SendReqestAsync([FromBody] ReqModel model)
@@ -25,55 +34,48 @@ namespace Vehicle_Share.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _repo.SendReqestAsync(model);
-            if (result == "Request added successfully")
-                return Ok(result);
+            if (result.IsSuccess)
+                return Ok(new { result.Messsage });
 
-            return BadRequest(result);
+            return BadRequest(new { result.Messsage });
         }
+       
         [HttpPost("Accept-Request")]
         public async Task<IActionResult> AcceptReqestAsync(string requestId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _repo.AcceptRequestAsync(requestId);
-            if (result == "Request accepted successfully")
-                return Ok(result);
+            if (result.IsSuccess)
+                return Ok(new { result.Messsage });
 
-            return BadRequest(result);
+            return BadRequest(new { result.Messsage });
         }
+       
         [HttpPost("Deny-Request")]
         public async Task<IActionResult> DenyReqestAsync(string requestId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _repo.DenyRequestAsync(requestId);
-            if (result == "Request denied successfully")
-                return Ok(result);
+            if (result.IsSuccess)
+                return Ok(new { result.Messsage });
 
-            return BadRequest(result);
+            return BadRequest(new { result.Messsage });
         }
+        
         [HttpPost("Delete-Request")]
         public async Task<IActionResult> DeleteReqestAsync(string requestId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _repo.DeleteRequestAsync(requestId);
-            if (result == "Request deleted successfully")
+            if (result > 0)
                 return Ok(result);
 
             return BadRequest(result);
         }
 
-         [HttpGet("Read-AllRequest")]
-        public async Task<IActionResult> GetAllAsync()
-        {
-
-            var result = await _repo.GetAllAsync();
-            if (result != null)
-                return Ok(result);
-
-            return BadRequest("User or Userdata not found ! ");
-        }
-
+       
     }
 }

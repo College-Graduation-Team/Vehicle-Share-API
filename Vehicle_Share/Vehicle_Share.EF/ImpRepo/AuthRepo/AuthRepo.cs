@@ -22,19 +22,17 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
         private readonly JWT _jwt;
         private readonly ISendOTP _smsService;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly SignInManager<User> _signInManager;
 
-
-
-
-        public AuthRepo(UserManager<User> userManager, IOptions<JWT> jwt, RoleManager<IdentityRole> roleManager, ISendOTP smsService, IHttpContextAccessor httpContextAccessor , SignInManager<User> signInManager)
+        public AuthRepo(UserManager<User> userManager, IOptions<JWT> jwt,
+            RoleManager<IdentityRole> roleManager, ISendOTP smsService,
+            IHttpContextAccessor httpContextAccessor )
         {
             _userManager = userManager;
             _jwt = jwt.Value;
             _roleManager = roleManager;
             _smsService = smsService;
             _httpContextAccessor = httpContextAccessor;
-            _signInManager = signInManager;
+           
         }
 
 
@@ -105,7 +103,6 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 
 		}
 
-
 		public async Task<AuthModel> LoginAsync(LoginModel model)
         {
             var authModel = new AuthModel();
@@ -125,12 +122,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
                 authModel.Message = "Phone Number Is Not Confirmed!";
                 return authModel;
             }
-            var res = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
-            if(!res.Succeeded)
-            {
-                authModel.Message = "error in signInManager ";
-                return authModel;
-            }
+            
             var jwtSecurityToken = await CreateToken(user);
             var rolesList = await _userManager.GetRolesAsync(user);
 
@@ -157,7 +149,6 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
                  user.RefreshTokens.Add(refreshToken);
                  await _userManager.UpdateAsync(user);
              }
-            await _signInManager.RefreshSignInAsync(user);
             return authModel;
         }
        
@@ -357,7 +348,6 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 
             user.RefreshTokens.Clear();
 
-            await _signInManager.SignOutAsync();
             authModel.IsAuth = false;
 
             var result = await _userManager.UpdateAsync(user);

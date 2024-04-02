@@ -9,7 +9,7 @@ namespace Vehicle_Share.Core.Models.CarModels
 {
     public class GetCarModel
     {
-        public string id { get; set; }
+        public string Id { get; set; }
         public string Type { get; set; }
         public int Model { get; set; }
         public string Brand { get; set; }

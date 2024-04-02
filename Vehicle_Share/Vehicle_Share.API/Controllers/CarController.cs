@@ -17,6 +17,26 @@ namespace Vehicle_Share.API.Controllers
             _repo = repo;
         }
 
+        [HttpGet("Read-by-id")]
+        public async Task<IActionResult> GetByIdAsync(string id)
+        {
+            var result = await _repo.GetByIdAsync(id);
+            if (result.IsSuccess)
+                return Ok(new { result.Data });
+
+            return BadRequest(new {result.ErrorMesssage});
+        }
+
+        [HttpGet("Read-All-Cars")]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            var result = await _repo.GetAllAsync();
+            if (result.IsSuccess)
+                return Ok(new { result.Data });
+
+            return BadRequest(new { result.ErrorMesssage });
+        }
+
         [HttpPost("Add-Car")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddCarAsync([FromForm] CarModel model)
@@ -27,10 +47,10 @@ namespace Vehicle_Share.API.Controllers
 
 
             var result = await _repo.AddAsync(model);
-            if (result == "Car add successfully ")
-                return Ok(result);
+            if (result.IsSuccess)
+                return Ok(new {result.Messsage});
 
-            return BadRequest(result);
+            return BadRequest(new { result.Messsage });
         }
 
         [HttpPost("Update-Car/{id}")]
@@ -40,10 +60,10 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
 
             var result = await _repo.UpdateAsync(id, model);
-            if (result == "Car updated successfully")
-                return Ok(result);
+            if (result.IsSuccess)
+                return Ok(new { result.Messsage });
 
-            return BadRequest(result);
+            return BadRequest(new { result.Messsage });
         }
 
         [HttpPost("Delete-Car/{id}")]
@@ -56,28 +76,6 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("Read-AllCar")]
-        
-        public async Task<IActionResult> GetAllAsync()
-        {
-           
 
-            var result = await _repo.GetAllAsync();
-            if (result != null)
-                return Ok(result);
-
-            return BadRequest(result);
-        }
-
-        [HttpGet("Get-All-Cars")]
-
-        public async Task<IActionResult> GetAllCarsForUser()
-        {
-            var result = await _repo.GetCarBrandsForUser();
-            if (!result.IsNullOrEmpty())
-                return Ok(result);
-
-            return BadRequest("User or Userdata not found ! ");
-        }
     }
 }

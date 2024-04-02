@@ -19,43 +19,40 @@ namespace Vehicle_Share.API.Controllers
             _repo = repo;
         }
 
+        [HttpGet("Read-UserData")]
+        public async Task<IActionResult> GetUserDataAsync()
+        {
+            var result = await _repo.GetUserDataAsync();
+            if (result.IsSuccess)
+                return Ok(new { result.ErrorMesssage });
+
+            return BadRequest(new { result.ErrorMesssage });
+        }
+
         [HttpPost("Add-UserData")]
         public async Task<IActionResult> AddUserDataAsync([FromForm] UserDataModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _repo.AddAsync(model);
-            if (result == "UserData add successfully ")
-                return Ok(result);
+            if (result.IsSuccess)
+                return Ok(new { result.Messsage });
 
-            return BadRequest(result);
+            return BadRequest(new { result.Messsage });
         }
 
-        [HttpPost("Update-UserData/{id}")]
+        [HttpPost("Update-UserData-{id}")]
         public async Task<IActionResult> UpdataUserDataAsync(string id,[FromForm] UserDataModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var result = await _repo.UpdateAsync(id,model);
-            if ( result == "User data updated successfully")
-                return Ok(result);
+            if (result.IsSuccess)
+                return Ok(new { result.Messsage });
 
-            return BadRequest(result);
+            return BadRequest(new { result.Messsage });
         }
 
-
-        [HttpGet("Read-UserData/{id}")]
-        public async Task<IActionResult> GetUserDataAsync(string id)
-        {
-            if (id == null)
-                return BadRequest("ID is not found");
-          
-            var result = await _repo.GetByIdAsync(id);
-            if (result != null)
-                return Ok(result);
-
-            return BadRequest(result);
-        }
     }
 }

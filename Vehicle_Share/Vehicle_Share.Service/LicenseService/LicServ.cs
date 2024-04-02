@@ -6,6 +6,8 @@ using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Models.LicModels;
 using System.Security.Claims;
 using Vehicle_Share.Core.Models.CarModels;
+using Vehicle_Share.Core.Response;
+using Vehicle_Share.Core.Models.UserData;
 
 namespace Vehicle_Share.Service.LicenseService
 {
@@ -21,26 +23,40 @@ namespace Vehicle_Share.Service.LicenseService
             _httpContextAccessor = httpContextAccessor;
             _user = user;
         }
-        public async Task<License> GetAllAsync()
+        public async Task<ResponseForOneModel<GetLicModel>> GetAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return null;
+                return new ResponseForOneModel<GetLicModel> { ErrorMesssage=" User Not Authorize . "};
 
             var userData = await _user.FindAsync(e => e.User_Id == userId);
             if (userData is null)
-                return null;
+                return new ResponseForOneModel<GetLicModel> { ErrorMesssage = " User Data Not Found . " };
+            
 
-            return await _Lic.FindAsync(e=>e.User_DataId==userData.UserDataID);
+            var Lic= await _Lic.FindAsync(e => e.User_DataId == userData.UserDataID);
+            var result = new ResponseForOneModel<GetLicModel>()
+            {
+                Data = new GetLicModel
+                {
+                    Id = Lic.LicID,
+                    LicUserImgFront=Lic.LicUserImgFront,
+                    LicUserImgBack=Lic.LicUserImgBack,
+                    EndDataOfUserLic=Lic.EndDataOfUserLic
+                },
+                IsSuccess = true
+            };
+
+            return result;
         }
-        public async Task<string> AddAsync(LicModel model)
+        public async Task<ResponseModel> AddAsync(LicModel model)
         {
             var userId = _httpContextAccessor.HttpContext.User.FindFirstValue("uid");
             if (userId is null)
-               return "user not Autherize";
+                return new ResponseModel { Messsage = "user not Autherize" };
             var userData = await _user.FindAsync(e => e.User_Id == userId);
             if (userData is null)
-                return "user is not found ";
+                return new ResponseModel { Messsage = "user is not found " };
 
 
             var LicFront = await ProcessImageFile("License", model.LicUserImgFront);
@@ -56,14 +72,12 @@ namespace Vehicle_Share.Service.LicenseService
             };
 
             await _Lic.AddAsync(user);
-            return "License added successfully ";
+            return new ResponseModel { Messsage = "License added successfully ", IsSuccess = true };
         }
-
-
-        public async Task<string> UpdateAsync(string id, LicModel model)
+        public async Task<ResponseModel> UpdateAsync(string id, LicModel model)
         {
             var lic = await _Lic.GetByIdAsync(id);
-            if (lic == null) return "license not found . ";
+            if (lic == null) return new ResponseModel { Messsage = "license not found . " };
 
 
 
@@ -81,14 +95,16 @@ namespace Vehicle_Share.Service.LicenseService
 
             await _Lic.UpdateAsync(lic);
 
-            return "License updated successfully";
+            return new ResponseModel { Messsage = "License updated successfully", IsSuccess = true };
         }
-
-        public Task DeleteAsync(License license)
+        public async Task <int> DeleteAsync(string id)
         {
-            throw new NotImplementedException();
+            if (id is null)
+                return 0;
+            var car = await _Lic.FindAsync(e => e.LicID == id);
+            int res = await _Lic.DeleteAsync(car);
+            return res;
         }
-
         private async Task<string> ProcessImageFile(string folder, IFormFile file)
         {
             var req = _httpContextAccessor.HttpContext.Request;

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using static Vehicle_Share.EF.Helper.StatusContainer;
 
 namespace Vehicle_Share.EF.Models
 {
@@ -12,11 +8,10 @@ namespace Vehicle_Share.EF.Models
     {
         [Key]
         public string RequestID { get; set; }
-        public bool IsAccept { get; set; }
+        public Status RequestStatus { get; set; }
 
         //relation  
         // user and trip
-        // [ForeignKey] and [InverseProperty] helps to explicitly define the relationship and avoid conflicts .
         public string User_DataId { get; set; }
         [ForeignKey("User_DataId")]
         public UserData UserData { get; set; }
@@ -25,5 +20,5 @@ namespace Vehicle_Share.EF.Models
         public string Trip_Id { get; set; }
         [ForeignKey("Trip_Id")]
         public Trip Trip { get; set; }
-    }
+}
 }

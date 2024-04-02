@@ -1,15 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+using Vehicle_Share.Core.Models.LicModels;
 using Vehicle_Share.Core.Models.UserData;
 using Vehicle_Share.Core.Repository.GenericRepo;
+using Vehicle_Share.Core.Response;
 using Vehicle_Share.EF.Models;
 
 namespace Vehicle_Share.Service.UserDataService
@@ -24,50 +18,58 @@ namespace Vehicle_Share.Service.UserDataService
             _userData = userData;
             _httpContextAccessor = httpContextAccessor;
         }
-        
-        public async Task<GetUserModel> GetByIdAsync(string id)
+        public async Task<ResponseForOneModel<GetUserModel>> GetUserDataAsync()
         {
-            var userData = await _userData.GetByIdAsync(id);
-            if (userData == null)
-                return null;
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseForOneModel<GetUserModel> { ErrorMesssage = " User Not Authorize . " };
+
+            var userData = await _userData.FindAsync(e => e.User_Id == userId);
+            if (userData is null)
+                return new ResponseForOneModel<GetUserModel> { ErrorMesssage = " User Data Not Found . " };
+
             if (userData.BirthData == null)
                 userData.BirthData = DateTime.UtcNow;//DateTime.Parse ("2013-10-01 13:45:01");
             var age = CalculateAge(userData.BirthData, DateTime.UtcNow);
 
-                GetUserModel user = new GetUserModel
+            var result = new ResponseForOneModel<GetUserModel>()
+            {
+                Data = new GetUserModel
                 {
-                    
-                    FullName=userData.FullName,
-                    NationailID=userData.NationailID,
-                    Age=age,
+                    Id = userData.UserDataID,
+                    FullName = userData.FullName,
+                    NationailID = userData.NationailID,
+                    Age = age,
                     Gender = userData.Gender,
                     Nationality = userData.Nationality,
                     Address = userData.Address,
                     NationalcardImgFront = userData.NationalcardImgFront,
                     NationalcardImgBack = userData.NationalcardImgBack,
                     ProfileImg = userData.ProfileImg,
-                    typeOfUser=userData.typeOfUser
-                    
-                };
-            return user;
+                    typeOfUser = userData.typeOfUser
+
+                },
+                IsSuccess = true
+            };
+
+            return result;
         }
-        
-        public async Task<string> AddAsync(UserDataModel model)
+        public async Task<ResponseModel> AddAsync(UserDataModel model)
         {
             var userId = _httpContextAccessor.HttpContext.User.FindFirstValue("uid");
+
+            if (userId is null)
+                return new ResponseModel {Messsage= "user not Autherize" };
 
             var NationalcardImgFront = await ProcessImageFile("User",model.NationalcardImgFront);
             var NationalcardImgBack = await ProcessImageFile("User",model.NationalcardImgBack);
             var ProfileImg = await ProcessImageFile("User",model.ProfileImg);
 
-
-            if (userId is null)
-                return "user not Autherize";
             var IsNationlIdExist =await _userData.FindAsync(e=>e.NationailID==model.NationailID);
 
             if (IsNationlIdExist is not null )
             {
-                return " National ID already exists . ";
+                return new ResponseModel { Messsage = " National ID already exists . " };
             }
 
             UserData user = new UserData
@@ -87,13 +89,12 @@ namespace Vehicle_Share.Service.UserDataService
             };
 
             await _userData.AddAsync(user);
-            return "UserData add successfully ";
+            return new ResponseModel { Messsage = "UserData add successfully ", IsSuccess = true };
         }
-        
-        public async Task<string> UpdateAsync(string id ,UserDataModel model)
-        {  //b4a6c2c6-08ad-4ba8-b934-6532c5908baf
+        public async Task<ResponseModel> UpdateAsync(string id ,UserDataModel model)
+        {  
             var user = await _userData.GetByIdAsync(id);
-            if (user == null) return "User not found . ";
+            if (user == null) return new ResponseModel { Messsage = "User not found . " };
 
                  user.FullName = model.FullName;
                  user.Nationality = model.Nationality;
@@ -114,15 +115,10 @@ namespace Vehicle_Share.Service.UserDataService
 
             await _userData.UpdateAsync(user);
 
-            return "User data updated successfully";
+            return new ResponseModel { Messsage = "User data updated successfully", IsSuccess = true };
 
         }
         
-        public Task DeleteAsync(UserData userData)
-        {
-            throw new NotImplementedException();
-        }
-
         private async Task< string> ProcessImageFile(string folder,IFormFile file)
         {
             var req = _httpContextAccessor.HttpContext.Request;
@@ -137,8 +133,7 @@ namespace Vehicle_Share.Service.UserDataService
             string relativeUrl = uri.PathAndQuery;
             await _userData.RemoveImageAsync(relativeUrl);
         }
-
-        public int CalculateAge(DateTime birthDate, DateTime now)
+        private int CalculateAge(DateTime birthDate, DateTime now)
         {
             int age = now.Year - birthDate.Year;
 
