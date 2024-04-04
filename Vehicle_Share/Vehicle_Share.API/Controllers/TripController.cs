@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Vehicle_Share.Core.Models.CarModels;
 using Vehicle_Share.Core.Models.TripModels;
-using Vehicle_Share.Core.Models.UserData;
 using Vehicle_Share.Service.TripService;
-using Vehicle_Share.Service.UserDataService;
 
 namespace Vehicle_Share.API.Controllers
 {
@@ -20,36 +17,45 @@ namespace Vehicle_Share.API.Controllers
         {
             _repo = repo;
         }
+        [HttpGet("Read-by-id/{id}")]
+        public async Task<IActionResult> GetByIdAsync([FromRoute] string id)
+        {
+            var result = await _repo.GetByIdAsync(id);
+            if (result.IsSuccess)
+                return Ok(new { result.Data });
 
+            return BadRequest(new { result.ErrorMesssage });
+        }
         [HttpGet("Read-AllTrip")]
         public async Task<IActionResult> GetAllAsync()
         {
 
             var result = await _repo.GetAllForUserAsync();
             if (result != null)
-                return Ok(result);
+                if (result.IsSuccess)
+                    return Ok(new { result.Data });
 
-            return BadRequest("User or Userdata not found ! ");
+            return BadRequest(new { result.ErrorMesssage });
+        }
+            [HttpGet("Read-AllTrip-Driver")]
+        public async Task<IActionResult> GetAllDriverTripAsync()
+        {
+
+            var result = await _repo.GetAllDriverTripAsync();
+            if (result.IsSuccess)
+                return Ok(new { result.Data });
+
+            return BadRequest(new { result.ErrorMesssage });
         }
         [HttpGet("Read-AllTrip-Passenger")]
-        public async Task<IActionResult> GetAllAsDriverAsync()
+        public async Task<IActionResult> GetAllPassengerTripAsync()
         {
 
-            var result = await _repo.GetAllAsDriverAsync();
-            if (result != null)
-                return Ok(result);
+            var result = await _repo.GetAllPassengerTripAsync();
+            if (result.IsSuccess)
+                return Ok(new { result.Data });
 
-            return BadRequest("User or Userdata not found ! ");
-        }
-        [HttpGet("Read-AllTrip-Driver")]
-        public async Task<IActionResult> GetAllAsPassengerAsync()
-        {
-
-            var result = await _repo.GetAllAsPassengerAsync();
-            if (result != null)
-                return Ok(result);
-
-            return BadRequest("User or Userdata not found ! ");
+            return BadRequest(new { result.ErrorMesssage });
         }
 
         [HttpPost("Add-Trip-Driver")] // driver add trip 
@@ -58,10 +64,10 @@ namespace Vehicle_Share.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _repo.AddAsync(model);
-            if (result == " Trip add successfully ")
-                return Ok(result);
+            if (result.IsSuccess)
+                return Ok(new { result.Messsage });
 
-            return BadRequest(result);
+            return BadRequest(new { result.Messsage });
         }
         [HttpPost("Add-Trip-Passenger")] //passenger add trip
         public async Task<IActionResult> AddTripAsync([FromBody] TripPassengerModel model)
@@ -69,10 +75,10 @@ namespace Vehicle_Share.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _repo.AddAsync(model);
-            if (result == " Trip add successfully ")
-                return Ok(result);
+            if (result.IsSuccess)
+                return Ok(new { result.Messsage });
 
-            return BadRequest(result);
+            return BadRequest(new { result.Messsage });
         }
 
         [HttpPost("Update-Trip-Driver/{id}")] //update for driver
@@ -82,10 +88,10 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
 
             var result = await _repo.UpdateAsync(id, model);
-            if (result == "Trip updated successfully")
-                return Ok(result);
+            if (result.IsSuccess)
+                return Ok(new { result.Messsage });
 
-            return BadRequest(result);
+            return BadRequest(new { result.Messsage });
         }
       
         [HttpPost("Update-Trip-Passenger/{id}")]//update for Passenger
@@ -95,13 +101,13 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
 
             var result = await _repo.UpdateAsync(id, model);
-            if (result == "Trip updated successfully")
-                return Ok(result);
+            if (result.IsSuccess)
+                return Ok(new { result.Messsage });
 
-            return BadRequest(result);
+            return BadRequest(new { result.Messsage });
         }
         [HttpPost("Delete-Trip/{id}")]
-        public async Task<IActionResult> DeleteTripAsync(string id)
+        public async Task<IActionResult> DeleteTripAsync([FromRoute] string id)
         {
             var result = await _repo.DeleteAsync(id);
             if (result > 0)

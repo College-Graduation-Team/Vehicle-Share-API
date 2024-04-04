@@ -95,7 +95,6 @@ namespace Vehicle_Share.EF.Migrations
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Recommendprice = table.Column<float>(type: "real", nullable: false),
                     AvilableSets = table.Column<int>(type: "int", nullable: true),
-                    car = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NumOfSetWant = table.Column<int>(type: "int", nullable: true),
                     User_DataId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Car_Id = table.Column<string>(type: "nvarchar(450)", nullable: true)

@@ -42,8 +42,8 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(new { result.Messsage });
         }
 
-        [HttpPost("Update-License-{id}")]
-        public async Task<IActionResult> UpdateLicenseAsync(string id, [FromForm] LicModel model)
+        [HttpPost("Update-License/{id}")]
+        public async Task<IActionResult> UpdateLicenseAsync([FromRoute] string id, [FromForm] LicModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -55,8 +55,8 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(new { result.Messsage });
         }
 
-        [HttpPost("Delete-License-{id}")]
-        public async Task<IActionResult> DeleteLicenseAsync(string id)
+        [HttpPost("Delete-License/{id}")]
+        public async Task<IActionResult> DeleteLicenseAsync([FromRoute]string id)
         {
             var result = await _repo.DeleteAsync(id);
             if (result > 0)

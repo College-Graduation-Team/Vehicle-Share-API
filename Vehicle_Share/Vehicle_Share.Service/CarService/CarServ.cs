@@ -55,6 +55,7 @@ namespace Vehicle_Share.Service.CarService
 
             return result;
     }
+       
         public async Task<GenResponseModel<GetCarModel>> GetAllAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
@@ -71,7 +72,7 @@ namespace Vehicle_Share.Service.CarService
 
             foreach (var car in userCars)
             {
-                result.Data.Add(new GetCarModel
+                result.Data?.Add(new GetCarModel
                 {
                     Id = car.CarID,
                     Type = car.Type,
@@ -88,9 +89,7 @@ namespace Vehicle_Share.Service.CarService
             result.IsSuccess = true;
             return result;
         }
-        /**
-         eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBYmRvIiwianRpIjoiMDNjZjIyYmYtNzc5MS00MTFmLThkOTgtYjUzZjMzM2I2YmU1Iiwic2lkIjoiMDExMDAzMTI1MTAiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImZkZDg2MGRkLTM5YzctNDkwNS05ZDYxLWY0NjAyNzVkNjZhZCIsInVpZCI6ImZkZDg2MGRkLTM5YzctNDkwNS05ZDYxLWY0NjAyNzVkNjZhZCIsImV4cCI6MTcxMTk0ODg4MywiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzAxMiIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMTJodHRwOi8vbG9jYWxob3N0OjUwMTUifQ.Q5UgIH89ntYu6F5fjmgpfG68k08qETMmC6j0osd14zE
-         */
+        
         public async Task<ResponseModel> AddAsync(CarModel model)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");

@@ -15,6 +15,8 @@ namespace Vehicle_Share.Core.Models.TripModels
         public DateTime Date { get; set; }
         public float Recommendprice { get; set; }
         public int AvilableSets { get; set; } //driver
+        public bool IsFinish { get; set; }
+
         public string CarID { get; set; } //driver
     }
 }

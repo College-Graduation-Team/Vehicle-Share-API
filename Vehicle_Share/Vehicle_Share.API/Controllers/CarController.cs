@@ -17,8 +17,8 @@ namespace Vehicle_Share.API.Controllers
             _repo = repo;
         }
 
-        [HttpGet("Read-by-id")]
-        public async Task<IActionResult> GetByIdAsync(string id)
+        [HttpGet("Read-by-id/{id}")]
+        public async Task<IActionResult> GetByIdAsync([FromRoute] string id)
         {
             var result = await _repo.GetByIdAsync(id);
             if (result.IsSuccess)
@@ -54,7 +54,7 @@ namespace Vehicle_Share.API.Controllers
         }
 
         [HttpPost("Update-Car/{id}")]
-        public async Task<IActionResult> UpdataCarAsync(string id, [FromForm] CarModel model)
+        public async Task<IActionResult> UpdataCarAsync([FromRoute] string id, [FromForm] CarModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -67,7 +67,7 @@ namespace Vehicle_Share.API.Controllers
         }
 
         [HttpPost("Delete-Car/{id}")]
-        public async Task<IActionResult> DeleteCarAsync(string id)
+        public async Task<IActionResult> DeleteCarAsync([FromRoute] string id)
         {
             var result = await _repo.DeleteAsync(id);
             if (result > 0)

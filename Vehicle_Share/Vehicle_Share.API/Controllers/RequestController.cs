@@ -40,8 +40,8 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(new { result.Messsage });
         }
        
-        [HttpPost("Accept-Request")]
-        public async Task<IActionResult> AcceptReqestAsync(string requestId)
+        [HttpPost("Accept-Request/{id}")]
+        public async Task<IActionResult> AcceptReqestAsync([FromRoute] string requestId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -52,8 +52,8 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(new { result.Messsage });
         }
        
-        [HttpPost("Deny-Request")]
-        public async Task<IActionResult> DenyReqestAsync(string requestId)
+        [HttpPost("Deny-Request/{id}")]
+        public async Task<IActionResult> DenyReqestAsync([FromRoute] string requestId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -64,8 +64,8 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(new { result.Messsage });
         }
         
-        [HttpPost("Delete-Request")]
-        public async Task<IActionResult> DeleteReqestAsync(string requestId)
+        [HttpPost("Delete-Request/{id}")]
+        public async Task<IActionResult> DeleteReqestAsync([FromRoute]string requestId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

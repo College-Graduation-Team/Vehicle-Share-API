@@ -16,5 +16,6 @@ namespace Vehicle_Share.Core.Models.TripModels
         public DateTime Date { get; set; }
         public float Recommendprice { get; set; }
         public int NumOfSetWant { get; set; } //passenger
+        public bool Isfinish { get; set; }
     }
 }

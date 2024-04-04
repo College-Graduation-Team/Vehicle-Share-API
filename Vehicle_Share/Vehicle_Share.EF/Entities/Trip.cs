@@ -28,7 +28,6 @@ namespace Vehicle_Share.EF.Models
 
 
         public int? AvilableSets { get; set; }    //driver
-        public string? car { get; set; }    //driver
         public int? NumOfSetWant { get; set; }    //passenger
 
 
