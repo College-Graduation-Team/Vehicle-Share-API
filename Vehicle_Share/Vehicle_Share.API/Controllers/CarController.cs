@@ -39,6 +39,7 @@ namespace Vehicle_Share.API.Controllers
 
         [HttpPost("Add-Car")]
         [Consumes("multipart/form-data")]
+       
         public async Task<IActionResult> AddCarAsync([FromForm] CarModel model)
         {
             if (!ModelState.IsValid || model == null)

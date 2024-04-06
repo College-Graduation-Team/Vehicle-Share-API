@@ -11,13 +11,13 @@ namespace Vehicle_Share.Core.Models.LicModels
     public class LicModel
     {
         [Required(ErrorMessage = "Image is required.")]
-        public IFormFile LicUserImgFront { get; set; }
+        public IFormFile ImageFront { get; set; }
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public IFormFile LicUserImgBack { get; set; }
+        public IFormFile ImageBack { get; set; }
 
         [Required]
-        public DateTime EndDataOfUserLic { get; set; }
+        public DateTime Expiration { get; set; }
     }
 }

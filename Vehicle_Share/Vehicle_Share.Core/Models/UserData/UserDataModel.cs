@@ -12,19 +12,19 @@ namespace Vehicle_Share.Core.Models.UserData
     {   
         [Required(ErrorMessage = "FullName is required.")]
         [MaxLength(100)]
-        public string FullName { get; set; }
+        public string Name { get; set; }
 
 
         [Required(ErrorMessage = "Nationail ID is required.")]
         [RegularExpression(@"^\d{14}$",ErrorMessage = "Nationail ID must be 14 digit .")]
-        public long NationailID { get; set; }
+        public long NationailId { get; set; }
 
 
-        public DateTime? BirthData { get; set; }
+        public DateTime? Birthdata { get; set; }
 
 
         public  bool? Gender { get; set; }
-        public  bool typeOfUser { get; set; }
+        public  bool Type { get; set; }
 
 
         [Required(ErrorMessage = "Nationality is required.")]
@@ -38,15 +38,15 @@ namespace Vehicle_Share.Core.Models.UserData
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public IFormFile NationalcardImgFront { get; set; }
+        public IFormFile NationalCardImageFront { get; set; }
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public IFormFile NationalcardImgBack { get; set; }
+        public IFormFile NationalCardImageBack { get; set; }
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public IFormFile ProfileImg { get; set; }
+        public IFormFile ProfileImage { get; set; }
 
 
 

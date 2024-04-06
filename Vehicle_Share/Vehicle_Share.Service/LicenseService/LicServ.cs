@@ -29,20 +29,20 @@ namespace Vehicle_Share.Service.LicenseService
             if (userId is null)
                 return new ResponseForOneModel<GetLicModel> { ErrorMesssage=" User Not Authorize . "};
 
-            var userData = await _user.FindAsync(e => e.User_Id == userId);
+            var userData = await _user.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseForOneModel<GetLicModel> { ErrorMesssage = " User Data Not Found . " };
             
 
-            var Lic= await _Lic.FindAsync(e => e.User_DataId == userData.UserDataID);
+            var Lic= await _Lic.FindAsync(e => e.UserDataId == userData.Id);
             var result = new ResponseForOneModel<GetLicModel>()
             {
                 Data = new GetLicModel
                 {
-                    Id = Lic.LicID,
-                    LicUserImgFront=Lic.LicUserImgFront,
-                    LicUserImgBack=Lic.LicUserImgBack,
-                    EndDataOfUserLic=Lic.EndDataOfUserLic
+                    Id = Lic.Id,
+                    ImageFront=Lic.ImageFront,
+                    ImageBack=Lic.ImageBack,
+                    Expiration=Lic.Expiration
                 },
                 IsSuccess = true
             };
@@ -54,21 +54,21 @@ namespace Vehicle_Share.Service.LicenseService
             var userId = _httpContextAccessor.HttpContext.User.FindFirstValue("uid");
             if (userId is null)
                 return new ResponseModel { Messsage = "user not Autherize" };
-            var userData = await _user.FindAsync(e => e.User_Id == userId);
+            var userData = await _user.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseModel { Messsage = "user is not found " };
 
 
-            var LicFront = await ProcessImageFile("License", model.LicUserImgFront);
-            var LicBack = await ProcessImageFile("License", model.LicUserImgBack);
+            var LicFront = await ProcessImageFile("License", model.ImageFront);
+            var LicBack = await ProcessImageFile("License", model.ImageBack);
 
             License user = new License
             {
-               LicID=Guid.NewGuid().ToString(),          
-               LicUserImgFront=LicFront,
-               LicUserImgBack=LicBack,  
-               EndDataOfUserLic=model.EndDataOfUserLic,
-                User_DataId = userData.UserDataID
+               Id=Guid.NewGuid().ToString(),          
+               ImageFront=LicFront,
+               ImageBack=LicBack,  
+               Expiration=model.Expiration,
+                UserDataId = userData.Id
             };
 
             await _Lic.AddAsync(user);
@@ -81,16 +81,16 @@ namespace Vehicle_Share.Service.LicenseService
 
 
 
-            lic.EndDataOfUserLic = model.EndDataOfUserLic;
+            lic.Expiration = model.Expiration;
 
             // updata the image 
          
 
-            await RemoveImageFile(lic.LicUserImgBack);
-            lic.LicUserImgBack = await ProcessImageFile("License", model.LicUserImgBack);
+            await RemoveImageFile(lic.ImageBack);
+            lic.ImageBack = await ProcessImageFile("License", model.ImageBack);
 
-            await RemoveImageFile(lic.LicUserImgFront);
-            lic.LicUserImgFront = await ProcessImageFile("License", model.LicUserImgFront);
+            await RemoveImageFile(lic.ImageFront);
+            lic.ImageFront = await ProcessImageFile("License", model.ImageFront);
 
 
             await _Lic.UpdateAsync(lic);
@@ -101,7 +101,7 @@ namespace Vehicle_Share.Service.LicenseService
         {
             if (id is null)
                 return 0;
-            var car = await _Lic.FindAsync(e => e.LicID == id);
+            var car = await _Lic.FindAsync(e => e.Id == id);
             int res = await _Lic.DeleteAsync(car);
             return res;
         }

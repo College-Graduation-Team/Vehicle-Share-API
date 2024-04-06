@@ -24,29 +24,29 @@ namespace Vehicle_Share.Service.UserDataService
             if (userId is null)
                 return new ResponseForOneModel<GetUserModel> { ErrorMesssage = " User Not Authorize . " };
 
-            var userData = await _userData.FindAsync(e => e.User_Id == userId);
+            var userData = await _userData.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseForOneModel<GetUserModel> { ErrorMesssage = " User Data Not Found . " };
 
-            if (userData.BirthData == null)
-                userData.BirthData = DateTime.UtcNow;//DateTime.Parse ("2013-10-01 13:45:01");
-            var age = CalculateAge(userData.BirthData, DateTime.UtcNow);
+            if (userData.Birthdata == null)
+                userData.Birthdata = DateTime.UtcNow;//DateTime.Parse ("2013-10-01 13:45:01");
+            var age = CalculateAge(userData.Birthdata, DateTime.UtcNow);
 
             var result = new ResponseForOneModel<GetUserModel>()
             {
                 Data = new GetUserModel
                 {
-                    Id = userData.UserDataID,
-                    FullName = userData.FullName,
-                    NationailID = userData.NationailID,
+                    Id = userData.Id,
+                    Name = userData.Name,
+                    NationailId = userData.NationailId,
                     Age = age,
                     Gender = userData.Gender,
                     Nationality = userData.Nationality,
                     Address = userData.Address,
-                    NationalcardImgFront = userData.NationalcardImgFront,
-                    NationalcardImgBack = userData.NationalcardImgBack,
-                    ProfileImg = userData.ProfileImg,
-                    typeOfUser = userData.typeOfUser
+                    NationalCardImageFront = userData.NationalCardImageFront,
+                    NationalCardImageBack = userData.NationalCardImageBack,
+                    ProfileImage = userData.ProfileImage,
+                    Type = userData.Type
 
                 },
                 IsSuccess = true
@@ -61,11 +61,11 @@ namespace Vehicle_Share.Service.UserDataService
             if (userId is null)
                 return new ResponseModel {Messsage= "user not Autherize" };
 
-            var NationalcardImgFront = await ProcessImageFile("User",model.NationalcardImgFront);
-            var NationalcardImgBack = await ProcessImageFile("User",model.NationalcardImgBack);
-            var ProfileImg = await ProcessImageFile("User",model.ProfileImg);
+            var NationalcardImgFront = await ProcessImageFile("User",model.NationalCardImageFront);
+            var NationalcardImgBack = await ProcessImageFile("User",model.NationalCardImageBack);
+            var ProfileImg = await ProcessImageFile("User",model.ProfileImage);
 
-            var IsNationlIdExist =await _userData.FindAsync(e=>e.NationailID==model.NationailID);
+            var IsNationlIdExist =await _userData.FindAsync(e=>e.NationailId==model.NationailId);
 
             if (IsNationlIdExist is not null )
             {
@@ -74,16 +74,16 @@ namespace Vehicle_Share.Service.UserDataService
 
             UserData user = new UserData
             {
-                UserDataID= Guid.NewGuid().ToString(),
-                FullName=model.FullName ,
-                NationailID =model.NationailID,
+                Id= Guid.NewGuid().ToString(),
+                Name=model.Name ,
+                NationailId =model.NationailId,
                 Address=model.Address,
                 Nationality=model.Nationality,
-                NationalcardImgFront = NationalcardImgFront,
-                NationalcardImgBack = NationalcardImgBack,
-                ProfileImg= ProfileImg,
-                User_Id= userId,
-                typeOfUser=model.typeOfUser
+                NationalCardImageFront = NationalcardImgFront,
+                NationalCardImageBack = NationalcardImgBack,
+                ProfileImage= ProfileImg,
+                UserId= userId,
+                Type=model.Type
                 
 
             };
@@ -96,21 +96,21 @@ namespace Vehicle_Share.Service.UserDataService
             var user = await _userData.GetByIdAsync(id);
             if (user == null) return new ResponseModel { Messsage = "User not found . " };
 
-                 user.FullName = model.FullName;
+                 user.Name = model.Name;
                  user.Nationality = model.Nationality;
-                 user.NationailID = model.NationailID;
+                 user.NationailId = model.NationailId;
                  user.Address = model.Address;
-                 user.typeOfUser = model.typeOfUser;
+                 user.Type = model.Type;
 
                 // updata the image 
-                 await RemoveImageFile(user.NationalcardImgFront);
-                 user.NationalcardImgFront = await ProcessImageFile("User", model.NationalcardImgFront);
+                 await RemoveImageFile(user.NationalCardImageFront);
+                 user.NationalCardImageFront = await ProcessImageFile("User", model.NationalCardImageFront);
             
-                 await RemoveImageFile(user.NationalcardImgBack);
-                 user.NationalcardImgBack = await ProcessImageFile("User", model.NationalcardImgBack);
+                 await RemoveImageFile(user.NationalCardImageBack);
+                 user.NationalCardImageBack = await ProcessImageFile("User", model.NationalCardImageBack);
           
-                 await RemoveImageFile(user.ProfileImg);
-                 user.ProfileImg = await ProcessImageFile("User", model.ProfileImg);
+                 await RemoveImageFile(user.ProfileImage);
+                 user.ProfileImage = await ProcessImageFile("User", model.ProfileImage);
            
 
             await _userData.UpdateAsync(user);

@@ -12,7 +12,7 @@ namespace Vehicle_Share.EF.Models
     public class Trip
     {
         [Key]
-        public string TripID { get; set; }
+        public string Id { get; set; }
         [Required]
         [MaxLength(50, ErrorMessage = "the length is 50 char ")]
         public string From { get; set; }
@@ -24,26 +24,25 @@ namespace Vehicle_Share.EF.Models
         public DateTime Date { get; set; }
 
         [Required]
-        public float Recommendprice { get; set; }
+        public float RecommendPrice { get; set; }
 
 
-        public int? AvilableSets { get; set; }    //driver
-        public int? NumOfSetWant { get; set; }    //passenger
+        public int? AvailableSeats { get; set; }    //driver
+        public int? RequestedSeats { get; set; }    //passenger
 
 
-        public bool IsFinish => DateTime.UtcNow >= Date;
+        public bool IsFinished => DateTime.UtcNow >= Date;
 
         // relations 
         // user and car  car can not .
-        public String User_DataId { get; set; }
-        [ForeignKey("User_DataId")]
+        public String UserDataId { get; set; }
+        [JsonIgnore]
+        [ForeignKey("UserDataId")]
         public UserData UserData { get; set; }
 
-		public String? Car_Id { get; set; }
+        public String? CarId { get; set; } = null;
         [JsonIgnore]
-        [ForeignKey("Car_Id")]
-		public Car Car { get; set; }
-
-        public List<Request> request { get; set; }
+        [ForeignKey("CarId")]
+		public Car? Car { get; set; }
 	}
 }

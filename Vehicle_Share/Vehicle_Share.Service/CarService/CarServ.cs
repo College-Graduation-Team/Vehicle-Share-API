@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using Vehicle_Share.Core.Models.CarModels;
+using Vehicle_Share.Core.Models.CarModels;
 using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Response;
 using Vehicle_Share.EF.Models;
@@ -27,7 +28,7 @@ namespace Vehicle_Share.Service.CarService
             if (userId is null)
                 return new ResponseForOneModel<GetCarModel> { ErrorMesssage = " User Not Authorize . " };
 
-            var userData = await _user.FindAsync(e => e.User_Id == userId);
+            var userData = await _user.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseForOneModel<GetCarModel> { ErrorMesssage = " User Not Added data  . " };
             var car =await _car.GetByIdAsync(id);
@@ -39,16 +40,16 @@ namespace Vehicle_Share.Service.CarService
             {
                 Data = new GetCarModel
                 {
-                    Id = car.CarID,
+                    Id = car.Id,
                     Type = car.Type,
                     Model = car.Model,
                     Brand = car.Brand,
-                    CarPlate = car.CarPlate,
-                    SetsOfCar = car.SetsOfCar,
-                    CarImg = car.CarImg,
-                    LicImgCarFront = car.LicCarImgFront,
-                    LicImgCarBack = car.LicCarImgBack,
-                    EndDataOfCarLic = car.EndDataOfCarLic
+                    Plate = car.Plate,
+                    Seats = car.Seats,
+                    Image = car.Image,
+                    LicenseImageFront = car.LicenseImageFront,
+                    LicenseImageBack = car.LicenseImagBack,
+                    LicenseExpiration= car.LicenseExpiration
                 },
                 IsSuccess = true
             };
@@ -62,28 +63,28 @@ namespace Vehicle_Share.Service.CarService
             if (userId is null)
                 return new GenResponseModel<GetCarModel> { ErrorMesssage=" User Not Authorize . "};
 
-            var userData = await _user.FindAsync(e => e.User_Id == userId);
+            var userData = await _user.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new GenResponseModel<GetCarModel> { ErrorMesssage = " User Not Added data  . "};
 
             var allCars = await _car.GetAllAsync();
-            var userCars = allCars.Where(t => t.User_DataId == userData.UserDataID).ToList();
+            var userCars = allCars.Where(t => t.UserDataId == userData.Id).ToList();
             var result = new GenResponseModel<GetCarModel>();
 
             foreach (var car in userCars)
             {
                 result.Data?.Add(new GetCarModel
                 {
-                    Id = car.CarID,
+                    Id = car.Id,
                     Type = car.Type,
                     Model = car.Model,
                     Brand = car.Brand,
-                    CarPlate = car.CarPlate,
-                    SetsOfCar = car.SetsOfCar,
-                    CarImg = car.CarImg,
-                    LicImgCarFront = car.LicCarImgFront,
-                    LicImgCarBack = car.LicCarImgBack,
-                    EndDataOfCarLic = car.EndDataOfCarLic
+                    Plate = car.Plate,
+                    Seats = car.Seats,
+                    Image = car.Image,
+                    LicenseImageFront = car.LicenseImageFront,
+                    LicenseImageBack = car.LicenseImagBack,
+                    LicenseExpiration = car.LicenseExpiration
                 });
             }
             result.IsSuccess = true;
@@ -95,36 +96,36 @@ namespace Vehicle_Share.Service.CarService
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
                 return new ResponseModel { Messsage = "user not Autherize" };
-            var userData = await _user.FindAsync(e => e.User_Id==userId);
+            var userData = await _user.FindAsync(e => e.UserId==userId);
 
             if (userData is null)
                 return new ResponseModel { Messsage = "user is not found " };
 
          
 
-            var LecFront = await ProcessImageFile("Car", model.LecImgFront);
-            var LecBack = await ProcessImageFile("Car", model.LecImgBack);
+            var LecFront = await ProcessImageFile("Car", model.LicenseImageFront);
+            var LecBack = await ProcessImageFile("Car", model.LicenseImageBack);
 
-            var carImg = await ProcessImageFile("Car", model.CarImg);
+            var carImg = await ProcessImageFile("Car", model.Image);
 
    
 
             Car car = new Car
                 {
-                        CarID = Guid.NewGuid().ToString(),
-                        Type = model.TypeOfCar,
-                        Model = model.ModelOfCar,
-                        Brand = model.BrandOfCar,
-                        CarPlate = model.PlateOfCar,
-                        SetsOfCar = model.CarSetNum,
+                        Id = Guid.NewGuid().ToString(),
+                        Type = model.Type,
+                        Model = model.ModelYear,
+                        Brand = model.Brand,
+                        Plate = model.Plate,
+                        Seats = model.Seats,
 
-                        LicCarImgFront = LecFront,
-                        LicCarImgBack = LecBack,
-                        EndDataOfCarLic=model.EndDataOfCarLic,
+                        LicenseImageFront = LecFront,
+                        LicenseImagBack = LecBack,
+                        LicenseExpiration=model.LicenseExpiration,
 
-                        CarImg = carImg,
+                        Image = carImg,
 
-                        User_DataId = userData.UserDataID
+                        UserDataId = userData.Id
 
                 };
 
@@ -139,22 +140,22 @@ namespace Vehicle_Share.Service.CarService
               if (car == null) new ResponseModel { Messsage = "Car not found . " };
 
 
-                car.Type = model.TypeOfCar;
-                car.Model = model.ModelOfCar;
-                car.Brand = model.BrandOfCar;
-                car.CarPlate = model.PlateOfCar;
-                car.SetsOfCar = model.CarSetNum;
-                car.EndDataOfCarLic=model.EndDataOfCarLic;
+                car.Type = model.Type;
+                car.Model = model.ModelYear;
+                car.Brand = model.Brand;
+                car.Plate = model.Plate;
+                car.Seats = model.Seats;
+                car.LicenseExpiration=model.LicenseExpiration;
 
             // updata the image 
-            await RemoveImageFile(car.CarImg);
-              car.CarImg = await ProcessImageFile("Car", model.CarImg);
+            await RemoveImageFile(car.Image);
+              car.Image = await ProcessImageFile("Car", model.Image);
 
-              await RemoveImageFile(car.LicCarImgBack);
-              car.LicCarImgBack = await ProcessImageFile("Car", model.LecImgBack);
+              await RemoveImageFile(car.LicenseImagBack);
+              car.LicenseImagBack = await ProcessImageFile("Car", model.LicenseImageBack);
 
-              await RemoveImageFile(car.LicCarImgFront);
-              car.LicCarImgFront = await ProcessImageFile("Car", model.LecImgFront);
+              await RemoveImageFile(car.LicenseImageFront);
+              car.LicenseImageFront = await ProcessImageFile("Car", model.LicenseImageFront);
 
 
             await _car.UpdateAsync(car);
@@ -167,7 +168,7 @@ namespace Vehicle_Share.Service.CarService
         {
             if (id is null)
                 return 0;
-            var car = await _car.FindAsync(e=>e.CarID==id);
+            var car = await _car.FindAsync(e=>e.Id==id);
             int res=await _car.DeleteAsync(car);
             return res;
         }

@@ -13,7 +13,7 @@ namespace Vehicle_Share.Core.Models.TripModels
         [Required]
         public DateTime Date { get; set; }
         [Required]
-        public float Recommendprice { get; set; }
-        public int NumOfSetWant { get; set; } //passenger
+        public float RecommendPrice { get; set; }
+        public int RequestedSeats { get; set; } //passenger
     }
 }

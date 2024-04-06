@@ -1,9 +1,3 @@
-D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share.Service.csproj.AssemblyReference.cache
-D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share.Service.GeneratedMSBuildEditorConfig.editorconfig
-D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share.Service.AssemblyInfoInputs.cache
-D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share.Service.AssemblyInfo.cs
-D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share.Service.csproj.CoreCompileInputs.cache
-D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share.Service.sourcelink.json
 D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\bin\Debug\net6.0\Vehicle_Share.Service.deps.json
 D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\bin\Debug\net6.0\Vehicle_Share.Service.dll
 D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\bin\Debug\net6.0\Vehicle_Share.Service.pdb
@@ -11,6 +5,12 @@ D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\bin\Debug\net6.0\Vehicle_Share
 D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\bin\Debug\net6.0\Vehicle_Share.EF.dll
 D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\bin\Debug\net6.0\Vehicle_Share.EF.pdb
 D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\bin\Debug\net6.0\Vehicle_Share.Core.pdb
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share.Service.csproj.AssemblyReference.cache
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share.Service.GeneratedMSBuildEditorConfig.editorconfig
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share.Service.AssemblyInfoInputs.cache
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share.Service.AssemblyInfo.cs
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share.Service.csproj.CoreCompileInputs.cache
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share.Service.sourcelink.json
 D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share.Service.csproj.CopyComplete
 D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share.Service.dll
 D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\refint\Vehicle_Share.Service.dll

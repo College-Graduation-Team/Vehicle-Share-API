@@ -31,13 +31,12 @@ namespace Vehicle_Share.API.Controllers
         {
 
             var result = await _repo.GetAllForUserAsync();
-            if (result != null)
                 if (result.IsSuccess)
                     return Ok(new { result.Data });
 
             return BadRequest(new { result.ErrorMesssage });
         }
-            [HttpGet("Read-AllTrip-Driver")]
+        [HttpGet("Read-AllTrip-Driver")]
         public async Task<IActionResult> GetAllDriverTripAsync()
         {
 

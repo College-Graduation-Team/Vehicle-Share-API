@@ -23,28 +23,56 @@ namespace Vehicle_Share.Service.RequestService
             _request = request;
             _httpContextAccessor = httpContextAccessor;
         }
+        public async Task<GenResponseModel<GetReqModel>> GetAllTripRequestedAsync(string tripId)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new GenResponseModel<GetReqModel> { ErrorMesssage = "User Not Authorized." };
 
-        public async Task<GenResponseModel<GetReqModel>> GetAllAsync()
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new GenResponseModel<GetReqModel> { ErrorMesssage = "User Data Not Found." };
+
+            var allRequests = await _request.GetAllAsync();
+            var userRequests = allRequests.Where(r => r.TripId == tripId).ToList();
+
+            var result = new GenResponseModel<GetReqModel>();
+            foreach (var request in userRequests)
+            {
+                result.Data?.Add(new GetReqModel
+                {
+                    Id = request.Id,
+                    Status = request.Status.ToString(),
+                    tripId = request.TripId,
+                    UserDataId = request.UserDataId
+                });
+            }
+
+            result.IsSuccess = true;
+            return result;
+        }
+
+        public async Task<GenResponseModel<GetReqModel>> GetAllMyRequestAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
                 return new GenResponseModel<GetReqModel> { ErrorMesssage = " User Not Authorize . " };
 
-            var userData = await _userdata.FindAsync(e => e.User_Id == userId);
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new GenResponseModel<GetReqModel> { ErrorMesssage = " User Not Added data  . " };
 
             var allRequests = await _request.GetAllAsync();
-            var userRequests = allRequests.Where(t => t.User_DataId == userData.UserDataID).ToList();
+            var userRequests = allRequests.Where(t => t.UserDataId == userData.Id).ToList();
             var result = new GenResponseModel<GetReqModel>();
             foreach (var request in userRequests)
             {
-                result.Data.Add(new GetReqModel
+                result.Data?.Add(new GetReqModel
                 {
-                    Id = request.RequestID,
-                    Status=request.RequestStatus.ToString(),
-                    tripId=request.Trip_Id,
-                    UserdataId=request.User_DataId
+                    Id = request.Id,
+                    Status=request.Status.ToString(),
+                    tripId=request.TripId,
+                    UserDataId=request.UserDataId
                 }
 
                 );
@@ -58,62 +86,86 @@ namespace Vehicle_Share.Service.RequestService
             if (userId is null)
                 return new ResponseModel { Messsage = "User not authorized" };
 
-            var userData = await _userdata.FindAsync(e => e.User_Id == userId);
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseModel { Messsage = "User not found" };
 
             // Find the trip associated with the request
-            var trip = await _trip.FindAsync(e => e.TripID == model.TripId);
-            if ( trip is null || trip.IsFinish )
+            var trip = await _trip.FindAsync(e => e.Id == model.TripId);
+            if ( trip is null || trip.IsFinished )
                 return new ResponseModel { Messsage = "Trip not found or finished" };
 
             // Check if the user who added the trip is trying to make a request for the same trip
-            if (trip.User_DataId == userData.UserDataID)
+            if (trip.UserDataId == userData.Id)
             {
                 return new ResponseModel { Messsage = "You cannot make a request for your own trip." };
             }
-            // Add the request as usual
-            Request request = new()
-            {
-                RequestID = Guid.NewGuid().ToString(),
-                RequestStatus = Status.Pending,
-                Trip_Id =model.TripId,
-                User_DataId = userData.UserDataID
-            };
-            if (request.User_DataId== userData.UserDataID)
+            Request request = new();
+            if (userData.Type is true) //driver
+                request.Seats = 0;
+            else
+            {  if(model.NumSeats>trip.AvailableSeats)                      //Passenger
+                    return new ResponseModel { Messsage = "You enter invalid value . " };
+                request.Seats = model.NumSeats;
+            }
+              
+            if (request.UserDataId== userData.Id)
             {
                 return new ResponseModel { Messsage = "You already send request before ." };
             }
-
+            request.Id = Guid.NewGuid().ToString();
+            request.Status = Status.Pending;
+            request.TripId = model.TripId;
+            request.UserDataId = userData.Id;
             await _request.AddAsync(request);
             return new ResponseModel { Messsage = "Request added successfully", IsSuccess = true };
 
         }
         public async Task<ResponseModel> AcceptRequestAsync(string requestId)
         {
-            var request = await _request.FindAsync(r => r.RequestID == requestId);
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { Messsage = "User not authorized" };
+
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new ResponseModel { Messsage = "User not found" };
+
+            var request = await _request.FindAsync(r => r.Id == requestId);
             if (request == null)
             {
                 return new ResponseModel { Messsage = "Request not found" };
             }
 
-            // Mark the request as accepted
-            request.RequestStatus = Status.Accepted;
+            var trip = await _trip.FindAsync(e => e.Id ==request.TripId);
+            if (trip is null || trip.IsFinished)
+                return new ResponseModel { Messsage = "Trip not found or finished" };
 
-            // Update the request in the database
-            await _request.UpdateAsync(request);
+            if (userData.Type is true) //driver
+            {
+                request.Status = Status.Accepted;
+
+                if (trip.AvailableSeats.HasValue)
+                {
+                    var availbleseats = trip.AvailableSeats.Value - request.Seats;
+                    trip.AvailableSeats = availbleseats;
+                    await _trip.UpdateAsync(trip);
+                }
+                await _request.UpdateAsync(request);
+
+            }
 
             return new ResponseModel { Messsage = "Request accepted successfully" , IsSuccess=true };
         }
         public async Task<ResponseModel> DenyRequestAsync(string requestId)
         {
-            var request = await _request.FindAsync(r => r.RequestID == requestId);
+            var request = await _request.FindAsync(r => r.Id == requestId);
             if (request == null)
             {
                 return new ResponseModel { Messsage = "Request not found" };
             }
             // Mark the request as denied
-            request.RequestStatus =Status.Refused;
+            request.Status =Status.Refused;
             // Update the request in the database
             await _request.UpdateAsync(request);
 
@@ -123,12 +175,11 @@ namespace Vehicle_Share.Service.RequestService
         {
             if (requestId is null)
                 return 0;
-            var request = await _request.FindAsync(r => r.RequestID == requestId);
+            var request = await _request.FindAsync(r => r.Id == requestId);
             if (request == null)
             {
                 return 0;
             }
-            // Delete the request from the database
             var result =await _request.DeleteAsync(request);
 
             return result;

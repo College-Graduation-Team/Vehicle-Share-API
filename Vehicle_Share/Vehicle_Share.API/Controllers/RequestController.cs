@@ -18,10 +18,20 @@ namespace Vehicle_Share.API.Controllers
             _repo = repo;
         }
 
-        [HttpGet("Read-AllRequest")]
+        [HttpGet("Read-All-Requests-trip/{id}")]
+        public async Task<IActionResult> GetAllTripRequestedAsync(string id)
+        {
+            var result = await _repo.GetAllTripRequestedAsync(id);
+            if (result.IsSuccess)
+                return Ok(new { result.Data });
+
+            return BadRequest(new { result.ErrorMesssage });
+        }
+
+        [HttpGet("Read-All-MyRequest")]
         public async Task<IActionResult> GetAllAsync()
         {
-            var result = await _repo.GetAllAsync();
+            var result = await _repo.GetAllMyRequestAsync();
             if (result.IsSuccess)
                 return Ok(new { result.Data });
 
@@ -41,11 +51,11 @@ namespace Vehicle_Share.API.Controllers
         }
        
         [HttpPost("Accept-Request/{id}")]
-        public async Task<IActionResult> AcceptReqestAsync([FromRoute] string requestId)
+        public async Task<IActionResult> AcceptReqestAsync([FromRoute] string id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var result = await _repo.AcceptRequestAsync(requestId);
+            var result = await _repo.AcceptRequestAsync(id);
             if (result.IsSuccess)
                 return Ok(new { result.Messsage });
 
@@ -53,11 +63,11 @@ namespace Vehicle_Share.API.Controllers
         }
        
         [HttpPost("Deny-Request/{id}")]
-        public async Task<IActionResult> DenyReqestAsync([FromRoute] string requestId)
+        public async Task<IActionResult> DenyReqestAsync([FromRoute] string id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var result = await _repo.DenyRequestAsync(requestId);
+            var result = await _repo.DenyRequestAsync(id);
             if (result.IsSuccess)
                 return Ok(new { result.Messsage });
 
@@ -65,11 +75,11 @@ namespace Vehicle_Share.API.Controllers
         }
         
         [HttpPost("Delete-Request/{id}")]
-        public async Task<IActionResult> DeleteReqestAsync([FromRoute]string requestId)
+        public async Task<IActionResult> DeleteReqestAsync([FromRoute]string id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var result = await _repo.DeleteRequestAsync(requestId);
+            var result = await _repo.DeleteRequestAsync(id);
             if (result > 0)
                 return Ok(result);
 

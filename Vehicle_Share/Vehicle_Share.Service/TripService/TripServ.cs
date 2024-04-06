@@ -1,14 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.ConstrainedExecution;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using Vehicle_Share.Core.Models.CarModels;
+
 using Vehicle_Share.Core.Models.TripModels;
 using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Response;
@@ -23,11 +16,12 @@ namespace Vehicle_Share.Service.TripService
         private readonly IBaseRepo<Car> _car;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public TripServ(IBaseRepo<Trip> trip, IBaseRepo<UserData> userdata, IHttpContextAccessor httpContextAccessor)
+        public TripServ(IBaseRepo<Trip> trip, IBaseRepo<UserData> userdata, IHttpContextAccessor httpContextAccessor, IBaseRepo<Car> car)
         {
             _trip = trip;
             _userdata = userdata;
             _httpContextAccessor = httpContextAccessor;
+            _car = car;
         }
 
         public async Task<ResponseForOneModel<GetTripModel>> GetByIdAsync(string id)
@@ -36,7 +30,7 @@ namespace Vehicle_Share.Service.TripService
             if (userId is null)
                 return new ResponseForOneModel<GetTripModel> { ErrorMesssage = " User Not Authorized." };
 
-            var userData = await _userdata.FindAsync(e => e.User_Id == userId);
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseForOneModel<GetTripModel> { ErrorMesssage = " User Not Added Data." };
 
@@ -45,21 +39,30 @@ namespace Vehicle_Share.Service.TripService
             if (trip is null)
                 return new ResponseForOneModel<GetTripModel> { ErrorMesssage = "Trip Not Found." };
 
-            
+            var car = await _car.FindAsync(e => e.UserDataId == userData.Id);
+            if (car is null)
+                return new ResponseForOneModel<GetTripModel> { ErrorMesssage = " You must add car ." };
+
+            if (trip.AvailableSeats > car.Seats)
+                return new ResponseForOneModel<GetTripModel> { ErrorMesssage = " You Enter invalid AvailableSeats number  ." };
+
+            if (trip.RequestedSeats > trip.AvailableSeats)
+                return new ResponseForOneModel<GetTripModel> { ErrorMesssage = " You Enter invalid RequestedSeats number  ." };
+
             var result = new ResponseForOneModel<GetTripModel>
             {
                 Data = new GetTripModel
                 {
-                    ID = trip.TripID,
+                    Id = trip.Id,
                     From = trip.From,
                     To = trip.To,
                     Date = trip.Date,
-                    Recommendprice = trip.Recommendprice,
-                    AvilableSets = trip.AvilableSets,
-                    NumOfSetWant = trip.NumOfSetWant,
-                    IsFinish = trip.IsFinish,
-                    User_DataId = trip.User_DataId,
-                    Car_Id = trip.Car_Id
+                    RecommendPrice = trip.RecommendPrice,
+                    AvailableSeats = trip.AvailableSeats,
+                    RequestedSeats = trip.RequestedSeats,
+                    IsFinished = trip.IsFinished,
+                    UserDataId = trip.UserDataId,
+                    CarId = trip.CarId
                 },
                 IsSuccess = true
             };
@@ -73,30 +76,31 @@ namespace Vehicle_Share.Service.TripService
             if (userId is null)
                 return new GenResponseModel<GetTripModel> { ErrorMesssage = " User Not Authorize . " };
 
-            var userData = await _userdata.FindAsync(e => e.User_Id == userId);
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new GenResponseModel<GetTripModel> { ErrorMesssage = " User Not Added data  . " };
 
             var allTrips = await _trip.GetAllAsync();
-            var userTrips = allTrips.Where(t => t.User_DataId == userData.UserDataID).ToList();
+            var userTrips = allTrips.Where(t => t.UserDataId == userData.Id).ToList();
             var result = new GenResponseModel<GetTripModel>();
 
             foreach (var trip in userTrips)
             {
                 result.Data?.Add(new GetTripModel
                 {
-                    ID = trip.TripID,
+                    Id = trip.Id,
                     From = trip.From,
                     To = trip.To,
                     Date = trip.Date,
-                    Recommendprice = trip.Recommendprice,
-                    AvilableSets = trip.AvilableSets,    //driver
-                    NumOfSetWant = trip.NumOfSetWant,  //passenger
-                    IsFinish = trip.IsFinish,
-                    User_DataId = trip.User_DataId,
-                    Car_Id = trip.Car_Id
+                    RecommendPrice = trip.RecommendPrice,
+                    AvailableSeats = trip.AvailableSeats,    //driver
+                    RequestedSeats = trip.RequestedSeats,  //passenger
+                    IsFinished = trip.IsFinished,
+                    UserDataId = trip.UserDataId,
+                    CarId = trip.CarId,
                 });
             }
+            
             result.IsSuccess = true;
             return result;
         }
@@ -107,71 +111,73 @@ namespace Vehicle_Share.Service.TripService
             if (userId is null)
                 return new GenResponseModel<GetTripDriverModel> { ErrorMesssage = " User Not Authorize . " };
 
-            var userData = await _userdata.FindAsync(e => e.User_Id == userId);
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new GenResponseModel<GetTripDriverModel> { ErrorMesssage = " User Not Added data  . " };
 
             var allTrips = await _trip.GetAllAsync();
 
 
-            if (userData.typeOfUser is true)
+            if (userData.Type is true)
                 return new GenResponseModel<GetTripDriverModel> { ErrorMesssage = " You Can't show trips of drivers . " };
 
-            var userTrips = allTrips.Where(t => t.Car_Id is not null).ToList();
+            var userTrips = allTrips.Where(t => t.CarId is not null).ToList();
+
             var result = new GenResponseModel<GetTripDriverModel>();
 
             foreach (var trip in userTrips)
             {
-                if(!trip.IsFinish)
-                result.Data?.Add(new GetTripDriverModel
+                var car = await _car.FindAsync(e => e.Id == trip.CarId);
+                if (!trip.IsFinished && trip.AvailableSeats.HasValue) // Check if AvailableSeats has a value
                 {
-                    id = trip.TripID,
-                    From = trip.From,
-                    To = trip.To,
-                    Date = trip.Date,
-                    Recommendprice = trip.Recommendprice,
-                    AvilableSets = (int)trip.AvilableSets,
-                    CarID = trip.Car_Id, // Assuming CarID is a string property
-                    IsFinish=trip.IsFinish
-                    
-                });
+                    result.Data?.Add(new GetTripDriverModel
+                    {
+                        Id = trip.Id,
+                        From = trip.From,
+                        To = trip.To,
+                        Date = trip.Date,
+                        RecommendPrice = trip.RecommendPrice,
+                        AvailableSeats = trip.AvailableSeats.Value, // Access the Value property
+                        CarId = trip.CarId, // Assuming CarID is a string property
+                        CarType = car.Type,
+                        CarBrand = car.Brand,
+                    });
+                }
+                result.IsSuccess = true;
             }
-            result.IsSuccess = true;
-            return result;
+                return result;
         }
-
         public async Task<GenResponseModel<GetTripPassengerModel>> GetAllPassengerTripAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
                 return new GenResponseModel<GetTripPassengerModel> { ErrorMesssage = " User Not Authorize . " };
 
-            var userData = await _userdata.FindAsync(e => e.User_Id == userId);
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new GenResponseModel<GetTripPassengerModel> { ErrorMesssage = " User Not Added data  . " };
 
             var allTrips = await _trip.GetAllAsync();
 
-
-            if (!userData.typeOfUser is true)
+            if (!userData.Type is true)
                 return new GenResponseModel<GetTripPassengerModel> { ErrorMesssage = "You Can't show the trips of passenger . " };
-            var userTrips = allTrips.Where(t => t.Car_Id is null).ToList();
+            var userTrips = allTrips.Where(t => t.CarId is null).ToList();
             var result = new GenResponseModel<GetTripPassengerModel>();
 
             foreach (var trip in userTrips)
             {
-                if (!trip.IsFinish)
+                if (!trip.IsFinished)
                     result.Data?.Add(new GetTripPassengerModel
                     {
-                        id = trip.TripID,
+                        Id = trip.Id,
                         From = trip.From,
                         To = trip.To,
                         Date = trip.Date,
-                        Recommendprice = trip.Recommendprice,
-                        NumOfSetWant = (int)trip.NumOfSetWant,
-                        Isfinish = trip.IsFinish
-
+                        RecommendPrice = trip.RecommendPrice,
+                        RequestedSeats = trip.RequestedSeats.Value,
+                        Isfinished = trip.IsFinished
                     });
+                
             }
             result.IsSuccess = true;
             return result;
@@ -183,25 +189,27 @@ namespace Vehicle_Share.Service.TripService
             if (userId is null)
                 return new ResponseModel { Messsage = "User not authorized" };
 
-            var userData = await _userdata.FindAsync(e => e.User_Id == userId);
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseModel { Messsage = "User not found" };
           
-            if (userData.typeOfUser is false) // Driver
+            if (userData.Type is false) // Driver
                 return new ResponseModel { Messsage = "You are not driver " };
+            if(string.IsNullOrEmpty(model.CarId))
+                return new ResponseModel { Messsage = "You must add car before make trip" };
 
-                Trip trip = new()
+            Trip trip = new()
                 {
-                    TripID = Guid.NewGuid().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     From = model.From,
                     To = model.To,
                     Date = model.Date,
-                    AvilableSets = model.AvilableSets,
-                    Recommendprice = model.Recommendprice,
+                    AvailableSeats = model.AvailableSeats,
+                    RecommendPrice = model.RecommendPrice,
 
                     // Relation
-                    User_DataId = userData.UserDataID,
-                    Car_Id = model.CarID
+                    UserDataId = userData.Id,
+                    CarId = model.CarId
                 };
 
                 await _trip.AddAsync(trip);
@@ -216,23 +224,23 @@ namespace Vehicle_Share.Service.TripService
             if (userId is null)
                 return new ResponseModel { Messsage = "User not authorized" };
 
-            var userData = await _userdata.FindAsync(e => e.User_Id == userId);
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseModel { Messsage = "User not found" };
 
-            if (userData.typeOfUser is true) // Passenger
+            if (userData.Type is true) // Passenger
                 return new ResponseModel { Messsage = "You are not Passenger " };
             Trip trip = new()
             {
-                TripID = Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 From = model.From,
                 To = model.To,
                 Date = model.Date,
-                NumOfSetWant = model.NumOfSetWant,
-                Recommendprice = model.Recommendprice,
+                RequestedSeats = model.RequestedSeats,
+                RecommendPrice = model.RecommendPrice,
 
                 // Relation
-                User_DataId = userData.UserDataID
+                UserDataId = userData.Id
             };
 
             await _trip.AddAsync(trip);
@@ -247,14 +255,14 @@ namespace Vehicle_Share.Service.TripService
             if (userId is null)
                 return new ResponseModel { Messsage = "User not authorized" };
 
-            var userData = await _userdata.FindAsync(e => e.User_Id == userId);
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseModel { Messsage = "User not found" };
 
-            if (userData.typeOfUser is false) // Driver
+            if (userData.Type is false) // Driver
                 return new ResponseModel { Messsage = "You are not driver " };
 
-            var trip = await _trip.FindAsync(e => e.TripID == id);
+            var trip = await _trip.FindAsync(e => e.Id == id);
 
             if (trip == null)
                 return new ResponseModel { Messsage = "trip id is not found" };
@@ -262,9 +270,9 @@ namespace Vehicle_Share.Service.TripService
             trip.From = model.From;
             trip.To = model.To;
             trip.Date = model.Date;
-            trip.AvilableSets = model.AvilableSets;
-            trip.Recommendprice = model.Recommendprice;
-            trip.Car_Id = model.CarID;
+            trip.AvailableSeats = model.AvailableSeats;
+            trip.RecommendPrice = model.RecommendPrice;
+            trip.CarId = model.CarId;
             
             return  new ResponseModel { Messsage = "Trip updated successfully", IsSuccess = true };
         }
@@ -272,14 +280,14 @@ namespace Vehicle_Share.Service.TripService
         public async Task<ResponseModel> UpdateAsync(string id, TripPassengerModel model)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
-            var userData = await _userdata.FindAsync(e => e.User_Id == userId);
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseModel { Messsage = "User not found" };
 
-            if (userData.typeOfUser is true) // Passenger
+            if (userData.Type is true) // Passenger
                 return new ResponseModel { Messsage = "You are not Passenger " };
 
-            var trip = await _trip.FindAsync(e => e.TripID == id);
+            var trip = await _trip.FindAsync(e => e.Id == id);
 
             if (trip == null)
                 return new ResponseModel { Messsage = "trip id is not found" };
@@ -287,8 +295,8 @@ namespace Vehicle_Share.Service.TripService
             trip.From = model.From;
             trip.To = model.To;
             trip.Date = model.Date;
-            trip.Recommendprice = model.Recommendprice;
-            trip.NumOfSetWant = model.NumOfSetWant;
+            trip.RecommendPrice = model.RecommendPrice;
+            trip.RequestedSeats = model.RequestedSeats;
 
             /////////////////////////////////////////////////////////////
 
@@ -299,7 +307,7 @@ namespace Vehicle_Share.Service.TripService
         {
             if (id is null)
                 return 0;
-            var trip = await _trip.FindAsync(t => t.TripID == id);
+            var trip = await _trip.FindAsync(t => t.Id == id);
             int res = await _trip.DeleteAsync(trip);
             return res;
         }

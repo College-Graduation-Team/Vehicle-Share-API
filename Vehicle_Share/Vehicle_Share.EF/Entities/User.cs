@@ -13,6 +13,6 @@ namespace Vehicle_Share.EF.Models
 	    public string? ResetCode { get; set; }
         public DateTime? ResetCodeGeneateAt { get; set; }
 		public bool ResetCodeExpired => DateTime.UtcNow >= ResetCodeGeneateAt?.AddMinutes(3);
-        public UserData UserData { get; set; }
+        public UserData? UserData { get; set; }
     }
 }

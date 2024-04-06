@@ -8,7 +8,7 @@ namespace Vehicle_Share.EF.Models
     public class Car
     {
         [Key]
-        public string CarID { get; set; }
+        public string Id { get; set; }
 
 
         [Required(ErrorMessage = "Type is required.")]
@@ -28,30 +28,30 @@ namespace Vehicle_Share.EF.Models
 
         [Required(ErrorMessage = "Brand is required.")]
         [MaxLength(15, ErrorMessage = "the max length is 15 char")]
-        public string CarPlate { get; set; }
+        public string Plate { get; set; }
 
 
         [Required(ErrorMessage = "SetsOfCar is required.")]
         [MaxLength(2, ErrorMessage = "the max length is 2 digit")]
-        public int SetsOfCar { get; set; }
+        public short Seats { get; set; }
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public string CarImg { get; set; }
+        public string Image { get; set; }
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public string LicCarImgFront { get; set; }
+        public string LicenseImageFront { get; set; }
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public string LicCarImgBack { get; set; }
+        public string LicenseImagBack { get; set; }
         [Required]
-        public DateTime EndDataOfCarLic { get; set; }
-
+        public DateTime LicenseExpiration { get; set; }
+                             
         // relations 
-        public String User_DataId { get; set; }
-        [ForeignKey("User_DataId")]
+        public String UserDataId { get; set; }
+        [ForeignKey("UserDataId")]
         public UserData UserData { get; set; }
 
         

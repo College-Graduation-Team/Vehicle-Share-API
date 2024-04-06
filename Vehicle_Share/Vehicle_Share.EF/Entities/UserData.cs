@@ -8,20 +8,20 @@ namespace Vehicle_Share.EF.Models
     public class UserData
     {
         [Key]
-        public string UserDataID { get; set; }
+        public string Id { get; set; }
 
 
         [Required(ErrorMessage = "FullName is required.")]
         [MaxLength(100)]
-        public string FullName { get; set; }
+        public string Name { get; set; }
 
 
         [Required(ErrorMessage = "Nationail ID is required.")]
         [RegularExpression(@"^\d{14}$", ErrorMessage = "Nationail ID must be 14 digit .")]
-        public long NationailID { get; set; }
+        public long NationailId { get; set; }
 
 
-        public DateTime BirthData { get; set; }
+        public DateTime Birthdata { get; set; }
 
 
         public  bool Gender { get; set; }
@@ -40,22 +40,20 @@ namespace Vehicle_Share.EF.Models
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public string NationalcardImgFront { get; set; }
+        public string NationalCardImageFront { get; set; }
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public string NationalcardImgBack { get; set; }
+        public string NationalCardImageBack { get; set; }
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public string ProfileImg { get; set; }
+        public string ProfileImage { get; set; }
 
-        public bool typeOfUser { get; set; }    // driver of passenger
+        public bool Type { get; set; }    // driver of passenger
         // relation 
-        public String User_Id { get; set; }
-        [ForeignKey("User_Id")]
+        public String UserId { get; set; }
+        [ForeignKey("UserId")]
         public User User { get; set; }
-
-        public List<Car>? cars { get; set; }
     }
 }

@@ -11,22 +11,22 @@ namespace Vehicle_Share.EF.Models
     public class License
     {
         [Key]
-        public string LicID { get; set; }
+        public string Id { get; set; }
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public string LicUserImgFront { get; set; }
+        public string ImageFront { get; set; }
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public string LicUserImgBack { get; set; }
+        public string ImageBack { get; set; }
 
         [Required]
-        public DateTime EndDataOfUserLic { get; set; }
+        public DateTime Expiration { get; set; }
 
         // relation 
-        public String User_DataId { get; set; }
-        [ForeignKey("User_DataId")]
+        public String UserDataId { get; set; }
+        [ForeignKey("UserDataId")]
         public UserData UserData { get; set; }
     }
 }
