@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -36,7 +37,7 @@ namespace Vehicle_Share.EF.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
+                
             migrationBuilder.CreateTable(
                 name: "Car",
                 columns: table => new
