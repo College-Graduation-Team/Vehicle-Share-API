@@ -142,13 +142,13 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
              {
                  var activeRefreshToken = user.RefreshTokens.FirstOrDefault(t => t.IsActive);
                  authModel.RefreshToken = activeRefreshToken.Token;
-                 authModel.RefreshTokenExpiration = activeRefreshToken.ExpiresOn;
+                 authModel.RefreshTokenExpiration = activeRefreshToken.ExpiresOn.ToString(DateTimeFormatInfo.InvariantInfo.UniversalSortableDateTimePattern, DateTimeFormatInfo.InvariantInfo); 
              }
              else
              {
                  var refreshToken = GenerateRefreshToken();
                  authModel.RefreshToken = refreshToken.Token;
-                 authModel.RefreshTokenExpiration = refreshToken.ExpiresOn;
+                 authModel.RefreshTokenExpiration = refreshToken.ExpiresOn.ToString(DateTimeFormatInfo.InvariantInfo.UniversalSortableDateTimePattern, DateTimeFormatInfo.InvariantInfo); ;
                  user.RefreshTokens.Add(refreshToken);
                  await _userManager.UpdateAsync(user);
              }
@@ -229,7 +229,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             var roles = await _userManager.GetRolesAsync(user);
             authModel.Roles = roles.ToList();
             authModel.RefreshToken = newRefreshToken.Token;
-            authModel.RefreshTokenExpiration = newRefreshToken.ExpiresOn;
+            authModel.RefreshTokenExpiration = newRefreshToken.ExpiresOn.ToString(DateTimeFormatInfo.InvariantInfo.UniversalSortableDateTimePattern, DateTimeFormatInfo.InvariantInfo); ;
 
             return authModel;
         }

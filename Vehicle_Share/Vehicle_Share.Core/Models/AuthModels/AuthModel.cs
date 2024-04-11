@@ -22,6 +22,6 @@ namespace Vehicle_Share.Core.Models.AuthModels
         // [JsonIgnore]
         public string? RefreshToken { get; set; }
 
-        public DateTime RefreshTokenExpiration { get; set; }
+        public string RefreshTokenExpiration { get; set; }
     }
 }
