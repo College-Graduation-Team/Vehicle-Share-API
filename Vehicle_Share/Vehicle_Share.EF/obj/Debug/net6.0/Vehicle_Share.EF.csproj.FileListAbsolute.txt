@@ -86,3 +86,21 @@ D:/desk/Final/Vehicle_Share/Vehicle_Share.EF/obj/Debug/net6.0/ref/Vehicle_Share.
 /mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.EF/obj/Debug/net6.0/ref/Vehicle_Share.EF.dll
 /mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.EF/obj/Debug/net6.0/Vehicle_Share.EF.sourcelink.json
 /mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.EF/obj/Debug/net6.0/Vehicle_.95E492DC.Up2Date
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\obj\Debug\net6.0\Vehicle_Share.EF.dll
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\obj\Debug\net6.0\refint\Vehicle_Share.EF.dll
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\obj\Debug\net6.0\Vehicle_Share.EF.pdb
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\bin\Debug\net6.0\Vehicle_Share.EF.deps.json
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\bin\Debug\net6.0\Vehicle_Share.EF.runtimeconfig.json
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\bin\Debug\net6.0\Vehicle_Share.EF.dll
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\bin\Debug\net6.0\Vehicle_Share.EF.pdb
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\bin\Debug\net6.0\Vehicle_Share.Core.dll
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\bin\Debug\net6.0\Vehicle_Share.Core.pdb
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\obj\Debug\net6.0\Vehicle_Share.EF.csproj.AssemblyReference.cache
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\obj\Debug\net6.0\Vehicle_Share.EF.GeneratedMSBuildEditorConfig.editorconfig
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\obj\Debug\net6.0\Vehicle_Share.EF.AssemblyInfoInputs.cache
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\obj\Debug\net6.0\Vehicle_Share.EF.AssemblyInfo.cs
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\obj\Debug\net6.0\Vehicle_Share.EF.csproj.CoreCompileInputs.cache
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\obj\Debug\net6.0\Vehicle_Share.EF.sourcelink.json
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\obj\Debug\net6.0\Vehicle_Share.EF.csproj.CopyComplete
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\obj\Debug\net6.0\Vehicle_Share.EF.genruntimeconfig.cache
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\obj\Debug\net6.0\ref\Vehicle_Share.EF.dll

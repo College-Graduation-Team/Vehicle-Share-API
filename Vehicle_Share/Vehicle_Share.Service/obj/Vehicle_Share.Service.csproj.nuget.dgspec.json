@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.Service/Vehicle_Share.Service.csproj": {}
+    "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.Service\\Vehicle_Share.Service.csproj": {}
   },
   "projects": {
-    "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.Core/Vehicle_Share.Core.csproj": {
+    "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.Core\\Vehicle_Share.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.Core/Vehicle_Share.Core.csproj",
+        "projectUniqueName": "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.Core\\Vehicle_Share.Core.csproj",
         "projectName": "Vehicle_Share.Core",
-        "projectPath": "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.Core/Vehicle_Share.Core.csproj",
-        "packagesPath": "/home/ibrahim/.nuget/packages/",
-        "outputPath": "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.Core/obj/",
+        "projectPath": "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.Core\\Vehicle_Share.Core.csproj",
+        "packagesPath": "C:\\Users\\Abdo91\\.nuget\\packages\\",
+        "outputPath": "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.Core\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/ibrahim/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Abdo91\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -32,11 +34,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -63,39 +60,55 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[6.0.25, 6.0.25]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[6.0.25, 6.0.25]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[6.0.25, 6.0.25]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.203/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.EF/Vehicle_Share.EF.csproj": {
+    "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.EF\\Vehicle_Share.EF.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.EF/Vehicle_Share.EF.csproj",
+        "projectUniqueName": "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.EF\\Vehicle_Share.EF.csproj",
         "projectName": "Vehicle_Share.EF",
-        "projectPath": "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.EF/Vehicle_Share.EF.csproj",
-        "packagesPath": "/home/ibrahim/.nuget/packages/",
-        "outputPath": "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.EF/obj/",
+        "projectPath": "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.EF\\Vehicle_Share.EF.csproj",
+        "packagesPath": "C:\\Users\\Abdo91\\.nuget\\packages\\",
+        "outputPath": "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.EF\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/ibrahim/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Abdo91\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.Core/Vehicle_Share.Core.csproj": {
-                "projectPath": "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.Core/Vehicle_Share.Core.csproj"
+              "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.Core\\Vehicle_Share.Core.csproj": {
+                "projectPath": "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.Core\\Vehicle_Share.Core.csproj"
               }
             }
           }
@@ -104,11 +117,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -119,11 +127,19 @@
               "target": "Package",
               "version": "[6.0.26, )"
             },
+            "Microsoft.AspNetCore.Http": {
+              "target": "Package",
+              "version": "[2.1.34, )"
+            },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
               "version": "[6.0.26, )"
             },
             "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.26, )"
+            },
+            "Microsoft.EntityFrameworkCore.Analyzers": {
               "target": "Package",
               "version": "[6.0.26, )"
             },
@@ -163,39 +179,55 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[6.0.25, 6.0.25]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[6.0.25, 6.0.25]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[6.0.25, 6.0.25]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.203/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.Service/Vehicle_Share.Service.csproj": {
+    "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.Service\\Vehicle_Share.Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.Service/Vehicle_Share.Service.csproj",
+        "projectUniqueName": "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.Service\\Vehicle_Share.Service.csproj",
         "projectName": "Vehicle_Share.Service",
-        "projectPath": "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.Service/Vehicle_Share.Service.csproj",
-        "packagesPath": "/home/ibrahim/.nuget/packages/",
-        "outputPath": "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.Service/obj/",
+        "projectPath": "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.Service\\Vehicle_Share.Service.csproj",
+        "packagesPath": "C:\\Users\\Abdo91\\.nuget\\packages\\",
+        "outputPath": "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.Service\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/ibrahim/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Abdo91\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.EF/Vehicle_Share.EF.csproj": {
-                "projectPath": "/mnt/Data/Work/Web/ASP.Net Core/Projects/Vehicle_Share/Vehicle_Share/Vehicle_Share.EF/Vehicle_Share.EF.csproj"
+              "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.EF\\Vehicle_Share.EF.csproj": {
+                "projectPath": "D:\\desk\\Final\\Vehicle_Share\\Vehicle_Share.EF\\Vehicle_Share.EF.csproj"
               }
             }
           }
@@ -204,16 +236,21 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Http": {
+              "target": "Package",
+              "version": "[2.1.34, )"
+            },
+            "Microsoft.EntityFrameworkCore.Analyzers": {
+              "target": "Package",
+              "version": "[6.0.26, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -225,12 +262,26 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[6.0.25, 6.0.25]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[6.0.25, 6.0.25]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[6.0.25, 6.0.25]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.203/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }

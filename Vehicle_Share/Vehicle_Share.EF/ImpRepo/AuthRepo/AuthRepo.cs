@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -124,6 +125,8 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             }
             
             var jwtSecurityToken = await CreateToken(user);
+           
+
             var rolesList = await _userManager.GetRolesAsync(user);
 
             authModel.IsAuth = true;
@@ -131,7 +134,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             authModel.Phone = user.PhoneNumber;
             authModel.PhoneConfirmed = user.PhoneNumberConfirmed;
             authModel.UserName = user.UserName;
-            authModel.TokenExpiration = jwtSecurityToken.ValidTo;
+            authModel.TokenExpiration = jwtSecurityToken.ValidTo.ToString(DateTimeFormatInfo.InvariantInfo.UniversalSortableDateTimePattern, DateTimeFormatInfo.InvariantInfo);
             authModel.Roles = rolesList.ToList();
 
             await _userManager.UpdateAsync(user);
