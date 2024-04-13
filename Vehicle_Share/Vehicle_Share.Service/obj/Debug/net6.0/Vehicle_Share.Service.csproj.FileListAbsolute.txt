@@ -52,3 +52,5 @@ D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share
 D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share.Service.sourcelink.json
 D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\Vehicle_Share.Service.csproj.CopyComplete
 D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\obj\Debug\net6.0\ref\Vehicle_Share.Service.dll
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\bin\Debug\net6.0\Ar\Vehicle_Share.Core.resources.dll
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Service\bin\Debug\net6.0\En\Vehicle_Share.Core.resources.dll

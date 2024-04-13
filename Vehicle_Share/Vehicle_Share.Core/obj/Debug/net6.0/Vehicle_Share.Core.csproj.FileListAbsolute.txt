@@ -73,3 +73,10 @@ D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Co
 D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.csproj.CoreCompileInputs.cache
 D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.sourcelink.json
 D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\ref\Vehicle_Share.Core.dll
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.SharedResources.SharedResources.Ar.resources
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.SharedResources.SharedResources.En.resources
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Vehicle_Share.Core.csproj.GenerateResource.cache
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\bin\Debug\net6.0\Ar\Vehicle_Share.Core.resources.dll
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\bin\Debug\net6.0\En\Vehicle_Share.Core.resources.dll
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\Ar\Vehicle_Share.Core.resources.dll
+D:\desk\Final\Vehicle_Share\Vehicle_Share.Core\obj\Debug\net6.0\En\Vehicle_Share.Core.resources.dll

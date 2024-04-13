@@ -24,7 +24,7 @@ namespace Vehicle_Share.API.Controllers
         {
             var result = await _repo.GetUserDataAsync();
             if (result.IsSuccess)
-                return Ok(new { result.ErrorMesssage });
+                return Ok(new { result.Data });
 
             return BadRequest(new { result.ErrorMesssage });
         }

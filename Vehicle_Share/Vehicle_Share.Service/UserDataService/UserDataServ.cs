@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Localization;
 using System.Security.Claims;
+using Twilio.Rest.Api.V2010.Account.AvailablePhoneNumberCountry;
 using Vehicle_Share.Core.Models.LicModels;
+using Vehicle_Share.Core.Models.TripModels;
 using Vehicle_Share.Core.Models.UserData;
 using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Response;
+using Vehicle_Share.Core.SharedResources;
 using Vehicle_Share.EF.Models;
 
 namespace Vehicle_Share.Service.UserDataService
@@ -12,11 +16,13 @@ namespace Vehicle_Share.Service.UserDataService
     {
         private readonly IBaseRepo<UserData> _userData;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IStringLocalizer<SharedResources> _LocaLizer;
 
-        public UserDataServ(IBaseRepo<UserData> userData, IHttpContextAccessor httpContextAccessor)
+        public UserDataServ(IBaseRepo<UserData> userData, IHttpContextAccessor httpContextAccessor, IStringLocalizer<SharedResources> locaLizer)
         {
             _userData = userData;
             _httpContextAccessor = httpContextAccessor;
+            _LocaLizer = locaLizer;
         }
         public async Task<ResponseForOneModel<GetUserModel>> GetUserDataAsync()
         {
@@ -61,6 +67,10 @@ namespace Vehicle_Share.Service.UserDataService
             if (userId is null)
                 return new ResponseModel {Messsage= "user not Autherize" };
 
+            var userData = await _userData.FindAsync(e => e.UserId == userId);
+            if (userData is not null)
+                return new ResponseModel { Messsage = " you added data before . " };
+
             var NationalcardImgFront = await ProcessImageFile("User",model.NationalCardImageFront);
             var NationalcardImgBack = await ProcessImageFile("User",model.NationalCardImageBack);
             var ProfileImg = await ProcessImageFile("User",model.ProfileImage);
@@ -89,7 +99,7 @@ namespace Vehicle_Share.Service.UserDataService
             };
 
             await _userData.AddAsync(user);
-            return new ResponseModel { Messsage = "UserData add successfully ", IsSuccess = true };
+            return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
         }
         public async Task<ResponseModel> UpdateAsync(string id ,UserDataModel model)
         {  
@@ -115,10 +125,9 @@ namespace Vehicle_Share.Service.UserDataService
 
             await _userData.UpdateAsync(user);
 
-            return new ResponseModel { Messsage = "User data updated successfully", IsSuccess = true };
+            return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
 
         }
-        
         private async Task< string> ProcessImageFile(string folder,IFormFile file)
         {
             var req = _httpContextAccessor.HttpContext.Request;

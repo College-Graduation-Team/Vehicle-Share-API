@@ -13,6 +13,14 @@
         },
         "runtime": {
           "Vehicle_Share.Core.dll": {}
+        },
+        "resources": {
+          "Ar/Vehicle_Share.Core.resources.dll": {
+            "locale": "Ar"
+          },
+          "En/Vehicle_Share.Core.resources.dll": {
+            "locale": "En"
+          }
         }
       },
       "Microsoft.AspNetCore.Http/2.1.34": {

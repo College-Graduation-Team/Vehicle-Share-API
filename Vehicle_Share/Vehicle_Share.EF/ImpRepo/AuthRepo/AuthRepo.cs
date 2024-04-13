@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
@@ -11,6 +12,7 @@ using System.Text;
 using Vehicle_Share.Core.Models.AuthModels;
 using Vehicle_Share.Core.Repository.AuthRepo;
 using Vehicle_Share.Core.Repository.SendOTP;
+using Vehicle_Share.Core.SharedResources;
 using Vehicle_Share.EF.Helper;
 using Vehicle_Share.EF.Models;
 namespace Vehicle_Share.EF.ImpRepo.AuthRepo
@@ -23,17 +25,18 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
         private readonly JWT _jwt;
         private readonly ISendOTP _smsService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IStringLocalizer<SharedResources> _LocaLizer;
 
         public AuthRepo(UserManager<User> userManager, IOptions<JWT> jwt,
             RoleManager<IdentityRole> roleManager, ISendOTP smsService,
-            IHttpContextAccessor httpContextAccessor )
+            IHttpContextAccessor httpContextAccessor, IStringLocalizer<SharedResources> locaLizer)
         {
             _userManager = userManager;
             _jwt = jwt.Value;
             _roleManager = roleManager;
             _smsService = smsService;
             _httpContextAccessor = httpContextAccessor;
-           
+            _LocaLizer = locaLizer;
         }
 
 
@@ -41,7 +44,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
         {
 
             if (await _userManager.FindByNameAsync(model.UserName) is not null)
-                return new AuthModel { Message = "Username is already registered!" };
+                return new AuthModel { Message = _LocaLizer[SharedResourcesKey.ExistsName] };
 
             var user = new User
             {
@@ -73,7 +76,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             catch (Exception)
             {
 
-                return new AuthModel {Message = $"Error when send code to {user.PhoneNumber} ." };
+                return new AuthModel {Message = _LocaLizer[SharedResourcesKey.Error] };
             }
 
             user.ResetCode = otp;
@@ -83,7 +86,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 			//var roles = _roleManager.Roles.ToList();
 			await _userManager.AddToRoleAsync(user, "User");
             await _userManager.UpdateAsync(user);
-            return new AuthModel { Message = "User created success ... ", IsAuth = true };
+            return new AuthModel { Message = _LocaLizer[SharedResourcesKey.Created], IsAuth = true };
         }
 
         public async Task<string> ConfirmedPhoneAsync(ConfirmedPhoneModel model)
@@ -91,15 +94,15 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 			var user = await _userManager.Users.FirstOrDefaultAsync(o => o.PhoneNumber == model.Phone);
 
 			if (user == null)
-				return "Phone is incorrect";
+				return _LocaLizer[SharedResourcesKey.WrongPhoneNumber];
 			// Check if the provided code matches the saved code
 			if (model.Code != user.ResetCode || user.ResetCodeExpired)
 			{
-				return "Invalid code";
+				return _LocaLizer[SharedResourcesKey.WrongCode];
 			}
             user.PhoneNumberConfirmed = true;
 			await _userManager.UpdateAsync(user);
-			return "success";
+			return _LocaLizer[SharedResourcesKey.Success];
 
 
 		}
@@ -114,13 +117,13 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
                 !await _userManager.CheckPasswordAsync(user, model.Password))
                 
             {
-                authModel.Message = "PhoneNumber or Password is incorrect!";
+                authModel.Message = _LocaLizer[SharedResourcesKey.WrongPassword];
                 return authModel;
             } 
 
             if(user.PhoneNumberConfirmed == false)
             {
-                authModel.Message = "Phone Number Is Not Confirmed!";
+                authModel.Message = _LocaLizer[SharedResourcesKey.NotConfirmPhoneNumber];
                 return authModel;
             }
             
@@ -197,7 +200,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 
             if (user == null)
             {
-                authModel.Message = "Invalid token";
+                authModel.Message = _LocaLizer[SharedResourcesKey.WrongToken];
                 return authModel;
             }
 
@@ -205,7 +208,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 
             if (!existingRefreshToken.IsActive)
             {
-                authModel.Message = "Inactive token";
+                authModel.Message = _LocaLizer[SharedResourcesKey.WrongToken];
                 return authModel;
             }
 
@@ -253,7 +256,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             var user = await _userManager.Users.FirstOrDefaultAsync(o => o.PhoneNumber == model.Phone);
 
             if (user == null)
-                return "Phone is incorrect";
+                return _LocaLizer[SharedResourcesKey.WrongPhoneNumber];
 
             // Generate a random 6-digit code
             var code = GenerateRandomCode();
@@ -266,7 +269,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 
             // Send the code to the user's email
             _smsService.Send(user.PhoneNumber, code);
-            return "Code sent successfully";
+            return _LocaLizer[SharedResourcesKey.Success];
         }
 
         public async Task<AuthModel> ResetPasswordAsync(ResetPassModel model)
@@ -276,14 +279,14 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 
             if (user == null)
             {
-                authModel.Message = "phone is incorrect";
+                authModel.Message = _LocaLizer[SharedResourcesKey.WrongPhoneNumber];
                 return authModel;
             }
 
             // Check if the code has expired (assuming 5 minutes expiration)
             if (model.Code != user.ResetCode || user.ResetCodeExpired)
             {
-                authModel.Message = "Invalid Code";
+                authModel.Message = _LocaLizer[SharedResourcesKey.WrongCode];
                 return authModel;
             }
 
@@ -316,7 +319,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             var user = await _userManager.Users.FirstOrDefaultAsync(p=>p.PhoneNumber==model.Phone);
             if (user == null)
             {
-                return new AuthModel { Message = "Phone not found ... " };
+                return new AuthModel { Message = _LocaLizer[SharedResourcesKey.WrongPhoneNumber] };
             }
             // Decode the JWT token to get the user's email
             string userPhoneFromToken = DecodeJwtToken(model.Token);
@@ -324,13 +327,13 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             // Check if the decoded email matches the user's email
             if (userPhoneFromToken != user.PhoneNumber)
             {
-                return new AuthModel { Message = "Invalid token ... " };
+                return new AuthModel { Message = _LocaLizer[SharedResourcesKey.WrongToken] };
             }
 
 
             return user.PhoneNumberConfirmed
-                ? new AuthModel { Message = "Phone is confirmed", PhoneConfirmed = true }
-                : new AuthModel { Message = "Phone not confirmationed", PhoneConfirmed = false };
+                ? new AuthModel { Message = _LocaLizer[SharedResourcesKey.ConfirmPhoneNumber], PhoneConfirmed = true }
+                : new AuthModel { Message = _LocaLizer[SharedResourcesKey.NotConfirmPhoneNumber], PhoneConfirmed = false };
         }
 
         public async Task<AuthModel> LogoutAsync()

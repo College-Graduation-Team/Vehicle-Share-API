@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Globalization;
 using System.Text;
 using System.Text.Json.Serialization;
 using Vehicle_Share.Core.Repository.AuthRepo;
@@ -86,6 +89,30 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+#region LocaLization confgration
+
+    builder.Services.AddControllersWithViews();
+    builder.Services.AddLocalization(opt =>
+    {
+        opt.ResourcesPath = "";
+    });
+
+    builder.Services.Configure<RequestLocalizationOptions>(options =>
+    {
+        List<CultureInfo> supportedCultures = new List<CultureInfo>
+        {
+            new CultureInfo("en-US"),
+            new CultureInfo("ar-EG")
+        };
+
+        options.DefaultRequestCulture = new RequestCulture("ar-EG");
+        options.SupportedCultures = supportedCultures;
+        options.SupportedUICultures = supportedCultures;
+    });
+
+
+#endregion
+
 /*
   // Adding Authentication
 builder.Services.AddAuthentication(options =>
@@ -159,6 +186,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+#region LocaLization Mideware
+
+var options = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
+app.UseRequestLocalization(options.Value);
+
+#endregion
 
 app.UseCors(policyName: "CorsPolicy");
 app.UseStaticFiles(); // to upload image in wwwroot 

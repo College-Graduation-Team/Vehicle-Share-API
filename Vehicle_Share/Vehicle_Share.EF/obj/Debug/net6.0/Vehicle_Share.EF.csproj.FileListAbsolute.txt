@@ -104,3 +104,5 @@ D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\obj\Debug\net6.0\Vehicle_Share.EF.s
 D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\obj\Debug\net6.0\Vehicle_Share.EF.csproj.CopyComplete
 D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\obj\Debug\net6.0\Vehicle_Share.EF.genruntimeconfig.cache
 D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\obj\Debug\net6.0\ref\Vehicle_Share.EF.dll
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\bin\Debug\net6.0\Ar\Vehicle_Share.Core.resources.dll
+D:\desk\Final\Vehicle_Share\Vehicle_Share.EF\bin\Debug\net6.0\En\Vehicle_Share.Core.resources.dll
