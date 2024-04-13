@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Vehicle_Share.Core.Models.TripModels;
 using Vehicle_Share.Service.TripService;
@@ -11,111 +10,112 @@ namespace Vehicle_Share.API.Controllers
     [Authorize]
     public class TripController : ControllerBase
     {
-        private readonly ITripServ _repo;
+        private readonly ITripServ _service;
 
-        public TripController(ITripServ repo)
+        public TripController(ITripServ service)
         {
-            _repo = repo;
+            _service = service;
         }
-        [HttpGet("Read-by-id/{id}")]
-        public async Task<IActionResult> GetByIdAsync([FromRoute] string id)
-        {
-            var result = await _repo.GetByIdAsync(id);
-            if (result.IsSuccess)
-                return Ok(new { result.Data });
 
-            return BadRequest(new { result.ErrorMesssage });
-        }
-        [HttpGet("Read-AllTrip")]
-        public async Task<IActionResult> GetAllAsync()
+        [HttpGet("{id?}")]
+        public async Task<IActionResult> GetByIdAsync([FromRoute] string? id)
         {
-
-            var result = await _repo.GetAllForUserAsync();
+            if (id == null) {
+                var result = await _service.GetAllForUserAsync();
                 if (result.IsSuccess)
                     return Ok(new { result.Data });
 
-            return BadRequest(new { result.ErrorMesssage });
+                return BadRequest(new { result.ErrorMesssage });
+            } else {
+                var result = await _service.GetByIdAsync(id);
+                if (result.IsSuccess)
+                    return Ok(new { result.Data });
+
+                return BadRequest(new { result.ErrorMesssage });
+            }
         }
-        [HttpGet("Read-AllTrip-Driver")]
+        
+        [HttpGet("driver")]
         public async Task<IActionResult> GetAllDriverTripAsync()
         {
-
-            var result = await _repo.GetAllDriverTripAsync();
+            var result = await _service.GetAllDriverTripAsync();
             if (result.IsSuccess)
                 return Ok(new { result.Data });
 
             return BadRequest(new { result.ErrorMesssage });
         }
-        [HttpGet("Read-AllTrip-Passenger")]
+
+        [HttpGet("passenger")]
         public async Task<IActionResult> GetAllPassengerTripAsync()
         {
 
-            var result = await _repo.GetAllPassengerTripAsync();
+            var result = await _service.GetAllPassengerTripAsync();
             if (result.IsSuccess)
                 return Ok(new { result.Data });
 
             return BadRequest(new { result.ErrorMesssage });
         }
 
-        [HttpPost("Add-Trip-Driver")] // driver add trip 
+        [HttpPost("driver")] // driver add trip 
         public async Task<IActionResult> AddTripAsync([FromBody] TripDriverModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var result = await _repo.AddAsync(model);
+            var result = await _service.AddAsync(model);
             if (result.IsSuccess)
                 return Ok(new { result.Messsage });
 
             return BadRequest(new { result.Messsage });
         }
-        [HttpPost("Add-Trip-Passenger")] //passenger add trip
+
+        [HttpPost("passenger")] //passenger add trip
         public async Task<IActionResult> AddTripAsync([FromBody] TripPassengerModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var result = await _repo.AddAsync(model);
+            var result = await _service.AddAsync(model);
             if (result.IsSuccess)
                 return Ok(new { result.Messsage });
 
             return BadRequest(new { result.Messsage });
         }
 
-        [HttpPost("Update-Trip-Driver/{id}")] //update for driver
-        public async Task<IActionResult> UpdataTripAsync(string id, [FromForm] TripDriverModel model)
+        [HttpPut("driver/{id}")] //update for driver
+        public async Task<IActionResult> UpdataTripAsync([FromRoute] string id, [FromForm] TripDriverModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _repo.UpdateAsync(id, model);
+            var result = await _service.UpdateAsync(id, model);
             if (result.IsSuccess)
                 return Ok(new { result.Messsage });
 
             return BadRequest(new { result.Messsage });
         }
-      
-        [HttpPost("Update-Trip-Passenger/{id}")]//update for Passenger
-        public async Task<IActionResult> UpdataTripAsync(string id, [FromForm] TripPassengerModel model)
+
+        [HttpPut("passenger/{id}")]//update for Passenger
+        public async Task<IActionResult> UpdataTripAsync([FromRoute] string id, [FromForm] TripPassengerModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _repo.UpdateAsync(id, model);
+            var result = await _service.UpdateAsync(id, model);
             if (result.IsSuccess)
                 return Ok(new { result.Messsage });
 
             return BadRequest(new { result.Messsage });
         }
-        [HttpPost("Delete-Trip/{id}")]
+        
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTripAsync([FromRoute] string id)
         {
-            var result = await _repo.DeleteAsync(id);
+            var result = await _service.DeleteAsync(id);
             if (result > 0)
                 return Ok(result);
 
             return BadRequest(result);
         }
 
-       
     }
 }
 

@@ -1,11 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Vehicle_Share.EF.Data;
-using Vehicle_Share.EF.Models;
 
 namespace Vehicle_Share.EF.Helper
 {

@@ -8,7 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Globalization;
 using System.Text;
-using System.Text.Json.Serialization;
 using Vehicle_Share.Core.Repository.AuthRepo;
 using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Repository.SendOTP;
@@ -39,20 +38,20 @@ builder.Services.Configure<JWT>(builder.Configuration.GetSection(nameof(JWT)));
 
 // add connection to db and inject identity .
 builder.Services.AddDbContext<ApplicationDbContext>(
-    option => option.UseSqlServer("Data Source=.;Initial Catalog=VehicleSharing;Integrated Security=True"));
-    //option => option.UseSqlServer("Server=localhost;Database=VehicleSharing;User Id=sa;Password=Hemakress-123"));
+    // option => option.UseSqlServer("Data Source=.;Initial Catalog=VehicleSharing;Integrated Security=True"));
+    option => option.UseSqlServer("Server=localhost;Database=VehicleSharing;User Id=sa;Password=Hemakress-123"));
 builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
 // inject Repository
-builder.Services.AddScoped <IAuthRepo , AuthRepo>();
-builder.Services.AddScoped (typeof(IBaseRepo<>) , typeof( BaseRepo<>));
-builder.Services.AddScoped <IUserDataServ , UserDataServ>();
-builder.Services.AddScoped <ICarServ , CarServ>();
-builder.Services.AddScoped <ILicServ , LicServ>();
-builder.Services.AddScoped <ITripServ , TripServ>();
-builder.Services.AddScoped <IRequestServ , RequestServ>();
+builder.Services.AddScoped<IAuthRepo, AuthRepo>();
+builder.Services.AddScoped(typeof(IBaseRepo<>), typeof(BaseRepo<>));
+builder.Services.AddScoped<IUserDataServ, UserDataServ>();
+builder.Services.AddScoped<ICarServ, CarServ>();
+builder.Services.AddScoped<ILicServ, LicServ>();
+builder.Services.AddScoped<ITripServ, TripServ>();
+builder.Services.AddScoped<IRequestServ, RequestServ>();
 
-builder. Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 // Or you can also register as follows
 builder.Services.AddHttpContextAccessor();
 
@@ -91,24 +90,24 @@ builder.Services.AddAuthentication(options =>
 
 #region LocaLization confgration
 
-    builder.Services.AddControllersWithViews();
-    builder.Services.AddLocalization(opt =>
-    {
-        opt.ResourcesPath = "";
-    });
+builder.Services.AddControllersWithViews();
+builder.Services.AddLocalization(opt =>
+{
+    opt.ResourcesPath = "";
+});
 
-    builder.Services.Configure<RequestLocalizationOptions>(options =>
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    List<CultureInfo> supportedCultures = new List<CultureInfo>
     {
-        List<CultureInfo> supportedCultures = new List<CultureInfo>
-        {
             new CultureInfo("en-US"),
             new CultureInfo("ar-EG")
-        };
+    };
 
-        options.DefaultRequestCulture = new RequestCulture("ar-EG");
-        options.SupportedCultures = supportedCultures;
-        options.SupportedUICultures = supportedCultures;
-    });
+    options.DefaultRequestCulture = new RequestCulture("ar-EG");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+});
 
 
 #endregion
@@ -203,4 +202,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-    
+

@@ -6,10 +6,10 @@ namespace Vehicle_Share.Core.Models.TripModels
     {
         [Required]
         [MaxLength(50, ErrorMessage = "the length is 50 char ")]
-        public string From { get; set; }
+        public string? From { get; set; }
         [Required]
         [MaxLength(50, ErrorMessage = "the length is 50 char ")]
-        public string To { get; set; }
+        public string? To { get; set; }
         [Required]
         public DateTime Date { get; set; }
         [Required]

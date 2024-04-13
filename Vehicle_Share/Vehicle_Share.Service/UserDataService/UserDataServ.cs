@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
 using System.Security.Claims;
-using Twilio.Rest.Api.V2010.Account.AvailablePhoneNumberCountry;
-using Vehicle_Share.Core.Models.LicModels;
-using Vehicle_Share.Core.Models.TripModels;
 using Vehicle_Share.Core.Models.UserData;
 using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Response;
@@ -34,9 +31,9 @@ namespace Vehicle_Share.Service.UserDataService
             if (userData is null)
                 return new ResponseForOneModel<GetUserModel> { ErrorMesssage = " User Data Not Found . " };
 
-            if (userData.Birthdata == null)
-                userData.Birthdata = DateTime.UtcNow;//DateTime.Parse ("2013-10-01 13:45:01");
-            var age = CalculateAge(userData.Birthdata, DateTime.UtcNow);
+            if (userData.Birthdate == null)
+                userData.Birthdate = DateTime.UtcNow;//DateTime.Parse ("2013-10-01 13:45:01");
+            var age = CalculateAge(userData.Birthdate, DateTime.UtcNow);
 
             var result = new ResponseForOneModel<GetUserModel>()
             {
@@ -65,70 +62,70 @@ namespace Vehicle_Share.Service.UserDataService
             var userId = _httpContextAccessor.HttpContext.User.FindFirstValue("uid");
 
             if (userId is null)
-                return new ResponseModel {Messsage= "user not Autherize" };
+                return new ResponseModel { Messsage = "user not Autherize" };
 
             var userData = await _userData.FindAsync(e => e.UserId == userId);
             if (userData is not null)
                 return new ResponseModel { Messsage = " you added data before . " };
 
-            var NationalcardImgFront = await ProcessImageFile("User",model.NationalCardImageFront);
-            var NationalcardImgBack = await ProcessImageFile("User",model.NationalCardImageBack);
-            var ProfileImg = await ProcessImageFile("User",model.ProfileImage);
+            var NationalcardImgFront = await ProcessImageFile("User", model.NationalCardImageFront);
+            var NationalcardImgBack = await ProcessImageFile("User", model.NationalCardImageBack);
+            var ProfileImg = await ProcessImageFile("User", model.ProfileImage);
 
-            var IsNationlIdExist =await _userData.FindAsync(e=>e.NationailId==model.NationailId);
+            var IsNationlIdExist = await _userData.FindAsync(e => e.NationailId == model.NationailId);
 
-            if (IsNationlIdExist is not null )
+            if (IsNationlIdExist is not null)
             {
                 return new ResponseModel { Messsage = " National ID already exists . " };
             }
 
             UserData user = new UserData
             {
-                Id= Guid.NewGuid().ToString(),
-                Name=model.Name ,
-                NationailId =model.NationailId,
-                Address=model.Address,
-                Nationality=model.Nationality,
+                Id = Guid.NewGuid().ToString(),
+                Name = model.Name,
+                NationailId = model.NationailId,
+                Address = model.Address,
+                Nationality = model.Nationality,
                 NationalCardImageFront = NationalcardImgFront,
                 NationalCardImageBack = NationalcardImgBack,
-                ProfileImage= ProfileImg,
-                UserId= userId,
-                Type=model.Type
-                
+                ProfileImage = ProfileImg,
+                UserId = userId,
+                Type = model.Type
+
 
             };
 
             await _userData.AddAsync(user);
             return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
         }
-        public async Task<ResponseModel> UpdateAsync(string id ,UserDataModel model)
-        {  
+        public async Task<ResponseModel> UpdateAsync(string id, UserDataModel model)
+        {
             var user = await _userData.GetByIdAsync(id);
             if (user == null) return new ResponseModel { Messsage = "User not found . " };
 
-                 user.Name = model.Name;
-                 user.Nationality = model.Nationality;
-                 user.NationailId = model.NationailId;
-                 user.Address = model.Address;
-                 user.Type = model.Type;
+            user.Name = model.Name;
+            user.Nationality = model.Nationality;
+            user.NationailId = model.NationailId;
+            user.Address = model.Address;
+            user.Type = model.Type;
 
-                // updata the image 
-                 await RemoveImageFile(user.NationalCardImageFront);
-                 user.NationalCardImageFront = await ProcessImageFile("User", model.NationalCardImageFront);
-            
-                 await RemoveImageFile(user.NationalCardImageBack);
-                 user.NationalCardImageBack = await ProcessImageFile("User", model.NationalCardImageBack);
-          
-                 await RemoveImageFile(user.ProfileImage);
-                 user.ProfileImage = await ProcessImageFile("User", model.ProfileImage);
-           
+            // updata the image 
+            await RemoveImageFile(user.NationalCardImageFront);
+            user.NationalCardImageFront = await ProcessImageFile("User", model.NationalCardImageFront);
+
+            await RemoveImageFile(user.NationalCardImageBack);
+            user.NationalCardImageBack = await ProcessImageFile("User", model.NationalCardImageBack);
+
+            await RemoveImageFile(user.ProfileImage);
+            user.ProfileImage = await ProcessImageFile("User", model.ProfileImage);
+
 
             await _userData.UpdateAsync(user);
 
             return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
 
         }
-        private async Task< string> ProcessImageFile(string folder,IFormFile file)
+        private async Task<string> ProcessImageFile(string folder, IFormFile file)
         {
             var req = _httpContextAccessor.HttpContext.Request;
             var baseUrl = req.Scheme + "://" + req.Host;

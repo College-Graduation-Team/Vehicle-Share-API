@@ -8,12 +8,12 @@ namespace Vehicle_Share.EF.Models
     public class UserData
     {
         [Key]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
 
         [Required(ErrorMessage = "FullName is required.")]
         [MaxLength(100)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
 
         [Required(ErrorMessage = "Nationail ID is required.")]
@@ -21,39 +21,39 @@ namespace Vehicle_Share.EF.Models
         public long NationailId { get; set; }
 
 
-        public DateTime Birthdata { get; set; }
+        public DateTime Birthdate { get; set; }
 
 
-        public  bool Gender { get; set; }
+        public bool Gender { get; set; }
 
 
 
         [Required(ErrorMessage = "Nationality is required.")]
         [MaxLength(50)]
-        public  string Nationality { get; set; }
+        public string? Nationality { get; set; }
 
 
 
         [Required(ErrorMessage = "Address is required.")]
         [MaxLength(200, ErrorMessage = "Address cannot exceed 200 characters.")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public string NationalCardImageFront { get; set; }
+        public string? NationalCardImageFront { get; set; }
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public string NationalCardImageBack { get; set; }
+        public string? NationalCardImageBack { get; set; }
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public string ProfileImage { get; set; }
+        public string? ProfileImage { get; set; }
 
         public bool Type { get; set; }    // driver of passenger
         // relation 
-        public String UserId { get; set; }
+        public string? UserId { get; set; }
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public User? User { get; set; }
     }
 }

@@ -10,7 +10,7 @@ using static Vehicle_Share.EF.Helper.StatusContainer;
 namespace Vehicle_Share.Service.RequestService
 {
     public class RequestServ : IRequestServ
-    { 
+    {
         private readonly IBaseRepo<UserData> _userdata;
         private readonly IBaseRepo<Trip> _trip;
         private readonly IBaseRepo<Request> _request;
@@ -43,7 +43,7 @@ namespace Vehicle_Share.Service.RequestService
                 {
                     Id = request.Id,
                     Status = request.Status.ToString(),
-                    tripId = request.TripId,
+                    TripId = request.TripId,
                     UserDataId = request.UserDataId
                 });
             }
@@ -70,14 +70,14 @@ namespace Vehicle_Share.Service.RequestService
                 result.Data?.Add(new GetReqModel
                 {
                     Id = request.Id,
-                    Status=request.Status.ToString(),
-                    tripId=request.TripId,
-                    UserDataId=request.UserDataId
+                    Status = request.Status.ToString(),
+                    TripId = request.TripId,
+                    UserDataId = request.UserDataId
                 }
 
                 );
             };
-            result.IsSuccess=true;
+            result.IsSuccess = true;
             return result;
         }
         public async Task<ResponseModel> SendReqestAsync(ReqModel model)
@@ -92,7 +92,7 @@ namespace Vehicle_Share.Service.RequestService
 
             // Find the trip associated with the request
             var trip = await _trip.FindAsync(e => e.Id == model.TripId);
-            if ( trip is null || trip.IsFinished )
+            if (trip is null || trip.IsFinished)
                 return new ResponseModel { Messsage = "Trip not found or finished" };
 
             // Check if the user who added the trip is trying to make a request for the same trip
@@ -104,12 +104,13 @@ namespace Vehicle_Share.Service.RequestService
             if (userData.Type is true) //driver
                 request.Seats = 0;
             else
-            {  if(model.NumSeats>trip.AvailableSeats)                      //Passenger
+            {
+                if (model.Seats > trip.AvailableSeats)                      //Passenger
                     return new ResponseModel { Messsage = "You enter invalid value . " };
-                request.Seats = model.NumSeats;
+                request.Seats = model.Seats;
             }
-              
-            if (request.UserDataId== userData.Id)
+
+            if (request.UserDataId == userData.Id)
             {
                 return new ResponseModel { Messsage = "You already send request before ." };
             }
@@ -137,7 +138,7 @@ namespace Vehicle_Share.Service.RequestService
                 return new ResponseModel { Messsage = "Request not found" };
             }
 
-            var trip = await _trip.FindAsync(e => e.Id ==request.TripId);
+            var trip = await _trip.FindAsync(e => e.Id == request.TripId);
             if (trip is null || trip.IsFinished)
                 return new ResponseModel { Messsage = "Trip not found or finished" };
 
@@ -155,7 +156,7 @@ namespace Vehicle_Share.Service.RequestService
 
             }
 
-            return new ResponseModel { Messsage = "Request accepted successfully" , IsSuccess=true };
+            return new ResponseModel { Messsage = "Request accepted successfully", IsSuccess = true };
         }
         public async Task<ResponseModel> DenyRequestAsync(string requestId)
         {
@@ -165,11 +166,11 @@ namespace Vehicle_Share.Service.RequestService
                 return new ResponseModel { Messsage = "Request not found" };
             }
             // Mark the request as denied
-            request.Status =Status.Refused;
+            request.Status = Status.Refused;
             // Update the request in the database
             await _request.UpdateAsync(request);
 
-            return new ResponseModel { Messsage = "Request denied successfully" , IsSuccess=true };
+            return new ResponseModel { Messsage = "Request denied successfully", IsSuccess = true };
         }
         public async Task<int> DeleteRequestAsync(string requestId)
         {
@@ -180,7 +181,7 @@ namespace Vehicle_Share.Service.RequestService
             {
                 return 0;
             }
-            var result =await _request.DeleteAsync(request);
+            var result = await _request.DeleteAsync(request);
 
             return result;
         }

@@ -7,20 +7,20 @@ namespace Vehicle_Share.EF.Models
     public class Request
     {
         [Key]
-        public string Id { get; set; }
+        public string? Id { get; set; }
         public Status Status { get; set; }
         public short Seats { get; set; }
 
 
         //relation  
         // user and trip
-        public string UserDataId { get; set; }
+        public string? UserDataId { get; set; }
         [ForeignKey("UserDataId")]
-        public UserData UserData { get; set; }
+        public UserData? UserData { get; set; }
 
-         ///Relation with Trip
-        public string TripId { get; set; }
+        ///Relation with Trip
+        public string? TripId { get; set; }
         [ForeignKey("TripId")]
-        public Trip Trip { get; set; }
+        public Trip? Trip { get; set; }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Vehicle_Share.Core.Models.CarModels;
 using Vehicle_Share.Core.Models.UserData;
 using Vehicle_Share.Service.UserDataService;
 
@@ -12,46 +10,52 @@ namespace Vehicle_Share.API.Controllers
     [Authorize]
     public class UserDataController : ControllerBase
     {
-        private readonly IUserDataServ _repo;
+        private readonly IUserDataServ _service;
 
-        public UserDataController(IUserDataServ repo)
+        public UserDataController(IUserDataServ service)
         {
-            _repo = repo;
+            _service = service;
         }
 
-        [HttpGet("Read-UserData")]
+        [HttpGet]
         public async Task<IActionResult> GetUserDataAsync()
         {
-            var result = await _repo.GetUserDataAsync();
+            var result = await _service.GetUserDataAsync();
             if (result.IsSuccess)
                 return Ok(new { result.Data });
 
             return BadRequest(new { result.ErrorMesssage });
         }
 
-        [HttpPost("Add-UserData")]
+        [HttpPost]
         public async Task<IActionResult> AddUserDataAsync([FromForm] UserDataModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var result = await _repo.AddAsync(model);
+            var result = await _service.AddAsync(model);
             if (result.IsSuccess)
                 return Ok(new { result.Messsage });
 
             return BadRequest(new { result.Messsage });
         }
 
-        [HttpPost("Update-UserData-{id}")]
-        public async Task<IActionResult> UpdataUserDataAsync(string id,[FromForm] UserDataModel model)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdataUserDataAsync([FromForm] string id, [FromForm] UserDataModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _repo.UpdateAsync(id,model);
+            var result = await _service.UpdateAsync(id, model);
             if (result.IsSuccess)
                 return Ok(new { result.Messsage });
 
             return BadRequest(new { result.Messsage });
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUserDataAsync([FromForm] string id)
+        {
+            return BadRequest(new { Message = $"Not implemented yet! id: {id}" });
         }
 
     }

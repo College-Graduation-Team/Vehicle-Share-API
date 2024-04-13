@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Vehicle_Share.Core.SharedResources
+﻿namespace Vehicle_Share.Core.SharedResources
 {
     public static class SharedResourcesKey
     {

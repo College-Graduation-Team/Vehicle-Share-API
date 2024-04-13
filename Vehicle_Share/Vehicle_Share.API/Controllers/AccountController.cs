@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Vehicle_Share.Core.Models.AuthModels;
 using Vehicle_Share.Core.Repository.AuthRepo;
 
@@ -10,10 +9,12 @@ namespace Vehicle_Share.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAuthRepo _autherRepo;
+
         public AccountController(IAuthRepo autherServ)
         {
             _autherRepo = autherServ;
         }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
@@ -26,16 +27,16 @@ namespace Vehicle_Share.API.Controllers
             return Ok(new { result.Message });
         }
 
-		[HttpPost("Confirm-Phone")]
-		public async Task<IActionResult> ConfirmedPhoneAsync(ConfirmedPhoneModel model)
-		{
-			if (!ModelState.IsValid)
-				return BadRequest(ModelState);
-			var result = await _autherRepo.ConfirmedPhoneAsync(model);
-			return Ok(result);
-		}
+        [HttpPost("confirm-phone")]
+        public async Task<IActionResult> ConfirmedPhoneAsync(ConfirmedPhoneModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var result = await _autherRepo.ConfirmedPhoneAsync(model);
+            return Ok(result);
+        }
 
-		[HttpPost("login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             if (!ModelState.IsValid)
@@ -46,18 +47,18 @@ namespace Vehicle_Share.API.Controllers
             return Ok(new { result.Token, result.TokenExpiration, result.RefreshToken, result.RefreshTokenExpiration, result.PhoneConfirmed });
         }
 
-        [HttpPost("RefreshToken")]
+        [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var result = await _autherRepo.RefreshTokenAsync(model); 
+            var result = await _autherRepo.RefreshTokenAsync(model);
             if (!result.IsAuth)
                 return BadRequest(result.Message);
             return Ok(result);
         }
 
-        [HttpPost("Send-Code")] //  resend code 
+        [HttpPost("send-code")] //  resend code 
         public async Task<IActionResult> SendCodeAsync([FromBody] SendCodeModel model)
         {
             if (!ModelState.IsValid)
@@ -68,7 +69,7 @@ namespace Vehicle_Share.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("Reset-Password")] // for reset password 
+        [HttpPost("reset-password")] // for reset password 
         public async Task<IActionResult> ResetPasswordAsync(ResetPassModel model)
         {
             if (!ModelState.IsValid)
@@ -79,7 +80,8 @@ namespace Vehicle_Share.API.Controllers
             return Ok(result.Message);
 
         }
-        [HttpPost("Phone-Is-Confimed")]
+        
+        [HttpPost("phone-is-confimed")]
         public async Task<IActionResult> IsPhoneConfirmedAsync([FromBody] PhoneModel model)
         {
             if (!ModelState.IsValid)
@@ -89,7 +91,8 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(" Phone is not Confirm  ...");
             return Ok((new { result.PhoneConfirmed, result.Message }));
         }
-        [HttpPost("Logout")]
+
+        [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
 

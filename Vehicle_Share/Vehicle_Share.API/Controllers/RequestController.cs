@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Vehicle_Share.Core.Models.RequestModels;
-using Vehicle_Share.Core.Models.TripModels;
 using Vehicle_Share.Service.RequestService;
-using Vehicle_Share.Service.TripService;
 
 namespace Vehicle_Share.API.Controllers
 {
@@ -11,81 +8,78 @@ namespace Vehicle_Share.API.Controllers
     [ApiController]
     public class RequestController : ControllerBase
     {
-        private readonly IRequestServ _repo;
+        private readonly IRequestServ _service;
 
-        public RequestController(IRequestServ repo)
+        public RequestController(IRequestServ service)
         {
-            _repo = repo;
+            _service = service;
         }
 
-        [HttpGet("Read-All-Requests-trip/{id}")]
-        public async Task<IActionResult> GetAllTripRequestedAsync(string id)
+        [HttpGet("{id?}")]
+        public async Task<IActionResult> GetAllTripRequestedAsync([FromRoute] string? id)
         {
-            var result = await _repo.GetAllTripRequestedAsync(id);
-            if (result.IsSuccess)
-                return Ok(new { result.Data });
+            if (id == null) {
+                var result = await _service.GetAllMyRequestAsync();
+                if (result.IsSuccess)
+                    return Ok(new { result.Data });
 
-            return BadRequest(new { result.ErrorMesssage });
+                return BadRequest(new { result.ErrorMesssage });
+            } else {
+                var result = await _service.GetAllTripRequestedAsync(id);
+                if (result.IsSuccess)
+                    return Ok(new { result.Data });
+
+                return BadRequest(new { result.ErrorMesssage });
+            }
         }
 
-        [HttpGet("Read-All-MyRequest")]
-        public async Task<IActionResult> GetAllAsync()
-        {
-            var result = await _repo.GetAllMyRequestAsync();
-            if (result.IsSuccess)
-                return Ok(new { result.Data });
-
-            return BadRequest(new { result.ErrorMesssage });
-        }
-
-        [HttpPost("Send-Request")]
+        [HttpPost]
         public async Task<IActionResult> SendReqestAsync([FromBody] ReqModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var result = await _repo.SendReqestAsync(model);
+            var result = await _service.SendReqestAsync(model);
             if (result.IsSuccess)
                 return Ok(new { result.Messsage });
 
             return BadRequest(new { result.Messsage });
         }
-       
-        [HttpPost("Accept-Request/{id}")]
+
+        [HttpPost("accept/{id}")]
         public async Task<IActionResult> AcceptReqestAsync([FromRoute] string id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var result = await _repo.AcceptRequestAsync(id);
+            var result = await _service.AcceptRequestAsync(id);
             if (result.IsSuccess)
                 return Ok(new { result.Messsage });
 
             return BadRequest(new { result.Messsage });
         }
-       
-        [HttpPost("Deny-Request/{id}")]
+
+        [HttpPost("decline/{id}")]
         public async Task<IActionResult> DenyReqestAsync([FromRoute] string id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var result = await _repo.DenyRequestAsync(id);
+            var result = await _service.DenyRequestAsync(id);
             if (result.IsSuccess)
                 return Ok(new { result.Messsage });
 
             return BadRequest(new { result.Messsage });
         }
-        
-        [HttpPost("Delete-Request/{id}")]
-        public async Task<IActionResult> DeleteReqestAsync([FromRoute]string id)
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteReqestAsync([FromRoute] string id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var result = await _repo.DeleteRequestAsync(id);
+            var result = await _service.DeleteRequestAsync(id);
             if (result > 0)
                 return Ok(result);
 
             return BadRequest(result);
         }
 
-       
     }
 }

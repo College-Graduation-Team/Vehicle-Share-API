@@ -1,9 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using Vehicle_Share.Core.Repository.SendOTP;
@@ -11,7 +6,7 @@ using Vehicle_Share.EF.Helper;
 
 namespace Vehicle_Share.EF.ImpRepo.SendOTPImplement
 {
-	public class SendOTP : ISendOTP
+    public class SendOTP : ISendOTP
 	{
 		private readonly TwilioSettings _twilio;
 
@@ -20,7 +15,7 @@ namespace Vehicle_Share.EF.ImpRepo.SendOTPImplement
 			_twilio = twilio.Value;
 		}
 
-		public MessageResource Send(string mobileNumber , string otp)
+		public MessageResource Send(string mobileNumber, string otp)
 		{
 			TwilioClient.Init(_twilio.AccountSID, _twilio.AuthToken);
 			var message = $"This is Verification Code: {otp}";
@@ -30,8 +25,8 @@ namespace Vehicle_Share.EF.ImpRepo.SendOTPImplement
 					to: mobileNumber
 				);
 			return result;
-          
 
-        }
+
+		}
 	}
 }

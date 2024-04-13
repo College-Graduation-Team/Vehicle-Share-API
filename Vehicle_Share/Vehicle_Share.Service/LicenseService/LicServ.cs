@@ -5,9 +5,7 @@ using Vehicle_Share.EF.Models;
 using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Models.LicModels;
 using System.Security.Claims;
-using Vehicle_Share.Core.Models.CarModels;
 using Vehicle_Share.Core.Response;
-using Vehicle_Share.Core.Models.UserData;
 
 namespace Vehicle_Share.Service.LicenseService
 {
@@ -27,22 +25,22 @@ namespace Vehicle_Share.Service.LicenseService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseForOneModel<GetLicModel> { ErrorMesssage=" User Not Authorize . "};
+                return new ResponseForOneModel<GetLicModel> { ErrorMesssage = " User Not Authorize . " };
 
             var userData = await _user.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseForOneModel<GetLicModel> { ErrorMesssage = " User Data Not Found . " };
-            
 
-            var Lic= await _Lic.FindAsync(e => e.UserDataId == userData.Id);
+
+            var Lic = await _Lic.FindAsync(e => e.UserDataId == userData.Id);
             var result = new ResponseForOneModel<GetLicModel>()
             {
                 Data = new GetLicModel
                 {
                     Id = Lic.Id,
-                    ImageFront=Lic.ImageFront,
-                    ImageBack=Lic.ImageBack,
-                    Expiration=Lic.Expiration
+                    ImageFront = Lic.ImageFront,
+                    ImageBack = Lic.ImageBack,
+                    Expiration = Lic.Expiration
                 },
                 IsSuccess = true
             };
@@ -64,10 +62,10 @@ namespace Vehicle_Share.Service.LicenseService
 
             License user = new License
             {
-               Id=Guid.NewGuid().ToString(),          
-               ImageFront=LicFront,
-               ImageBack=LicBack,  
-               Expiration=model.Expiration,
+                Id = Guid.NewGuid().ToString(),
+                ImageFront = LicFront,
+                ImageBack = LicBack,
+                Expiration = model.Expiration,
                 UserDataId = userData.Id
             };
 
@@ -84,7 +82,7 @@ namespace Vehicle_Share.Service.LicenseService
             lic.Expiration = model.Expiration;
 
             // updata the image 
-         
+
 
             await RemoveImageFile(lic.ImageBack);
             lic.ImageBack = await ProcessImageFile("License", model.ImageBack);
@@ -97,7 +95,7 @@ namespace Vehicle_Share.Service.LicenseService
 
             return new ResponseModel { Messsage = "License updated successfully", IsSuccess = true };
         }
-        public async Task <int> DeleteAsync(string id)
+        public async Task<int> DeleteAsync(string id)
         {
             if (id is null)
                 return 0;

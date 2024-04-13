@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vehicle_Share.Core.Models.AuthModels;
+﻿using Vehicle_Share.Core.Models.AuthModels;
 
 namespace Vehicle_Share.Core.Repository.AuthRepo
 {
@@ -11,7 +6,7 @@ namespace Vehicle_Share.Core.Repository.AuthRepo
     {
         Task<AuthModel> RegisterAsync(RegisterModel model);
         Task<AuthModel> LoginAsync(LoginModel model);
-		Task<string> ConfirmedPhoneAsync(ConfirmedPhoneModel model);
+        Task<string> ConfirmedPhoneAsync(ConfirmedPhoneModel model);
         Task<string> AddRoleAsync(RoleModel model);
         Task<AuthModel> RefreshTokenAsync(RefreshTokenModel model);
         Task<string> SendCodeAsync(SendCodeModel model);

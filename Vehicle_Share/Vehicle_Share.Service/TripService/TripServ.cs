@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
 
 using Vehicle_Share.Core.Models.TripModels;
@@ -100,7 +99,7 @@ namespace Vehicle_Share.Service.TripService
                     CarId = trip.CarId,
                 });
             }
-            
+
             result.IsSuccess = true;
             return result;
         }
@@ -145,7 +144,7 @@ namespace Vehicle_Share.Service.TripService
                 }
                 result.IsSuccess = true;
             }
-                return result;
+            return result;
         }
         public async Task<GenResponseModel<GetTripPassengerModel>> GetAllPassengerTripAsync()
         {
@@ -175,14 +174,14 @@ namespace Vehicle_Share.Service.TripService
                         Date = trip.Date,
                         RecommendPrice = trip.RecommendPrice,
                         RequestedSeats = trip.RequestedSeats.Value,
-                        Isfinished = trip.IsFinished
+                        IsFinished = trip.IsFinished
                     });
-                
+
             }
             result.IsSuccess = true;
             return result;
         }
-      
+
         public async Task<ResponseModel> AddAsync(TripDriverModel model)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
@@ -192,32 +191,32 @@ namespace Vehicle_Share.Service.TripService
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseModel { Messsage = "User not found" };
-          
+
             if (userData.Type is false) // Driver
                 return new ResponseModel { Messsage = "You are not driver " };
-            if(string.IsNullOrEmpty(model.CarId))
+            if (string.IsNullOrEmpty(model.CarId))
                 return new ResponseModel { Messsage = "You must add car before make trip" };
 
             Trip trip = new()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    From = model.From,
-                    To = model.To,
-                    Date = model.Date,
-                    AvailableSeats = model.AvailableSeats,
-                    RecommendPrice = model.RecommendPrice,
+            {
+                Id = Guid.NewGuid().ToString(),
+                From = model.From,
+                To = model.To,
+                Date = model.Date,
+                AvailableSeats = model.AvailableSeats,
+                RecommendPrice = model.RecommendPrice,
 
-                    // Relation
-                    UserDataId = userData.Id,
-                    CarId = model.CarId
-                };
+                // Relation
+                UserDataId = userData.Id,
+                CarId = model.CarId
+            };
 
-                await _trip.AddAsync(trip);
-            
-           
-            return new ResponseModel { Messsage = " Trip add successfully " , IsSuccess=true };
+            await _trip.AddAsync(trip);
+
+
+            return new ResponseModel { Messsage = " Trip add successfully ", IsSuccess = true };
         }
-        
+
         public async Task<ResponseModel> AddAsync(TripPassengerModel model)
         {
             var userId = _httpContextAccessor.HttpContext.User.FindFirstValue("uid");
@@ -273,8 +272,8 @@ namespace Vehicle_Share.Service.TripService
             trip.AvailableSeats = model.AvailableSeats;
             trip.RecommendPrice = model.RecommendPrice;
             trip.CarId = model.CarId;
-            
-            return  new ResponseModel { Messsage = "Trip updated successfully", IsSuccess = true };
+
+            return new ResponseModel { Messsage = "Trip updated successfully", IsSuccess = true };
         }
 
         public async Task<ResponseModel> UpdateAsync(string id, TripPassengerModel model)
@@ -300,7 +299,7 @@ namespace Vehicle_Share.Service.TripService
 
             /////////////////////////////////////////////////////////////
 
-            return new ResponseModel { Messsage = "Trip updated successfully" , IsSuccess = true };
+            return new ResponseModel { Messsage = "Trip updated successfully", IsSuccess = true };
         }
 
         public async Task<int> DeleteAsync(string id)

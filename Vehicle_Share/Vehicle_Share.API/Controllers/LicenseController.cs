@@ -9,24 +9,24 @@ namespace Vehicle_Share.API.Controllers
     public class LicenseController : ControllerBase
     {
 
-        private readonly ILicServ _repo;
+        private readonly ILicServ _service;
 
-        public LicenseController(ILicServ repo)
+        public LicenseController(ILicServ service)
         {
-            _repo = repo;
+            _service = service;
         }
-      
-        [HttpGet("Read-License")]  //get from user and userdata 
+
+        [HttpGet]  //get from user and userdata 
         public async Task<IActionResult> GetAllAsync()
         {
-            var result = await _repo.GetAsync();
+            var result = await _service.GetAsync();
             if (result.IsSuccess)
                 return Ok(new { result.ErrorMesssage });
 
             return BadRequest(new { result.ErrorMesssage });
         }
-        
-        [HttpPost("Add-License")]
+
+        [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddLicenseAsync([FromForm] LicModel model)
         {
@@ -35,36 +35,35 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
 
 
-            var result = await _repo.AddAsync(model);
+            var result = await _service.AddAsync(model);
             if (result.IsSuccess)
                 return Ok(new { result.Messsage });
 
             return BadRequest(new { result.Messsage });
         }
 
-        [HttpPost("Update-License/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateLicenseAsync([FromRoute] string id, [FromForm] LicModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _repo.UpdateAsync(id, model);
+            var result = await _service.UpdateAsync(id, model);
             if (result.IsSuccess)
                 return Ok(new { result.Messsage });
 
             return BadRequest(new { result.Messsage });
         }
 
-        [HttpPost("Delete-License/{id}")]
-        public async Task<IActionResult> DeleteLicenseAsync([FromRoute]string id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteLicenseAsync([FromRoute] string id)
         {
-            var result = await _repo.DeleteAsync(id);
+            var result = await _service.DeleteAsync(id);
             if (result > 0)
                 return Ok(result);
 
             return BadRequest(result);
         }
-
 
     }
 }

@@ -8,27 +8,27 @@ namespace Vehicle_Share.EF.Models
     public class Car
     {
         [Key]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
 
         [Required(ErrorMessage = "Type is required.")]
-        [MaxLength(30,ErrorMessage ="the max length is 30 char")]
-        public string Type { get; set; }
+        [MaxLength(30, ErrorMessage = "the max length is 30 char")]
+        public string? Type { get; set; }
 
 
         [Required(ErrorMessage = "Model is required.")]
         [MaxLength(4, ErrorMessage = "the max length is 4 digit")]
-        [StringLength(4, ErrorMessage = "the max length is 4 digit",MinimumLength =4)]
+        [StringLength(4, ErrorMessage = "the max length is 4 digit", MinimumLength = 4)]
         public int Model { get; set; }
 
 
         [Required(ErrorMessage = "Brand is required.")]
         [MaxLength(30, ErrorMessage = "the max length is 30 char")]
-        public string Brand { get; set; }
+        public string? Brand { get; set; }
 
         [Required(ErrorMessage = "Brand is required.")]
         [MaxLength(15, ErrorMessage = "the max length is 15 char")]
-        public string Plate { get; set; }
+        public string? Plate { get; set; }
 
 
         [Required(ErrorMessage = "SetsOfCar is required.")]
@@ -37,23 +37,23 @@ namespace Vehicle_Share.EF.Models
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public string Image { get; set; }
+        public string? Image { get; set; }
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public string LicenseImageFront { get; set; }
+        public string? LicenseImageFront { get; set; }
 
 
         [Required(ErrorMessage = "Image is required.")]
-        public string LicenseImagBack { get; set; }
+        public string? LicenseImagBack { get; set; }
         [Required]
         public DateTime LicenseExpiration { get; set; }
-                             
-        // relations 
-        public String UserDataId { get; set; }
-        [ForeignKey("UserDataId")]
-        public UserData UserData { get; set; }
 
-        
+        // relations 
+        public string? UserDataId { get; set; }
+        [ForeignKey("UserDataId")]
+        public UserData? UserData { get; set; }
+
+
     }
 }

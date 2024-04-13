@@ -8,9 +8,9 @@ namespace Vehicle_Share.Service.UserDataService
         //  Task<IEnumerable<UserData>> GetAllAsyc();
         Task<ResponseForOneModel<GetUserModel>> GetUserDataAsync();
         Task<ResponseModel> AddAsync(UserDataModel model);
-        Task<ResponseModel> UpdateAsync(string id , UserDataModel model);
+        Task<ResponseModel> UpdateAsync(string id, UserDataModel model);
         //  Task<int> DeleteAsync(string id);
 
-       
+
     }
 }

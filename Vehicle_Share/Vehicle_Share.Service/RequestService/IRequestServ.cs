@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vehicle_Share.EF.Models;
-
-using Vehicle_Share.Core.Models.RequestModels;
+﻿using Vehicle_Share.Core.Models.RequestModels;
 using Vehicle_Share.Core.Response;
 
 namespace Vehicle_Share.Service.RequestService
