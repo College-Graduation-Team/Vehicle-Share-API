@@ -28,10 +28,8 @@ namespace Vehicle_Share.API.Controllers
         }
 
         [HttpPost("confirm-phone")]
-        public async Task<IActionResult> ConfirmedPhoneAsync(ConfirmedPhoneModel model)
+        public async Task<IActionResult> ConfirmedPhoneAsync(ConfirmPhoneModel model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
             var result = await _autherRepo.ConfirmedPhoneAsync(model);
             return Ok(result);
         }

@@ -1,16 +1,20 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Globalization;
+using System.Reflection;
 using System.Text;
 using Vehicle_Share.Core.Repository.AuthRepo;
 using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Repository.SendOTP;
+using Vehicle_Share.Core.SharedResources;
 using Vehicle_Share.EF.Data;
 using Vehicle_Share.EF.Helper;
 using Vehicle_Share.EF.ImpRepo.AuthRepo;
@@ -89,6 +93,27 @@ builder.Services.AddAuthentication(options =>
     });
 
 #region LocaLization confgration
+
+// builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+// builder.Services.AddMvc()
+//     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+//     .AddDataAnnotationsLocalization();
+
+// builder.Services.AddLocalization(options => options.ResourcesPath = "SharedResources");
+
+// builder.Services.AddMvc()
+//         .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+//         .AddDataAnnotationsLocalization(options => {
+//             options.DataAnnotationLocalizerProvider = (type, factory) =>
+//                 factory.Create(typeof(Vehicle_Share.API.SharedResources.SharedResources));
+//         });
+
+// builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+// builder.Services.AddMvc()
+//     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+//     .AddDataAnnotationsLocalization();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddLocalization(opt =>

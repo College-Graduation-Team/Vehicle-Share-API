@@ -18,5 +18,9 @@
         public const string NoUserData = "NoUserData";
         public const string UserData = "UserData";
         public const string NationalId = "NationalId";
+        public const string PhoneRequired = "PhoneRequired";
+        public const string PhoneInvalid = "PhoneInvalid";
+        public const string CodeRequired = "CodeRequired";
+        public const string CodeInvalid = "CodeInvalid";
     }
 }

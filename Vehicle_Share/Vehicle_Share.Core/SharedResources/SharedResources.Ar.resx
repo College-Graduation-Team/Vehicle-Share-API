@@ -165,4 +165,10 @@
   <data name="WrongToken" xml:space="preserve">
     <value>الــتــوكــن ليس صحـيـح او غـيـر نـشــط </value>
   </data>
+  <data name="CodeRequired" xml:space="preserve">
+    <value>الرمز مطلوب</value>
+  </data>
+  <data name="CodeInvalid" xml:space="preserve">
+    <value>يجب أن يتكون الرمز من 6 أرقام</value>
+  </data>
 </root>
