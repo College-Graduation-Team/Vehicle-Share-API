@@ -132,14 +132,26 @@
   <data name="ExistsName" xml:space="preserve">
     <value>هذا الاســـم مســتــخــدم بالـــفــعــل </value>
   </data>
+  <data name="NationalId" xml:space="preserve">
+    <value>الرقم القومي موجود بالفعل </value>
+  </data>
+  <data name="NoAuth" xml:space="preserve">
+    <value>المستخدم غير مرخص</value>
+  </data>
   <data name="NotConfirmPhoneNumber" xml:space="preserve">
     <value>رقم الهاتف ليس مؤاكدا</value>
+  </data>
+  <data name="NoUserData" xml:space="preserve">
+    <value>بايانات المستخدم غير موجوه . من فضلك اضف البايانات ثم حاول مره اخري </value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>تـــمــت الـعـمـلـيـه بــنــجــــاح</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>تم التــحــديث بنــجــــاح</value>
+  </data>
+  <data name="UserData" xml:space="preserve">
+    <value>لقد قمت باضافة البايانات مسبقاا </value>
   </data>
   <data name="WrongCode" xml:space="preserve">
     <value>هذا الكوج ليس صحيحاا </value>

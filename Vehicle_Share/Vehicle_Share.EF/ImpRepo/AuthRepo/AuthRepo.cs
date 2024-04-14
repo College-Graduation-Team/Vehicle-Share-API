@@ -15,6 +15,7 @@ using Vehicle_Share.Core.Repository.SendOTP;
 using Vehicle_Share.Core.SharedResources;
 using Vehicle_Share.EF.Helper;
 using Vehicle_Share.EF.Models;
+using static System.Net.WebRequestMethods;
 namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 {
     public class AuthRepo : IAuthRepo
@@ -67,18 +68,19 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 
 
             var otp = GenerateRandomCode();
+            /*
+                        try
+                        {
+                            _smsService.Send(user.PhoneNumber, otp);
 
-            try
-            {
-                _smsService.Send(user.PhoneNumber, otp);
+                        }
+                        catch (Exception)
+                        {
 
-            }
-            catch (Exception)
-            {
-
-                return new AuthModel { Message = _LocaLizer[SharedResourcesKey.Error] };
-            }
-
+                            return new AuthModel { Message = _LocaLizer[SharedResourcesKey.Error] };
+                        }
+            */
+            await Console.Out.WriteLineAsync($" ======================= the reset code is {otp} ============================= ");
             user.ResetCode = otp;
 
             user.ResetCodeGeneateAt = DateTime.UtcNow;
@@ -96,7 +98,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             if (user == null)
                 return _LocaLizer[SharedResourcesKey.WrongPhoneNumber];
             // Check if the provided code matches the saved code
-            if (model.Code != user.ResetCode || user.ResetCodeExpired)
+            if (model.Code != user.ResetCode || user.ResetCodeExpired || model.Code.IsNullOrEmpty())
             {
                 return _LocaLizer[SharedResourcesKey.WrongCode];
             }
@@ -268,7 +270,10 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             await _userManager.UpdateAsync(user);
 
             // Send the code to the user's email
-            _smsService.Send(user.PhoneNumber, code);
+            //  _smsService.Send(user.PhoneNumber, code);
+
+            await Console.Out.WriteLineAsync($" ======================= the reset code is {otp} ============================= ");
+
             return _LocaLizer[SharedResourcesKey.Success];
         }
 

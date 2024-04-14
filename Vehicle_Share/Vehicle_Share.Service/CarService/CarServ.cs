@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Localization;
 using System.Security.Claims;
 using Vehicle_Share.Core.Models.CarModels;
 using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Response;
+using Vehicle_Share.Core.SharedResources;
 using Vehicle_Share.EF.Models;
 
 namespace Vehicle_Share.Service.CarService
@@ -12,23 +14,25 @@ namespace Vehicle_Share.Service.CarService
         private readonly IBaseRepo<Car> _car;
         private readonly IBaseRepo<UserData> _user;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IStringLocalizer<SharedResources> _LocaLizer;
 
-        public CarServ(IBaseRepo<Car> car, IHttpContextAccessor httpContextAccessor, IBaseRepo<UserData> user)
+        public CarServ(IBaseRepo<Car> car, IHttpContextAccessor httpContextAccessor, IBaseRepo<UserData> user, IStringLocalizer<SharedResources> locaLizer = null)
         {
             _car = car;
             _httpContextAccessor = httpContextAccessor;
             _user = user;
+            _LocaLizer = locaLizer;
         }
 
         public async Task<ResponseForOneModel<GetCarModel>> GetByIdAsync(string id)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseForOneModel<GetCarModel> { ErrorMesssage = " User Not Authorize . " };
+                return new ResponseForOneModel<GetCarModel> { ErrorMesssage = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var userData = await _user.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseForOneModel<GetCarModel> { ErrorMesssage = " User Not Added data  . " };
+                return new ResponseForOneModel<GetCarModel> { ErrorMesssage = _LocaLizer[SharedResourcesKey.NoUserData] };
             var car = await _car.GetByIdAsync(id);
 
             if (car is null)

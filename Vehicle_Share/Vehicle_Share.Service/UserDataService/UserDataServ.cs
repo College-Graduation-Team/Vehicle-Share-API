@@ -25,11 +25,11 @@ namespace Vehicle_Share.Service.UserDataService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseForOneModel<GetUserModel> { ErrorMesssage = " User Not Authorize . " };
+                return new ResponseForOneModel<GetUserModel> { ErrorMesssage = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var userData = await _userData.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseForOneModel<GetUserModel> { ErrorMesssage = " User Data Not Found . " };
+                return new ResponseForOneModel<GetUserModel> { ErrorMesssage = _LocaLizer[SharedResourcesKey.NoUserData] };
 
             if (userData.Birthdate == null)
                 userData.Birthdate = DateTime.UtcNow;//DateTime.Parse ("2013-10-01 13:45:01");
@@ -62,11 +62,11 @@ namespace Vehicle_Share.Service.UserDataService
             var userId = _httpContextAccessor.HttpContext.User.FindFirstValue("uid");
 
             if (userId is null)
-                return new ResponseModel { Messsage = "user not Autherize" };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var userData = await _userData.FindAsync(e => e.UserId == userId);
             if (userData is not null)
-                return new ResponseModel { Messsage = " you added data before . " };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.UserData] };
 
             var NationalcardImgFront = await ProcessImageFile("User", model.NationalCardImageFront);
             var NationalcardImgBack = await ProcessImageFile("User", model.NationalCardImageBack);
@@ -76,7 +76,7 @@ namespace Vehicle_Share.Service.UserDataService
 
             if (IsNationlIdExist is not null)
             {
-                return new ResponseModel { Messsage = " National ID already exists . " };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NationalId] };
             }
 
             UserData user = new UserData
@@ -101,7 +101,7 @@ namespace Vehicle_Share.Service.UserDataService
         public async Task<ResponseModel> UpdateAsync(string id, UserDataModel model)
         {
             var user = await _userData.GetByIdAsync(id);
-            if (user == null) return new ResponseModel { Messsage = "User not found . " };
+            if (user == null) return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoUserData] };
 
             user.Name = model.Name;
             user.Nationality = model.Nationality;

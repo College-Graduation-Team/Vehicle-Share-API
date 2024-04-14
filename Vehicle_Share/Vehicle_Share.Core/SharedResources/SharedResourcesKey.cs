@@ -14,5 +14,9 @@
         public const string WrongCode = "WrongCode";
         public const string Success = "Success";
         public const string WrongToken = "WrongToken";
+        public const string NoAuth = "NoAuth";
+        public const string NoUserData = "NoUserData";
+        public const string UserData = "UserData";
+        public const string NationalId = "NationalId";
     }
 }
