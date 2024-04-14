@@ -19,7 +19,7 @@ namespace Vehicle_Share.EF.ImpRepo.SendOTPImplement
 		{
 			TwilioClient.Init(_twilio.AccountSID, _twilio.AuthToken);
 			var message = $"This is Verification Code: {otp}";
-			Console.WriteLine($"{message} mobileNumber: {mobileNumber}");
+			Console.WriteLine($"======================= {message} mobileNumber: {mobileNumber} =======================");
 			// var result = MessageResource.Create(
 			// 		body: message,
 			// 		from: new Twilio.Types.PhoneNumber(_twilio.TwilioPhoneNumber),

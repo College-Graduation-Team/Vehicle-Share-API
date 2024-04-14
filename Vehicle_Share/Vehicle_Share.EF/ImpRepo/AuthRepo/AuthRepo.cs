@@ -267,8 +267,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 
             await _userManager.UpdateAsync(user);
 
-            await Console.Out.WriteLineAsync($" ======================= the reset code is {code} ============================= ");
-           // _smsService.Send(user.PhoneNumber, code);
+           _smsService.Send(user.PhoneNumber, code);
 
             return _LocaLizer[SharedResourcesKey.Success];
         }
