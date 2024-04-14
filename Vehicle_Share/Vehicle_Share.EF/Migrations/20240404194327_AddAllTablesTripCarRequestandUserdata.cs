@@ -15,7 +15,7 @@ namespace Vehicle_Share.EF.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     NationailId = table.Column<long>(type: "bigint", nullable: false),
-                    Birthdata = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Birthdate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Gender = table.Column<bool>(type: "bit", nullable: false),
                     Nationality = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),

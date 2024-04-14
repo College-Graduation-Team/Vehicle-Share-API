@@ -98,7 +98,11 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             if (user == null)
                 return _LocaLizer[SharedResourcesKey.WrongPhoneNumber];
             // Check if the provided code matches the saved code
+<<<<<<< HEAD
             if (model.Code != user.ResetCode || user.ResetCodeExpired || model.Code.IsNullOrEmpty())
+=======
+            if (model.Code.IsNullOrEmpty() || model.Code != user.ResetCode || user.ResetCodeExpired)
+>>>>>>> c362ad10bd88ff057ebd9bd102469586505425fb
             {
                 return _LocaLizer[SharedResourcesKey.WrongCode];
             }
