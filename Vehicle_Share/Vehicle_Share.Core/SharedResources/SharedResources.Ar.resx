@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AddCar" xml:space="preserve">
-    <value>يجب اضافة سياره </value>
-  </data>
   <data name="ConfirmPhoneNumber" xml:space="preserve">
     <value>تم تاكيد رقم الهاتف بنجاح</value>
   </data>
@@ -138,17 +135,26 @@
   <data name="NationalId" xml:space="preserve">
     <value>الرقم القومي موجود بالفعل </value>
   </data>
-  <data name="NoAuth" xml:space="preserve">
-    <value>المستخدم غير مرخص</value>
-  </data>
   <data name="NoCar" xml:space="preserve">
     <value>الــسيــاره لــيــســت مـــوجـــــوده</value>
+  </data>
+  <data name="AddCar" xml:space="preserve">
+    <value>يجب اضافة سياره </value>
+  </data>
+  <data name="NoAuth" xml:space="preserve">
+    <value>المستخدم غير مرخص</value>
   </data>
   <data name="NotConfirmPhoneNumber" xml:space="preserve">
     <value>رقم الهاتف ليس مؤاكدا</value>
   </data>
   <data name="NoUserData" xml:space="preserve">
     <value>بايانات المستخدم غير موجوه . من فضلك اضف البايانات ثم حاول مره اخري </value>
+  </data>
+  <data name="PhoneInvalid" xml:space="preserve">
+    <value>رقم الهاتف غـيـر صــــالـــح </value>
+  </data>
+  <data name="PhoneRequired" xml:space="preserve">
+    <value>رقم الهاتف  مــطــلــوب </value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>تـــمــت الـعـمـلـيـه بــنــجــــاح</value>
@@ -176,5 +182,41 @@
   </data>
   <data name="CodeInvalid" xml:space="preserve">
     <value>يجب أن يتكون الرمز من 6 أرقام</value>
+  </data>
+  <data name="DenyRequest" xml:space="preserve">
+    <value>لـــقـــد تــــم رفــــض الـــطــــلــــب </value>
+  </data>
+  <data name="InvalidAvailableSeats" xml:space="preserve">
+    <value>لقد ادخلت رقم غير صالح في عدد المقاعد المتاحه</value>
+  </data>
+  <data name="InvalidRequestedSeats" xml:space="preserve">
+    <value>لقد ادخلت رقم غير صالح في عدد المقاعد المطلوبه</value>
+  </data>
+  <data name="NoDriver" xml:space="preserve">
+    <value>انت لست ســــائــــــق   </value>
+  </data>
+  <data name="NoLicense" xml:space="preserve">
+    <value>الـــرخــصــه غـــيـــر مـــوجــــوده</value>
+  </data>
+  <data name="NoPassanger" xml:space="preserve">
+    <value>انت لست راكــــــــــب</value>
+  </data>
+  <data name="NoRequest" xml:space="preserve">
+    <value>الـــطـــلــــب غــــيـــر مـــوجــود</value>
+  </data>
+  <data name="NoSendRequest" xml:space="preserve">
+    <value>لا يمكن ارسال طلب الي رحله انت الي ضيفها</value>
+  </data>
+  <data name="NoTrip" xml:space="preserve">
+    <value>الرحلة غير موجوده او انــتــهــيــت</value>
+  </data>
+  <data name="SendRequestBefore" xml:space="preserve">
+    <value>لـــقـــد ارســــلــــت طــــلـــب مــن قـــبـــل </value>
+  </data>
+  <data name="ShowTripDriver" xml:space="preserve">
+    <value>لا يــمـكـن رايــة رحالات السائق </value>
+  </data>
+  <data name="ShowTripPassanger" xml:space="preserve">
+    <value>لا يــمـكـن رايــة رحالات الراكــب</value>
   </data>
 </root>

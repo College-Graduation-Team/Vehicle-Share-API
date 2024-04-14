@@ -98,12 +98,12 @@ namespace Vehicle_Share.Service.RequestService
             // Find the trip associated with the request
             var trip = await _trip.FindAsync(e => e.Id == model.TripId);
             if (trip is null || trip.IsFinished)
-                return new ResponseModel { Messsage = "Trip not found or finished" };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoTrip] };
 
             // Check if the user who added the trip is trying to make a request for the same trip
             if (trip.UserDataId == userData.Id)
             {
-                return new ResponseModel { Messsage = "You cannot make a request for your own trip." };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoSendRequest] };
             }
             Request request = new();
             if (userData.Type is true) //driver
@@ -111,13 +111,13 @@ namespace Vehicle_Share.Service.RequestService
             else
             {
                 if (model.Seats > trip.AvailableSeats)                      //Passenger
-                    return new ResponseModel { Messsage = "You enter invalid value . " };
+                    return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.InvalidRequestedSeats] };
                 request.Seats = model.Seats;
             }
 
             if (request.UserDataId == userData.Id)
             {
-                return new ResponseModel { Messsage = "You already send request before ." };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.SendRequestBefore] };
             }
             request.Id = Guid.NewGuid().ToString();
             request.Status = Status.Pending;
@@ -140,12 +140,12 @@ namespace Vehicle_Share.Service.RequestService
             var request = await _request.FindAsync(r => r.Id == requestId);
             if (request == null)
             {
-                return new ResponseModel { Messsage = "Request not found" };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoRequest] };
             }
 
             var trip = await _trip.FindAsync(e => e.Id == request.TripId);
             if (trip is null || trip.IsFinished)
-                return new ResponseModel { Messsage = "Trip not found or finished" };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoTrip] };
 
             if (userData.Type is true) //driver
             {
@@ -168,14 +168,14 @@ namespace Vehicle_Share.Service.RequestService
             var request = await _request.FindAsync(r => r.Id == requestId);
             if (request == null)
             {
-                return new ResponseModel { Messsage = "Request not found" };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoRequest] };
             }
             // Mark the request as denied
             request.Status = Status.Refused;
             // Update the request in the database
             await _request.UpdateAsync(request);
 
-            return new ResponseModel { Messsage = "Request denied successfully", IsSuccess = true };
+            return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.DenyRequest], IsSuccess = true };
         }
         public async Task<int> DeleteRequestAsync(string requestId)
         {

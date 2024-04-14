@@ -183,4 +183,40 @@
   <data name="CodeInvalid" xml:space="preserve">
     <value>Code must be 6 numbers</value>
   </data>
+  <data name="DenyRequest" xml:space="preserve">
+    <value>Request denied successfully</value>
+  </data>
+  <data name="InvalidAvailableSeats" xml:space="preserve">
+    <value>You enter invalid available seats number  .</value>
+  </data>
+  <data name="InvalidRequestedSeats" xml:space="preserve">
+    <value>You enter invalid requestedSeats number  .</value>
+  </data>
+  <data name="NoDriver" xml:space="preserve">
+    <value>You are not driver</value>
+  </data>
+  <data name="NoLicense" xml:space="preserve">
+    <value>License not found </value>
+  </data>
+  <data name="NoPassanger" xml:space="preserve">
+    <value>You are not Passenger</value>
+  </data>
+  <data name="NoRequest" xml:space="preserve">
+    <value>Request not found</value>
+  </data>
+  <data name="NoSendRequest" xml:space="preserve">
+    <value>You cannot make a request for your own trip.</value>
+  </data>
+  <data name="NoTrip" xml:space="preserve">
+    <value>trip not found or finished</value>
+  </data>
+  <data name="SendRequestBefore" xml:space="preserve">
+    <value>You already send request before</value>
+  </data>
+  <data name="ShowTripDriver" xml:space="preserve">
+    <value>You can't show trips of drivers</value>
+  </data>
+  <data name="ShowTripPassanger" xml:space="preserve">
+    <value>You can't show trips of Passenger</value>
+  </data>
 </root>

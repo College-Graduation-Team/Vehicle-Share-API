@@ -95,12 +95,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             if (user == null)
                 return _LocaLizer[SharedResourcesKey.WrongPhoneNumber];
 
-<<<<<<< HEAD
-            if (model.Code != user.ResetCode || user.ResetCodeExpired || model.Code.IsNullOrEmpty())
-=======
-            // Check if the provided code matches the saved code
             if (model.Code.IsNullOrEmpty() || model.Code != user.ResetCode || user.ResetCodeExpired)
->>>>>>> ed39c12d325b191a77aad8f45230d68f86996144
             {
                 return _LocaLizer[SharedResourcesKey.WrongCode];
             }
@@ -272,14 +267,8 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 
             await _userManager.UpdateAsync(user);
 
-            // Send the code to the user's email
-<<<<<<< HEAD
-            //  _smsService.Send(user.PhoneNumber, code);
-
             await Console.Out.WriteLineAsync($" ======================= the reset code is {code} ============================= ");
-=======
-            _smsService.Send(user.PhoneNumber, code);
->>>>>>> ed39c12d325b191a77aad8f45230d68f86996144
+           // _smsService.Send(user.PhoneNumber, code);
 
             return _LocaLizer[SharedResourcesKey.Success];
         }

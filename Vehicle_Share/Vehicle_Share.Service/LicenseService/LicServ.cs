@@ -80,7 +80,7 @@ namespace Vehicle_Share.Service.LicenseService
         public async Task<ResponseModel> UpdateAsync(string id, LicModel model)
         {
             var lic = await _Lic.GetByIdAsync(id);
-            if (lic == null) return new ResponseModel { Messsage = "license not found . " };
+            if (lic == null) return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoLicense] };
 
 
 
