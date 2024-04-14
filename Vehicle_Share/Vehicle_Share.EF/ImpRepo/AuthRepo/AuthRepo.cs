@@ -68,21 +68,18 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 
 
             var otp = GenerateRandomCode();
-            /*
-                        try
-                        {
-                            _smsService.Send(user.PhoneNumber, otp);
+            try
+            {
+                _smsService.Send(user.PhoneNumber, otp);
 
-                        }
-                        catch (Exception)
-                        {
+            }
+            catch (Exception)
+            {
 
-                            return new AuthModel { Message = _LocaLizer[SharedResourcesKey.Error] };
-                        }
-            */
-            await Console.Out.WriteLineAsync($" ======================= the reset code is {otp} ============================= ");
+                return new AuthModel { Message = _LocaLizer[SharedResourcesKey.Error] };
+            }
+
             user.ResetCode = otp;
-
             user.ResetCodeGeneateAt = DateTime.UtcNow;
 
             //var roles = _roleManager.Roles.ToList();
@@ -91,17 +88,23 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             return new AuthModel { Message = _LocaLizer[SharedResourcesKey.Created], IsAuth = true };
         }
 
-        public async Task<string> ConfirmedPhoneAsync(ConfirmedPhoneModel model)
+        public async Task<string> ConfirmedPhoneAsync(ConfirmPhoneModel model)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(o => o.PhoneNumber == model.Phone);
 
             if (user == null)
                 return _LocaLizer[SharedResourcesKey.WrongPhoneNumber];
 
+<<<<<<< HEAD
             if (model.Code != user.ResetCode || user.ResetCodeExpired || model.Code.IsNullOrEmpty())
+=======
+            // Check if the provided code matches the saved code
+            if (model.Code.IsNullOrEmpty() || model.Code != user.ResetCode || user.ResetCodeExpired)
+>>>>>>> ed39c12d325b191a77aad8f45230d68f86996144
             {
                 return _LocaLizer[SharedResourcesKey.WrongCode];
             }
+
             user.PhoneNumberConfirmed = true;
             await _userManager.UpdateAsync(user);
             return _LocaLizer[SharedResourcesKey.Success];
@@ -270,9 +273,13 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             await _userManager.UpdateAsync(user);
 
             // Send the code to the user's email
+<<<<<<< HEAD
             //  _smsService.Send(user.PhoneNumber, code);
 
             await Console.Out.WriteLineAsync($" ======================= the reset code is {code} ============================= ");
+=======
+            _smsService.Send(user.PhoneNumber, code);
+>>>>>>> ed39c12d325b191a77aad8f45230d68f86996144
 
             return _LocaLizer[SharedResourcesKey.Success];
         }

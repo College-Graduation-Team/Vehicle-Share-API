@@ -18,7 +18,14 @@
         public const string NoUserData = "NoUserData";
         public const string UserData = "UserData";
         public const string NationalId = "NationalId";
+<<<<<<< HEAD
         public const string NoCar = "NoCar";
         public const string AddCar = "AddCar";
+=======
+        public const string PhoneRequired = "PhoneRequired";
+        public const string PhoneInvalid = "PhoneInvalid";
+        public const string CodeRequired = "CodeRequired";
+        public const string CodeInvalid = "CodeInvalid";
+>>>>>>> ed39c12d325b191a77aad8f45230d68f86996144
     }
 }

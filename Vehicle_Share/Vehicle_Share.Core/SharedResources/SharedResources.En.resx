@@ -171,4 +171,16 @@
   <data name="WrongToken" xml:space="preserve">
     <value>Invalid token or Inactive token</value>
   </data>
+  <data name="PhoneRequired" xml:space="preserve">
+    <value>Phone number is required</value>
+  </data>
+  <data name="PhoneInvalid" xml:space="preserve">
+    <value>Phone number is invalid</value>
+  </data>
+  <data name="CodeRequired" xml:space="preserve">
+    <value>Code is required</value>
+  </data>
+  <data name="CodeInvalid" xml:space="preserve">
+    <value>Code must be 6 numbers</value>
+  </data>
 </root>
