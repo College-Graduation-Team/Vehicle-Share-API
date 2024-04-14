@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Vehicle_Share.Core.Response;
 using static Vehicle_Share.EF.Helper.StatusContainer;
+using Microsoft.Extensions.Localization;
+using Vehicle_Share.Core.SharedResources;
 
 namespace Vehicle_Share.Service.RequestService
 {
@@ -15,23 +17,26 @@ namespace Vehicle_Share.Service.RequestService
         private readonly IBaseRepo<Trip> _trip;
         private readonly IBaseRepo<Request> _request;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IStringLocalizer<SharedResources> _LocaLizer;
 
-        public RequestServ(IBaseRepo<UserData> userdata, IBaseRepo<Trip> trip, IBaseRepo<Request> request, IHttpContextAccessor httpContextAccessor)
+
+        public RequestServ(IBaseRepo<UserData> userdata, IBaseRepo<Trip> trip, IBaseRepo<Request> request, IHttpContextAccessor httpContextAccessor, IStringLocalizer<SharedResources> locaLizer = null)
         {
             _userdata = userdata;
             _trip = trip;
             _request = request;
             _httpContextAccessor = httpContextAccessor;
+            _LocaLizer = locaLizer;
         }
         public async Task<GenResponseModel<GetReqModel>> GetAllTripRequestedAsync(string tripId)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new GenResponseModel<GetReqModel> { ErrorMesssage = "User Not Authorized." };
+                return new GenResponseModel<GetReqModel> { ErrorMesssage = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new GenResponseModel<GetReqModel> { ErrorMesssage = "User Data Not Found." };
+                return new GenResponseModel<GetReqModel> { ErrorMesssage = _LocaLizer[SharedResourcesKey.NoUserData] };
 
             var allRequests = await _request.GetAllAsync();
             var userRequests = allRequests.Where(r => r.TripId == tripId).ToList();
@@ -56,11 +61,11 @@ namespace Vehicle_Share.Service.RequestService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new GenResponseModel<GetReqModel> { ErrorMesssage = " User Not Authorize . " };
+                return new GenResponseModel<GetReqModel> { ErrorMesssage = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new GenResponseModel<GetReqModel> { ErrorMesssage = " User Not Added data  . " };
+                return new GenResponseModel<GetReqModel> { ErrorMesssage = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var allRequests = await _request.GetAllAsync();
             var userRequests = allRequests.Where(t => t.UserDataId == userData.Id).ToList();
@@ -84,11 +89,11 @@ namespace Vehicle_Share.Service.RequestService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { Messsage = "User not authorized" };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseModel { Messsage = "User not found" };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoUserData] };
 
             // Find the trip associated with the request
             var trip = await _trip.FindAsync(e => e.Id == model.TripId);
@@ -119,18 +124,18 @@ namespace Vehicle_Share.Service.RequestService
             request.TripId = model.TripId;
             request.UserDataId = userData.Id;
             await _request.AddAsync(request);
-            return new ResponseModel { Messsage = "Request added successfully", IsSuccess = true };
+            return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
 
         }
         public async Task<ResponseModel> AcceptRequestAsync(string requestId)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { Messsage = "User not authorized" };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseModel { Messsage = "User not found" };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoUserData] };
 
             var request = await _request.FindAsync(r => r.Id == requestId);
             if (request == null)
@@ -156,7 +161,7 @@ namespace Vehicle_Share.Service.RequestService
 
             }
 
-            return new ResponseModel { Messsage = "Request accepted successfully", IsSuccess = true };
+            return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.Success], IsSuccess = true };
         }
         public async Task<ResponseModel> DenyRequestAsync(string requestId)
         {

@@ -6,6 +6,8 @@ using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Models.LicModels;
 using System.Security.Claims;
 using Vehicle_Share.Core.Response;
+using Microsoft.Extensions.Localization;
+using Vehicle_Share.Core.SharedResources;
 
 namespace Vehicle_Share.Service.LicenseService
 {
@@ -14,22 +16,25 @@ namespace Vehicle_Share.Service.LicenseService
         private readonly IBaseRepo<License> _Lic;
         private readonly IBaseRepo<UserData> _user;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IStringLocalizer<SharedResources> _LocaLizer;
 
-        public LicServ(IBaseRepo<License> Lic, IHttpContextAccessor httpContextAccessor, IBaseRepo<UserData> user)
+
+        public LicServ(IBaseRepo<License> Lic, IHttpContextAccessor httpContextAccessor, IBaseRepo<UserData> user, IStringLocalizer<SharedResources> locaLizer = null)
         {
             _Lic = Lic;
             _httpContextAccessor = httpContextAccessor;
             _user = user;
+            _LocaLizer = locaLizer;
         }
         public async Task<ResponseForOneModel<GetLicModel>> GetAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseForOneModel<GetLicModel> { ErrorMesssage = " User Not Authorize . " };
+                return new ResponseForOneModel<GetLicModel> { ErrorMesssage = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var userData = await _user.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseForOneModel<GetLicModel> { ErrorMesssage = " User Data Not Found . " };
+                return new ResponseForOneModel<GetLicModel> { ErrorMesssage = _LocaLizer[SharedResourcesKey.NoUserData] };
 
 
             var Lic = await _Lic.FindAsync(e => e.UserDataId == userData.Id);
@@ -51,10 +56,10 @@ namespace Vehicle_Share.Service.LicenseService
         {
             var userId = _httpContextAccessor.HttpContext.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { Messsage = "user not Autherize" };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoAuth] };
             var userData = await _user.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseModel { Messsage = "user is not found " };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoUserData] };
 
 
             var LicFront = await ProcessImageFile("License", model.ImageFront);
@@ -70,7 +75,7 @@ namespace Vehicle_Share.Service.LicenseService
             };
 
             await _Lic.AddAsync(user);
-            return new ResponseModel { Messsage = "License added successfully ", IsSuccess = true };
+            return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
         }
         public async Task<ResponseModel> UpdateAsync(string id, LicModel model)
         {
@@ -93,7 +98,7 @@ namespace Vehicle_Share.Service.LicenseService
 
             await _Lic.UpdateAsync(lic);
 
-            return new ResponseModel { Messsage = "License updated successfully", IsSuccess = true };
+            return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
         }
         public async Task<int> DeleteAsync(string id)
         {

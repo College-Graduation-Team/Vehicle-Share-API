@@ -36,7 +36,7 @@ namespace Vehicle_Share.Service.CarService
             var car = await _car.GetByIdAsync(id);
 
             if (car is null)
-                return new ResponseForOneModel<GetCarModel> { ErrorMesssage = "Car Not Found." };
+                return new ResponseForOneModel<GetCarModel> { ErrorMesssage = _LocaLizer[SharedResourcesKey.NoCar] };
 
             var result = new ResponseForOneModel<GetCarModel>
             {
@@ -63,11 +63,11 @@ namespace Vehicle_Share.Service.CarService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new GenResponseModel<GetCarModel> { ErrorMesssage = " User Not Authorize . " };
+                return new GenResponseModel<GetCarModel> { ErrorMesssage = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var userData = await _user.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new GenResponseModel<GetCarModel> { ErrorMesssage = " User Not Added data  . " };
+                return new GenResponseModel<GetCarModel> { ErrorMesssage = _LocaLizer[SharedResourcesKey.NoUserData] };
 
             var allCars = await _car.GetAllAsync();
             var userCars = allCars.Where(t => t.UserDataId == userData.Id).ToList();
@@ -97,11 +97,11 @@ namespace Vehicle_Share.Service.CarService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { Messsage = "user not Autherize" };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoAuth] };
             var userData = await _user.FindAsync(e => e.UserId == userId);
 
             if (userData is null)
-                return new ResponseModel { Messsage = "user is not found " };
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoUserData] };
 
 
 
@@ -133,13 +133,13 @@ namespace Vehicle_Share.Service.CarService
 
             await _car.AddAsync(car);
 
-            return new ResponseModel { Messsage = "Car add successfully ", IsSuccess = true };
+            return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
         }
 
         public async Task<ResponseModel> UpdateAsync(string id, CarModel model)
         {
             var car = await _car.GetByIdAsync(id);
-            if (car == null) new ResponseModel { Messsage = "Car not found . " };
+            if (car == null) new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoCar] };
 
 
             car.Type = model.Type;
@@ -162,7 +162,7 @@ namespace Vehicle_Share.Service.CarService
 
             await _car.UpdateAsync(car);
 
-            return new ResponseModel { Messsage = "Car updated successfully", IsSuccess = true };
+            return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
 
         }
 

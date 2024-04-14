@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddCar" xml:space="preserve">
+    <value>You must added car </value>
+  </data>
   <data name="ConfirmPhoneNumber" xml:space="preserve">
     <value>Phone number Is Not Confirmed!</value>
   </data>
@@ -137,6 +140,9 @@
   </data>
   <data name="NoAuth" xml:space="preserve">
     <value>User Not Authorize </value>
+  </data>
+  <data name="NoCar" xml:space="preserve">
+    <value>Car not found </value>
   </data>
   <data name="NotConfirmPhoneNumber" xml:space="preserve">
     <value>Phone number Is Not Confirmed!</value>
