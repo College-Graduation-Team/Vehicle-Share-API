@@ -400,7 +400,7 @@ namespace Vehicle_Share.EF.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<long>("NationailId")
+                    b.Property<long>("NationalId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("NationalCardImageBack")
