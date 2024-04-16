@@ -153,7 +153,7 @@ namespace Vehicle_Share.Service.RequestService
 
                 if (trip.AvailableSeats.HasValue)
                 {
-                    var availbleseats = trip.AvailableSeats.Value - request.Seats;
+                    short availbleseats = (short)(trip.AvailableSeats.Value - request.Seats);
                     trip.AvailableSeats = availbleseats;
                     await _trip.UpdateAsync(trip);
                 }
