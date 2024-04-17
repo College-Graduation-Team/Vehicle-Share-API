@@ -39,6 +39,7 @@
         public const string TokenRequired = "TokenRequired"; 
         public const string PasswordRequired = "PasswordRequired";
         public const string UserName = "UserName";
+        public const string Required = "Required";
 
 
 

@@ -30,17 +30,17 @@ namespace Vehicle_Share.Service.LicenseService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseForOneModel<GetLicModel> { ErrorMesssage = _LocaLizer[SharedResourcesKey.NoAuth] };
+                return new ResponseForOneModel<GetLicModel> { message = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var userData = await _user.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseForOneModel<GetLicModel> { ErrorMesssage = _LocaLizer[SharedResourcesKey.NoUserData] };
+                return new ResponseForOneModel<GetLicModel> { message = _LocaLizer[SharedResourcesKey.NoUserData] };
 
 
             var Lic = await _Lic.FindAsync(e => e.UserDataId == userData.Id);
             var result = new ResponseForOneModel<GetLicModel>()
             {
-                Data = new GetLicModel
+                data = new GetLicModel
                 {
                     Id = Lic.Id,
                     ImageFront = Lic.ImageFront,
@@ -56,10 +56,10 @@ namespace Vehicle_Share.Service.LicenseService
         {
             var userId = _httpContextAccessor.HttpContext.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoAuth] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] };
             var userData = await _user.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoUserData] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] };
 
 
             var LicFront = await ProcessImageFile("License", model.ImageFront);
@@ -75,12 +75,12 @@ namespace Vehicle_Share.Service.LicenseService
             };
 
             await _Lic.AddAsync(user);
-            return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
+            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
         }
         public async Task<ResponseModel> UpdateAsync(string id, LicModel model)
         {
             var lic = await _Lic.GetByIdAsync(id);
-            if (lic == null) return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoLicense] };
+            if (lic == null) return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoLicense] };
 
 
 
@@ -98,7 +98,7 @@ namespace Vehicle_Share.Service.LicenseService
 
             await _Lic.UpdateAsync(lic);
 
-            return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
+            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
         }
         public async Task<int> DeleteAsync(string id)
         {

@@ -228,4 +228,7 @@
   <data name="UserName" xml:space="preserve">
     <value>Name is required .</value>
   </data>
+  <data name="Required" xml:space="preserve">
+    <value>All fields is required</value>
+  </data>
 </root>

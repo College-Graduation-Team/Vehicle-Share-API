@@ -228,4 +228,7 @@
   <data name="UserName" xml:space="preserve">
     <value>اســـم الـمـسـتخـدم مــطــلوب</value>
   </data>
+  <data name="Required" xml:space="preserve">
+    <value>كـــــل الحـــــقـــول مـــطـــلــوبه</value>
+  </data>
 </root>

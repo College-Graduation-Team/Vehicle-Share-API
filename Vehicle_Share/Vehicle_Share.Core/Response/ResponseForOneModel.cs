@@ -3,7 +3,7 @@
     public class ResponseForOneModel<T>
     {
         public bool IsSuccess { get; set; }
-        public string? ErrorMesssage { get; set; }
-        public T? Data { get; set; }
+        public string? message { get; set; }
+        public T? data { get; set; }
     }
 }

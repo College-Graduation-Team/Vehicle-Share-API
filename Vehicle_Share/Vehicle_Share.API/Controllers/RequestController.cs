@@ -21,15 +21,15 @@ namespace Vehicle_Share.API.Controllers
             if (id == null) {
                 var result = await _service.GetAllMyRequestAsync();
                 if (result.IsSuccess)
-                    return Ok(new { result.Data });
+                    return Ok(new { result.data });
 
-                return BadRequest(new { result.ErrorMesssage });
+                return BadRequest(new { result.message });
             } else {
                 var result = await _service.GetAllTripRequestedAsync(id);
                 if (result.IsSuccess)
-                    return Ok(new { result.Data });
+                    return Ok(new { result.data });
 
-                return BadRequest(new { result.ErrorMesssage });
+                return BadRequest(new { result.message });
             }
         }
 
@@ -40,9 +40,9 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _service.SendReqestAsync(model);
             if (result.IsSuccess)
-                return Ok(new { result.Messsage });
+                return Ok(new { result.message });
 
-            return BadRequest(new { result.Messsage });
+            return BadRequest(new { result.message });
         }
 
         [HttpPost("accept/{id}")]
@@ -52,9 +52,9 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _service.AcceptRequestAsync(id);
             if (result.IsSuccess)
-                return Ok(new { result.Messsage });
+                return Ok(new { result.message });
 
-            return BadRequest(new { result.Messsage });
+            return BadRequest(new { result.message });
         }
 
         [HttpPost("decline/{id}")]
@@ -64,9 +64,9 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _service.DenyRequestAsync(id);
             if (result.IsSuccess)
-                return Ok(new { result.Messsage });
+                return Ok(new { result.message });
 
-            return BadRequest(new { result.Messsage });
+            return BadRequest(new { result.message });
         }
 
         [HttpDelete("{id}")]

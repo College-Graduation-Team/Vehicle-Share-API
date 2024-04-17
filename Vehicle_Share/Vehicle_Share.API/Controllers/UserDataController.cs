@@ -22,35 +22,23 @@ namespace Vehicle_Share.API.Controllers
         {
             var result = await _service.GetUserDataAsync();
             if (result.IsSuccess)
-                return Ok(new { result.Data });
+                return Ok(new { result.data });
 
-            return BadRequest(new { result.ErrorMesssage });
+            return BadRequest(new { result.message });
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddUserDataAsync([FromForm] UserDataModel model)
+        public async Task<IActionResult> AddAndUpdateAsync([FromForm] UserDataModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var result = await _service.AddAsync(model);
+            var result = await _service.AddAndUpdateAsync(model);
             if (result.IsSuccess)
-                return Ok(new { result.Messsage });
+                return Ok(new { result.message,result.data });
 
-            return BadRequest(new { result.Messsage });
+            return BadRequest(new { result.message });
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdataUserDataAsync([FromForm] UserDataModel model)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var result = await _service.UpdateAsync(model);
-            if (result.IsSuccess)
-                return Ok(new { result.Messsage });
-
-            return BadRequest(new { result.Messsage });
-        }
 
     }
 }

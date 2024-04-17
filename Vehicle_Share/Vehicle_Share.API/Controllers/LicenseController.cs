@@ -21,9 +21,9 @@ namespace Vehicle_Share.API.Controllers
         {
             var result = await _service.GetAsync();
             if (result.IsSuccess)
-                return Ok(new { result.ErrorMesssage });
+                return Ok(new { result.message });
 
-            return BadRequest(new { result.ErrorMesssage });
+            return BadRequest(new { result.message });
         }
 
         [HttpPost]
@@ -37,9 +37,9 @@ namespace Vehicle_Share.API.Controllers
 
             var result = await _service.AddAsync(model);
             if (result.IsSuccess)
-                return Ok(new { result.Messsage });
+                return Ok(new { result.message });
 
-            return BadRequest(new { result.Messsage });
+            return BadRequest(new { result.message });
         }
 
         [HttpPut("{id}")]
@@ -50,9 +50,9 @@ namespace Vehicle_Share.API.Controllers
 
             var result = await _service.UpdateAsync(id, model);
             if (result.IsSuccess)
-                return Ok(new { result.Messsage });
+                return Ok(new { result.message });
 
-            return BadRequest(new { result.Messsage });
+            return BadRequest(new { result.message });
         }
 
         [HttpDelete("{id}")]
