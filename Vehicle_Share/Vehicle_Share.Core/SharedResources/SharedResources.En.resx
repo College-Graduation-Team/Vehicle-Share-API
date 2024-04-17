@@ -219,4 +219,13 @@
   <data name="ShowTripPassanger" xml:space="preserve">
     <value>You can't show trips of Passenger</value>
   </data>
+  <data name="TokenRequired" xml:space="preserve">
+    <value>token is required .</value>
+  </data>
+  <data name="PasswordRequired" xml:space="preserve">
+    <value>Password is required</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>Name is required .</value>
+  </data>
 </root>

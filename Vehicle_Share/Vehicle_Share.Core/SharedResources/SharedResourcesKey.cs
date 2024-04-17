@@ -1,4 +1,4 @@
-﻿namespace Vehicle_Share.Core.SharedResources
+﻿namespace Vehicle_Share.Core.Resources
 {
     public static class SharedResourcesKey
     {
@@ -36,6 +36,10 @@
         public const string NoRequest = "NoRequest";
         public const string DenyRequest = "DenyRequest";
         public const string NoLicense = "NoLicense";
+        public const string TokenRequired = "TokenRequired"; 
+        public const string PasswordRequired = "PasswordRequired";
+        public const string UserName = "UserName";
+
 
 
     }

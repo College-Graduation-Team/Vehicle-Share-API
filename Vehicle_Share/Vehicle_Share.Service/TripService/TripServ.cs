@@ -5,7 +5,7 @@ using System.Security.Claims;
 using Vehicle_Share.Core.Models.TripModels;
 using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Response;
-using Vehicle_Share.Core.SharedResources;
+using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Models;
 
 namespace Vehicle_Share.Service.TripService

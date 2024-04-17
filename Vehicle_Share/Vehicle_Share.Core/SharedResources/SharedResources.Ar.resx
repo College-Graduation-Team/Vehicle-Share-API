@@ -142,7 +142,7 @@
     <value>يجب اضافة سياره </value>
   </data>
   <data name="NoAuth" xml:space="preserve">
-    <value>المستخدم غير مرخص</value>
+    <value>المــــــســتــــخــــدم غــــيـــر مـــرخـــص</value>
   </data>
   <data name="NotConfirmPhoneNumber" xml:space="preserve">
     <value>رقم الهاتف ليس مؤاكدا</value>
@@ -172,13 +172,13 @@
     <value>خطاء في رقم الهاتف او كلمة المرور </value>
   </data>
   <data name="WrongPhoneNumber" xml:space="preserve">
-    <value>خطاء في رقم الهاتف</value>
+    <value>خـــــطـــــاء فــــي رقــــم الـــهــــاتــــــف</value>
   </data>
   <data name="WrongToken" xml:space="preserve">
     <value>الــتــوكــن ليس صحـيـح او غـيـر نـشــط </value>
   </data>
   <data name="CodeRequired" xml:space="preserve">
-    <value>الرمز مطلوب</value>
+    <value>الـــرمـــز مــــطــــلــوب</value>
   </data>
   <data name="CodeInvalid" xml:space="preserve">
     <value>يجب أن يتكون الرمز من 6 أرقام</value>
@@ -193,7 +193,7 @@
     <value>لقد ادخلت رقم غير صالح في عدد المقاعد المطلوبه</value>
   </data>
   <data name="NoDriver" xml:space="preserve">
-    <value>انت لست ســــائــــــق   </value>
+    <value>انـــت لــســـت ســــائــــــق   </value>
   </data>
   <data name="NoLicense" xml:space="preserve">
     <value>الـــرخــصــه غـــيـــر مـــوجــــوده</value>
@@ -218,5 +218,14 @@
   </data>
   <data name="ShowTripPassanger" xml:space="preserve">
     <value>لا يــمـكـن رايــة رحالات الراكــب</value>
+  </data>
+  <data name="TokenRequired" xml:space="preserve">
+    <value>الــتــوكــن مـــطــلــوب .</value>
+  </data>
+  <data name="PasswordRequired" xml:space="preserve">
+    <value>كـــلــمة المــرور مــطــلــوبــه</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>اســـم الـمـسـتخـدم مــطــلوب</value>
   </data>
 </root>

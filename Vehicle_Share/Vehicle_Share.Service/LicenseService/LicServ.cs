@@ -7,7 +7,7 @@ using Vehicle_Share.Core.Models.LicModels;
 using System.Security.Claims;
 using Vehicle_Share.Core.Response;
 using Microsoft.Extensions.Localization;
-using Vehicle_Share.Core.SharedResources;
+using Vehicle_Share.Core.Resources;
 
 namespace Vehicle_Share.Service.LicenseService
 {

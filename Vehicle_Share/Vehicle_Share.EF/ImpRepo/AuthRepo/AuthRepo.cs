@@ -12,7 +12,7 @@ using System.Text;
 using Vehicle_Share.Core.Models.AuthModels;
 using Vehicle_Share.Core.Repository.AuthRepo;
 using Vehicle_Share.Core.Repository.SendOTP;
-using Vehicle_Share.Core.SharedResources;
+using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Helper;
 using Vehicle_Share.EF.Models;
 using static System.Net.WebRequestMethods;

@@ -7,7 +7,7 @@ using System.Security.Claims;
 using Vehicle_Share.Core.Response;
 using static Vehicle_Share.EF.Helper.StatusContainer;
 using Microsoft.Extensions.Localization;
-using Vehicle_Share.Core.SharedResources;
+using Vehicle_Share.Core.Resources;   
 
 namespace Vehicle_Share.Service.RequestService
 {

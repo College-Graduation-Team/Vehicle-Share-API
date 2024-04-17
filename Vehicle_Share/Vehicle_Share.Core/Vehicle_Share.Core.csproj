@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="SharedResources\SharedResources.Ar.resx~RFca8e7.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.34" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.21" />
     <PackageReference Include="Twilio" Version="6.16.1" />
   </ItemGroup>
 
