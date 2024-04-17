@@ -18,7 +18,7 @@ namespace Vehicle_Share.EF.Models
 
         [Required(ErrorMessage = "Nationail ID is required.")]
         [RegularExpression(@"^\d{14}$", ErrorMessage = "Nationail ID must be 14 digit .")]
-        public long NationailId { get; set; }
+        public long NationalId { get; set; }
 
 
         public DateTime Birthdate { get; set; }

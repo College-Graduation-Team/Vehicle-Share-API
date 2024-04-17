@@ -271,8 +271,8 @@ namespace Vehicle_Share.EF.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("AvailableSeats")
-                        .HasColumnType("int");
+                    b.Property<short?>("AvailableSeats")
+                        .HasColumnType("smallint");
 
                     b.Property<string>("CarId")
                         .IsRequired()
@@ -289,8 +289,8 @@ namespace Vehicle_Share.EF.Migrations
                     b.Property<float>("RecommendPrice")
                         .HasColumnType("real");
 
-                    b.Property<int?>("RequestedSeats")
-                        .HasColumnType("int");
+                    b.Property<short?>("RequestedSeats")
+                        .HasColumnType("smallint");
 
                     b.Property<string>("To")
                         .IsRequired()
@@ -402,7 +402,7 @@ namespace Vehicle_Share.EF.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<long>("NationailId")
+                    b.Property<long>("NationalId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("NationalCardImageBack")

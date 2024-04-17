@@ -31,8 +31,9 @@ namespace Vehicle_Share.Service.UserDataService
             if (userData is null)
                 return new ResponseForOneModel<GetUserModel> { ErrorMesssage = _LocaLizer[SharedResourcesKey.NoUserData] };
 
-            if (userData.Birthdate == null)
-                userData.Birthdate = DateTime.UtcNow;//DateTime.Parse ("2013-10-01 13:45:01");
+            // ===== DateTime is non-nullable struct can never be null =====
+            // if (userData.Birthdate == null) 
+            //     userData.Birthdate = DateTime.UtcNow;//DateTime.Parse ("2013-10-01 13:45:01");
             var age = CalculateAge(userData.Birthdate, DateTime.UtcNow);
 
             var result = new ResponseForOneModel<GetUserModel>()
@@ -41,7 +42,7 @@ namespace Vehicle_Share.Service.UserDataService
                 {
                     Id = userData.Id,
                     Name = userData.Name,
-                    NationailId = userData.NationailId,
+                    NationalId = userData.NationalId,
                     Age = age,
                     Gender = userData.Gender,
                     Nationality = userData.Nationality,
@@ -50,7 +51,6 @@ namespace Vehicle_Share.Service.UserDataService
                     NationalCardImageBack = userData.NationalCardImageBack,
                     ProfileImage = userData.ProfileImage,
                     Type = userData.Type
-
                 },
                 IsSuccess = true
             };
@@ -72,74 +72,90 @@ namespace Vehicle_Share.Service.UserDataService
             var NationalcardImgBack = await ProcessImageFile("User", model.NationalCardImageBack);
             var ProfileImg = await ProcessImageFile("User", model.ProfileImage);
 
-            var IsNationlIdExist = await _userData.FindAsync(e => e.NationailId == model.NationailId);
+            var IsNationlIdExist = await _userData.FindAsync(e => e.NationalId == model.NationalId);
 
             if (IsNationlIdExist is not null)
             {
                 return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NationalId] };
             }
 
-            UserData user = new UserData
+            UserData user = new()
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = model.Name,
-                NationailId = model.NationailId,
+                NationalId = model.NationalId.GetValueOrDefault(),
                 Address = model.Address,
                 Nationality = model.Nationality,
                 NationalCardImageFront = NationalcardImgFront,
                 NationalCardImageBack = NationalcardImgBack,
                 ProfileImage = ProfileImg,
                 UserId = userId,
-                Type = model.Type
-
-
+                Type = model.Type.GetValueOrDefault()
             };
 
             await _userData.AddAsync(user);
             return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
         }
-        public async Task<ResponseModel> UpdateAsync(string id, UserDataModel model)
+        public async Task<ResponseModel> UpdateAsync(UserDataModel model)
         {
-            var user = await _userData.GetByIdAsync(id);
-            if (user == null) return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoUserData] };
+            var userId = _httpContextAccessor.HttpContext.User.FindFirstValue("uid");
 
-            user.Name = model.Name;
-            user.Nationality = model.Nationality;
-            user.NationailId = model.NationailId;
-            user.Address = model.Address;
-            user.Type = model.Type;
+            if (userId is null)
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.NoAuth] };
 
-            // updata the image 
-            await RemoveImageFile(user.NationalCardImageFront);
-            user.NationalCardImageFront = await ProcessImageFile("User", model.NationalCardImageFront);
+            var user = await _userData.FindAsync(e => e.UserId == userId);
+            if (user == null)
+                return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.UserData] };
 
-            await RemoveImageFile(user.NationalCardImageBack);
-            user.NationalCardImageBack = await ProcessImageFile("User", model.NationalCardImageBack);
+            if (model.Name != null) user.Name = model.Name;
+            if (model.NationalId.HasValue) user.NationalId = model.NationalId.Value;
+            if (model.Birthdate.HasValue) user.Birthdate = model.Birthdate.Value;
+            if (model.Gender.HasValue) user.Gender = model.Gender.Value;
+            if (model.Nationality != null) user.Nationality = model.Nationality;
+            if (model.Address != null) user.Address = model.Address;
+            if (model.Type.HasValue) user.Type = model.Type.Value;
 
-            await RemoveImageFile(user.ProfileImage);
-            user.ProfileImage = await ProcessImageFile("User", model.ProfileImage);
-
+            // Update images
+            if (model.NationalCardImageFront != null) {
+                await RemoveImageFile(user.NationalCardImageFront);
+                user.NationalCardImageFront = await ProcessImageFile("User", model.NationalCardImageFront);
+            }
+            
+            if (model.NationalCardImageBack != null) {
+                await RemoveImageFile(user.NationalCardImageBack);
+                user.NationalCardImageBack = await ProcessImageFile("User", model.NationalCardImageBack);
+            }
+            
+            if (model.ProfileImage != null) {
+                await RemoveImageFile(user.ProfileImage);
+                user.ProfileImage = await ProcessImageFile("User", model.ProfileImage);
+            }
 
             await _userData.UpdateAsync(user);
 
             return new ResponseModel { Messsage = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
 
         }
-        private async Task<string> ProcessImageFile(string folder, IFormFile file)
+        private async Task<string> ProcessImageFile(string folder, IFormFile? file)
         {
+            if (file == null) return string.Empty;
+
             var req = _httpContextAccessor.HttpContext.Request;
             var baseUrl = req.Scheme + "://" + req.Host;
 
             var Image = await _userData.UploadImageAsync(folder, file);
             return baseUrl + Image;
         }
-        private async Task RemoveImageFile(string file)
+        private async Task RemoveImageFile(string? file)
         {
-            Uri uri = new Uri(file);
+            if (file == null) return;
+
+            Uri uri = new(file);
             string relativeUrl = uri.PathAndQuery;
             await _userData.RemoveImageAsync(relativeUrl);
         }
-        private int CalculateAge(DateTime birthDate, DateTime now)
+
+        private static int CalculateAge(DateTime birthDate, DateTime now)
         {
             int age = now.Year - birthDate.Year;
 

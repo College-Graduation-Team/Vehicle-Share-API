@@ -14,7 +14,7 @@ namespace Vehicle_Share.EF.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    NationailId = table.Column<long>(type: "bigint", nullable: false),
+                    NationalId = table.Column<long>(type: "bigint", nullable: false),
                     Birthdate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Gender = table.Column<bool>(type: "bit", nullable: false),
                     Nationality = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
@@ -93,8 +93,8 @@ namespace Vehicle_Share.EF.Migrations
                     To = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RecommendPrice = table.Column<float>(type: "real", nullable: false),
-                    AvailableSeats = table.Column<int>(type: "int", nullable: true),
-                    RequestedSeats = table.Column<int>(type: "int", nullable: true),
+                    AvailableSeats = table.Column<int>(type: "smallint", nullable: true),
+                    RequestedSeats = table.Column<int>(type: "smallint", nullable: true),
                     UserDataId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CarId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },

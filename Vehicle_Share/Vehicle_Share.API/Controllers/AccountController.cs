@@ -79,16 +79,16 @@ namespace Vehicle_Share.API.Controllers
 
         }
         
-        [HttpPost("phone-is-confimed")]
-        public async Task<IActionResult> IsPhoneConfirmedAsync([FromBody] PhoneModel model)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            var result = await _autherRepo.IsPhoneConfirmedAsync(model);
-            if (!result.PhoneConfirmed)
-                return BadRequest(" Phone is not Confirm  ...");
-            return Ok((new { result.PhoneConfirmed, result.Message }));
-        }
+        // [HttpPost("is-phone-confimed")]
+        // public async Task<IActionResult> IsPhoneConfirmedAsync([FromBody] PhoneModel model)
+        // {
+        //     if (!ModelState.IsValid)
+        //         return BadRequest(ModelState);
+        //     var result = await _autherRepo.IsPhoneConfirmedAsync(model);
+        //     if (!result.PhoneConfirmed)
+        //         return BadRequest("Phone isn't Confirmed");
+        //     return Ok(new { result.PhoneConfirmed, result.Message });
+        // }
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()

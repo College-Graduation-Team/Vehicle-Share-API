@@ -39,23 +39,17 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(new { result.Messsage });
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdataUserDataAsync([FromForm] string id, [FromForm] UserDataModel model)
+        [HttpPut]
+        public async Task<IActionResult> UpdataUserDataAsync([FromForm] UserDataModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _service.UpdateAsync(id, model);
+            var result = await _service.UpdateAsync(model);
             if (result.IsSuccess)
                 return Ok(new { result.Messsage });
 
             return BadRequest(new { result.Messsage });
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserDataAsync([FromForm] string id)
-        {
-            return BadRequest(new { Message = $"Not implemented yet! id: {id}" });
         }
 
     }

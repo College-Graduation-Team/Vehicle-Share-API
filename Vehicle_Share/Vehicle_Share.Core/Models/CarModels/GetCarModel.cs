@@ -9,7 +9,7 @@ namespace Vehicle_Share.Core.Models.CarModels
         public int Model { get; set; }
         public string? Brand { get; set; }
         public string? Plate { get; set; }
-        public int Seats { get; set; }
+        public short Seats { get; set; }
 
         public string? Image { get; set; }
         public string? LicenseImageFront { get; set; }

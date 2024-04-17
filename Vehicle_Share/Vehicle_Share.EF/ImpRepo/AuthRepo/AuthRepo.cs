@@ -267,8 +267,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 
             await _userManager.UpdateAsync(user);
 
-            await Console.Out.WriteLineAsync($" ======================= the reset code is {code} ============================= ");
-           // _smsService.Send(user.PhoneNumber, code);
+           _smsService.Send(user.PhoneNumber, code);
 
             return _LocaLizer[SharedResourcesKey.Success];
         }
@@ -315,27 +314,27 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             return authModel;
         }
 
-        public async Task<AuthModel> IsPhoneConfirmedAsync(PhoneModel model)
-        {
-            var user = await _userManager.Users.FirstOrDefaultAsync(p => p.PhoneNumber == model.Phone);
-            if (user == null)
-            {
-                return new AuthModel { Message = _LocaLizer[SharedResourcesKey.WrongPhoneNumber] };
-            }
-            // Decode the JWT token to get the user's email
-            string userPhoneFromToken = DecodeJwtToken(model.Token);
+        // public async Task<AuthModel> IsPhoneConfirmedAsync(PhoneModel model)
+        // {
+        //     var user = await _userManager.Users.FirstOrDefaultAsync(p => p.PhoneNumber == model.Phone);
+        //     if (user == null)
+        //     {
+        //         return new AuthModel { Message = _LocaLizer[SharedResourcesKey.WrongPhoneNumber] };
+        //     }
+        //     // Decode the JWT token to get the user's phone
+        //     string userPhoneFromToken = DecodeJwtToken(model.Token);
 
-            // Check if the decoded email matches the user's email
-            if (userPhoneFromToken != user.PhoneNumber)
-            {
-                return new AuthModel { Message = _LocaLizer[SharedResourcesKey.WrongToken] };
-            }
+        //     // Check if the decoded phone matches the user's phone
+        //     if (userPhoneFromToken != user.PhoneNumber)
+        //     {
+        //         return new AuthModel { Message = _LocaLizer[SharedResourcesKey.WrongToken] };
+        //     }
 
 
-            return user.PhoneNumberConfirmed
-                ? new AuthModel { Message = _LocaLizer[SharedResourcesKey.ConfirmPhoneNumber], PhoneConfirmed = true }
-                : new AuthModel { Message = _LocaLizer[SharedResourcesKey.NotConfirmPhoneNumber], PhoneConfirmed = false };
-        }
+        //     return user.PhoneNumberConfirmed
+        //         ? new AuthModel { Message = _LocaLizer[SharedResourcesKey.ConfirmPhoneNumber], PhoneConfirmed = true }
+        //         : new AuthModel { Message = _LocaLizer[SharedResourcesKey.NotConfirmPhoneNumber], PhoneConfirmed = false };
+        // }
 
         public async Task<AuthModel> LogoutAsync()
         {
@@ -384,41 +383,41 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             };
         }
 
-        private string DecodeJwtToken(string jwtToken)
-        {
-            var handler = new JwtSecurityTokenHandler();
+        // private string DecodeJwtToken(string jwtToken)
+        // {
+        //     var handler = new JwtSecurityTokenHandler();
 
-            if (handler.CanReadToken(jwtToken))
-            {
-                try
-                {
-                    var jsonToken = handler.ReadToken(jwtToken) as JwtSecurityToken;
+        //     if (handler.CanReadToken(jwtToken))
+        //     {
+        //         try
+        //         {
+        //             var jsonToken = handler.ReadToken(jwtToken) as JwtSecurityToken;
 
-                    if (jsonToken != null)
-                    {
-                        // Check if the token is expired
-                        if (jsonToken.ValidTo < DateTime.UtcNow)
-                        {
-                            // Token is expired
-                            return "Token is expired ";
-                        }
+        //             if (jsonToken != null)
+        //             {
+        //                 // Check if the token is expired
+        //                 if (jsonToken.ValidTo < DateTime.UtcNow)
+        //                 {
+        //                     // Token is expired
+        //                     return "Token is expired ";
+        //                 }
 
-                        // Extract the user email from the token
-                        var PhoneNumber = jsonToken.Claims.FirstOrDefault(c => c.Type == "sid")?.Value;
-                        return PhoneNumber;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    return "decoding errors or invalid tokens";
-                    throw;
-                }
+        //                 // Extract the user email from the token
+        //                 var PhoneNumber = jsonToken.Claims.FirstOrDefault(c => c.Type == "sid")?.Value;
+        //                 return PhoneNumber;
+        //             }
+        //         }
+        //         catch (Exception ex)
+        //         {
+        //             return "decoding errors or invalid tokens";
+        //             throw;
+        //         }
 
-            }
-            _userManager.FindByIdAsync(jwtToken).Wait();
+        //     }
+        //     _userManager.FindByIdAsync(jwtToken).Wait();
 
-            // Handle decoding errors or invalid tokens
-            return "decoding errors or invalid tokens";
-        }
+        //     // Handle decoding errors or invalid tokens
+        //     return "decoding errors or invalid tokens";
+        // }
     }
 }
