@@ -48,6 +48,8 @@ namespace Vehicle_Share.EF.Models
         public string? LicenseImagBack { get; set; }
         [Required]
         public DateTime LicenseExpiration { get; set; }
+        public DateTime CreatedOn { get; set; }
+
 
         // relations 
         public string? UserDataId { get; set; }

@@ -127,7 +127,8 @@ namespace Vehicle_Share.Service.CarService
 
                 Image = carImg,
 
-                UserDataId = userData.Id
+                UserDataId = userData.Id,
+                CreatedOn=DateTime.UtcNow
 
             };
 

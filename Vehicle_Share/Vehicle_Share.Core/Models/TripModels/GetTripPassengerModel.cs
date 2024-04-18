@@ -7,6 +7,8 @@
         public string? To { get; set; }
         public DateTime Date { get; set; }
         public float RecommendPrice { get; set; }
+        public DateTime CreatedOn { get; set; }
+
         public short RequestedSeats { get; set; } //passenger
         public bool IsFinished { get; set; }
     }

@@ -8,6 +8,7 @@
         public DateTime Date { get; set; }
         public float RecommendPrice { get; set; }
         public short AvailableSeats { get; set; } //driver
+        public DateTime CreatedOn { get; set; }
 
         public string? CarId { get; set; } //driver
         public string? CarType { get; set; } //driver

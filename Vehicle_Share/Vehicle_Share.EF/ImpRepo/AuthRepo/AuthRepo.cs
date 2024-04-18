@@ -51,6 +51,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             {
                 UserName = model.UserName,
                 PhoneNumber = model.Phone,
+                CreatedOn = DateTime.UtcNow,
 
             };
 

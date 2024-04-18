@@ -10,6 +10,8 @@ namespace Vehicle_Share.Core.Models.TripModels
         public DateTime Date { get; set; }
         public float RecommendPrice { get; set; }
         public short? AvailableSeats { get; set; }    //driver
+        public DateTime CreatedOn { get; set; }
+
         public short? RequestedSeats { get; set; }    //passenger
         public bool IsFinished { get; set; }
         public string? UserDataId { get; set; }

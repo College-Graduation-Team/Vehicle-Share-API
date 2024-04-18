@@ -64,9 +64,11 @@ namespace Vehicle_Share.Service.TripService
                     RecommendPrice = trip.RecommendPrice,
                     AvailableSeats = trip.AvailableSeats,
                     RequestedSeats = trip.RequestedSeats,
+                    CreatedOn=trip.CreatedOn,
                     IsFinished = trip.IsFinished,
                     UserDataId = trip.UserDataId,
                     CarId = trip.CarId
+                    
                 },
                 IsSuccess = true
             };
@@ -142,6 +144,7 @@ namespace Vehicle_Share.Service.TripService
                         Date = trip.Date,
                         RecommendPrice = trip.RecommendPrice,
                         AvailableSeats = trip.AvailableSeats.Value, // Access the Value property
+                        CreatedOn=trip.CreatedOn,
                         CarId = trip.CarId, // Assuming CarID is a string property
                         CarType = car.Type,
                         CarBrand = car.Brand,
@@ -179,6 +182,7 @@ namespace Vehicle_Share.Service.TripService
                         Date = trip.Date,
                         RecommendPrice = trip.RecommendPrice,
                         RequestedSeats = trip.RequestedSeats.Value,
+                        CreatedOn=trip.CreatedOn,
                         IsFinished = trip.IsFinished
                     });
 
@@ -210,6 +214,7 @@ namespace Vehicle_Share.Service.TripService
                 Date = model.Date,
                 AvailableSeats = model.AvailableSeats,
                 RecommendPrice = model.RecommendPrice,
+                CreatedOn=DateTime.UtcNow,
 
                 // Relation
                 UserDataId = userData.Id,

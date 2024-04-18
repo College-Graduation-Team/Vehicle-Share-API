@@ -95,7 +95,8 @@ namespace Vehicle_Share.Service.UserDataService
                     NationalCardImageBack = NationalcardImgBack,
                     ProfileImage = ProfileImg,
                     UserId = userId,
-                    Type = model.Type.GetValueOrDefault()
+                    Type = model.Type.GetValueOrDefault(),
+                    CreatedOn = DateTime.Now,
                 };
 
                 await _userData.AddAsync(user);

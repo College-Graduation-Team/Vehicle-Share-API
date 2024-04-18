@@ -48,6 +48,7 @@ namespace Vehicle_Share.Service.RequestService
                 {
                     Id = request.Id,
                     Status = request.Status.ToString(),
+                    CreatedOn=request.CreatedOn,
                     TripId = request.TripId,
                     UserDataId = request.UserDataId
                 });
@@ -56,7 +57,6 @@ namespace Vehicle_Share.Service.RequestService
             result.IsSuccess = true;
             return result;
         }
-
         public async Task<GenResponseModel<GetReqModel>> GetAllMyRequestAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
@@ -76,6 +76,7 @@ namespace Vehicle_Share.Service.RequestService
                 {
                     Id = request.Id,
                     Status = request.Status.ToString(),
+                    CreatedOn=request.CreatedOn,
                     TripId = request.TripId,
                     UserDataId = request.UserDataId
                 }
@@ -123,6 +124,7 @@ namespace Vehicle_Share.Service.RequestService
             request.Status = Status.Pending;
             request.TripId = model.TripId;
             request.UserDataId = userData.Id;
+            request.CreatedOn = DateTime.UtcNow;
             await _request.AddAsync(request);
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
 

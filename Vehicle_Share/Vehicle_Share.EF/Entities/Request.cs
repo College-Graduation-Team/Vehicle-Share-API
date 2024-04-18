@@ -10,7 +10,7 @@ namespace Vehicle_Share.EF.Models
         public string? Id { get; set; }
         public Status Status { get; set; }
         public short Seats { get; set; }
-
+        public DateTime CreatedOn { get; set; }
 
         //relation  
         // user and trip

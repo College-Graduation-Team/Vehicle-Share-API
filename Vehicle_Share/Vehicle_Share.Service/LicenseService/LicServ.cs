@@ -71,7 +71,8 @@ namespace Vehicle_Share.Service.LicenseService
                 ImageFront = LicFront,
                 ImageBack = LicBack,
                 Expiration = model.Expiration,
-                UserDataId = userData.Id
+                UserDataId = userData.Id,
+                CreatedOn=DateTime.UtcNow
             };
 
             await _Lic.AddAsync(user);

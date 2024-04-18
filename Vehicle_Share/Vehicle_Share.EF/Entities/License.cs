@@ -18,6 +18,8 @@ namespace Vehicle_Share.EF.Models
 
         [Required]
         public DateTime Expiration { get; set; }
+        public DateTime CreatedOn { get; set; }
+
 
         // relation 
         public string? UserDataId { get; set; }

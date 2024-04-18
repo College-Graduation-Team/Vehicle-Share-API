@@ -28,6 +28,9 @@ namespace Vehicle_Share.EF.Models
 
         public bool IsFinished => DateTime.UtcNow >= Date;
 
+        public DateTime CreatedOn { get; set; }
+
+
         // relations 
         // user and car  car can not .
         public string? UserDataId { get; set; }

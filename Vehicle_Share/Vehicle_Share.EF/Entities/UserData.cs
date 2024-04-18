@@ -51,6 +51,9 @@ namespace Vehicle_Share.EF.Models
         public string? ProfileImage { get; set; }
 
         public bool Type { get; set; }    // driver of passenger
+
+        public DateTime CreatedOn { get; set; }
+
         // relation 
         public string? UserId { get; set; }
         [ForeignKey("UserId")]
