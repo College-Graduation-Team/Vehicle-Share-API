@@ -162,7 +162,7 @@
   <data name="WrongCode" xml:space="preserve">
     <value>Invalid code !</value>
   </data>
-  <data name="WrongPassword" xml:space="preserve">
+  <data name="WrongPhoneOrPassword" xml:space="preserve">
     <value>Phone number or Password is incorrect!</value>
   </data>
   <data name="WrongPhoneNumber" xml:space="preserve">

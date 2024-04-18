@@ -8,7 +8,7 @@
         public const string ExistsName = "ExistsName";
         public const string Error = "Error";
         public const string WrongPhoneNumber = "WrongPhoneNumber";
-        public const string WrongPassword = "WrongPassword";
+        public const string WrongPhoneOrPassword = "WrongPhoneOrPassword";
         public const string NotConfirmPhoneNumber = "NotConfirmPhoneNumber";
         public const string ConfirmPhoneNumber = "ConfirmPhoneNumber";
         public const string WrongCode = "WrongCode";

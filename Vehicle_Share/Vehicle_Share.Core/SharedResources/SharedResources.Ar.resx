@@ -168,7 +168,7 @@
   <data name="WrongCode" xml:space="preserve">
     <value>هذا الكوج ليس صحيحاا </value>
   </data>
-  <data name="WrongPassword" xml:space="preserve">
+  <data name="WrongPhoneOrPassword" xml:space="preserve">
     <value>خطاء في رقم الهاتف او كلمة المرور </value>
   </data>
   <data name="WrongPhoneNumber" xml:space="preserve">
