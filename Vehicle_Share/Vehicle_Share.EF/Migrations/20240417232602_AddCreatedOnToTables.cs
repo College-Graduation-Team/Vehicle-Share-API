@@ -42,7 +42,7 @@ namespace Vehicle_Share.EF.Migrations
                 table: "UserData");
 
             migrationBuilder.RenameColumn(
-                name: "Birthdata",
+                name: "Birthdate",
                 table: "UserData",
                 newName: "CreatedOn");
 
@@ -270,7 +270,7 @@ namespace Vehicle_Share.EF.Migrations
             migrationBuilder.RenameColumn(
                 name: "CreatedOn",
                 table: "UserData",
-                newName: "Birthdata");
+                newName: "Birthdate");
 
             migrationBuilder.AlterColumn<string>(
                 name: "UserId",

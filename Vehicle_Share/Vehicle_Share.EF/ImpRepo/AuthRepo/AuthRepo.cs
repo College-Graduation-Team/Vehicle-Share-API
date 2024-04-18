@@ -114,9 +114,13 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 
             var user = await _userManager.Users.FirstOrDefaultAsync(o => o.PhoneNumber == model.Phone);
 
-            if (user is null ||
-                !await _userManager.CheckPasswordAsync(user, model.Password))
+            if (user is null)
+            {
+                authModel.Message = _LocaLizer[SharedResourcesKey.WrongPhoneNumber];
+                return authModel;
+            }
 
+            if (!await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 authModel.Message = _LocaLizer[SharedResourcesKey.WrongPassword];
                 return authModel;
