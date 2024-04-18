@@ -78,24 +78,26 @@ namespace Vehicle_Share.Service.LicenseService
             await _Lic.AddAsync(user);
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
         }
-        public async Task<ResponseModel> UpdateAsync(string id, LicModel model)
+        public async Task<ResponseModel> UpdateAsync(string id, UpdateLicModel model)
         {
             var lic = await _Lic.GetByIdAsync(id);
             if (lic == null) return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoLicense] };
 
 
-
-            lic.Expiration = model.Expiration;
+            lic.Expiration = model.Expiration != null ? model.Expiration : lic.Expiration;
 
             // updata the image 
 
-
-            await RemoveImageFile(lic.ImageBack);
-            lic.ImageBack = await ProcessImageFile("License", model.ImageBack);
-
-            await RemoveImageFile(lic.ImageFront);
-            lic.ImageFront = await ProcessImageFile("License", model.ImageFront);
-
+            if (model.ImageBack != null)
+            {
+                await RemoveImageFile(lic.ImageBack);
+                lic.ImageBack = await ProcessImageFile("License", model.ImageBack);
+            }
+            if (model.ImageFront != null)
+            {
+                await RemoveImageFile(lic.ImageFront);
+                lic.ImageFront = await ProcessImageFile("License", model.ImageFront);
+            }
 
             await _Lic.UpdateAsync(lic);
 

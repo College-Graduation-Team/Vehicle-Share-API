@@ -8,7 +8,7 @@ namespace Vehicle_Share.Service.CarService
         Task<ResponseForOneModel<GetCarModel>> GetByIdAsync(string id);
         Task<GenResponseModel<GetCarModel>> GetAllAsync();
         Task<ResponseModel> AddAsync(CarModel model);
-        Task<ResponseModel> UpdateAsync(string id, CarModel model);
+        Task<ResponseModel> UpdateAsync(string id, UpdateCarModel model);
         Task<int> DeleteAsync(string id);
     }
 }

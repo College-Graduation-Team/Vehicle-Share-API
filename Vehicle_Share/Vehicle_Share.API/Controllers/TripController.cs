@@ -81,10 +81,8 @@ namespace Vehicle_Share.API.Controllers
         }
 
         [HttpPut("driver/{id}")] //update for driver
-        public async Task<IActionResult> UpdataTripAsync([FromRoute] string id, [FromForm] TripDriverModel model)
+        public async Task<IActionResult> UpdataTripAsync([FromRoute] string id, [FromForm] UpdateTripDriverModel model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
 
             var result = await _service.UpdateAsync(id, model);
             if (result.IsSuccess)
@@ -94,11 +92,8 @@ namespace Vehicle_Share.API.Controllers
         }
 
         [HttpPut("passenger/{id}")]//update for Passenger
-        public async Task<IActionResult> UpdataTripAsync([FromRoute] string id, [FromForm] TripPassengerModel model)
+        public async Task<IActionResult> UpdataTripAsync([FromRoute] string id, [FromForm] UpdateTripPassengerModel model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var result = await _service.UpdateAsync(id, model);
             if (result.IsSuccess)
                 return Ok(new { result.message });

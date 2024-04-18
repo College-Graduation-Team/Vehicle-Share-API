@@ -137,29 +137,35 @@ namespace Vehicle_Share.Service.CarService
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
         }
 
-        public async Task<ResponseModel> UpdateAsync(string id, CarModel model)
+        public async Task<ResponseModel> UpdateAsync(string id, UpdateCarModel model)
         {
             var car = await _car.GetByIdAsync(id);
             if (car == null) new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar] };
 
-
-            car.Type = model.Type;
-            car.Model = model.ModelYear;
-            car.Brand = model.Brand;
-            car.Plate = model.Plate;
-            car.Seats = model.Seats;
-            car.LicenseExpiration = model.LicenseExpiration;
+            // userData.Name = model.Name ?? userData.Name;
+            car.Type = model.Type ?? car.Type;
+            car.Model = model.ModelYear == 0 ? car.Model : model.ModelYear;
+            car.Brand = model.Brand ?? car.Brand;
+            car.Plate = model.Plate ?? car.Plate;
+            car.Seats = model.Seats == 0 ? car.Seats : model.Seats;
+            car.LicenseExpiration = model.LicenseExpiration != null ? model.LicenseExpiration : car.LicenseExpiration;
 
             // updata the image 
-            await RemoveImageFile(car.Image);
-            car.Image = await ProcessImageFile("Car", model.Image);
-
-            await RemoveImageFile(car.LicenseImagBack);
-            car.LicenseImagBack = await ProcessImageFile("Car", model.LicenseImageBack);
-
-            await RemoveImageFile(car.LicenseImageFront);
-            car.LicenseImageFront = await ProcessImageFile("Car", model.LicenseImageFront);
-
+            if (model.Image != null)
+            {
+                await RemoveImageFile(car.Image);
+                car.Image = await ProcessImageFile("Car", model.Image);
+            }
+            if (model.LicenseImageBack != null)
+            {
+                await RemoveImageFile(car.LicenseImagBack);
+                car.LicenseImagBack = await ProcessImageFile("Car", model.LicenseImageBack);
+            }
+            if (model.LicenseImageFront != null)
+            {
+                await RemoveImageFile(car.LicenseImageFront);
+                car.LicenseImageFront = await ProcessImageFile("Car", model.LicenseImageFront);
+            }
 
             await _car.UpdateAsync(car);
 

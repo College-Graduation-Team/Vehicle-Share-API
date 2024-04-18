@@ -258,7 +258,7 @@ namespace Vehicle_Share.Service.TripService
 
         }
 
-        public async Task<ResponseModel> UpdateAsync(string id, TripDriverModel model)
+        public async Task<ResponseModel> UpdateAsync(string id, UpdateTripDriverModel model)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
@@ -276,17 +276,17 @@ namespace Vehicle_Share.Service.TripService
             if (trip == null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoDriver] };
 
-            trip.From = model.From;
-            trip.To = model.To;
-            trip.Date = model.Date;
-            trip.AvailableSeats = model.AvailableSeats;
-            trip.RecommendPrice = model.RecommendPrice;
-            trip.CarId = model.CarId;
+            trip.From = model.From ??trip.From;
+            trip.To = model.To ?? trip.To;
+            trip.Date = model.Date !=null ? model.Date : trip.Date;
+            trip.RecommendPrice = model.RecommendPrice > 0 ? model.RecommendPrice : trip.RecommendPrice;
+            trip.AvailableSeats = model.AvailableSeats > 0 ? model.AvailableSeats : trip.AvailableSeats;
+            trip.CarId = model.CarId ?? trip.CarId;
 
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
         }
 
-        public async Task<ResponseModel> UpdateAsync(string id, TripPassengerModel model)
+        public async Task<ResponseModel> UpdateAsync(string id, UpdateTripPassengerModel model)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
@@ -301,11 +301,11 @@ namespace Vehicle_Share.Service.TripService
             if (trip == null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoTrip] };
 
-            trip.From = model.From;
-            trip.To = model.To;
-            trip.Date = model.Date;
-            trip.RecommendPrice = model.RecommendPrice;
-            trip.RequestedSeats = model.RequestedSeats;
+            trip.From = model.From ?? trip.From;
+            trip.To = model.To ?? trip.To;
+            trip.Date = model.Date != null ? model.Date : trip.Date;
+            trip.RecommendPrice = model.RecommendPrice > 0 ? model.RecommendPrice : trip.RecommendPrice;
+            trip.RequestedSeats = model.RequestedSeats > 0 ? model.RequestedSeats : trip.RequestedSeats;
 
             /////////////////////////////////////////////////////////////
 

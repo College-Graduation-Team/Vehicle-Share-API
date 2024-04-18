@@ -30,7 +30,7 @@ namespace Vehicle_Share.API.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddLicenseAsync([FromForm] LicModel model)
         {
-            if (!ModelState.IsValid || model == null)
+            if (!ModelState.IsValid )
 
                 return BadRequest(ModelState);
 
@@ -43,11 +43,9 @@ namespace Vehicle_Share.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateLicenseAsync([FromRoute] string id, [FromForm] LicModel model)
+        public async Task<IActionResult> UpdateLicenseAsync([FromRoute] string id, [FromForm] UpdateLicModel model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
+           
             var result = await _service.UpdateAsync(id, model);
             if (result.IsSuccess)
                 return Ok(new { result.message });

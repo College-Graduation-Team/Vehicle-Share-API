@@ -49,11 +49,8 @@ namespace Vehicle_Share.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdataCarAsync([FromRoute] string id, [FromForm] CarModel model)
+        public async Task<IActionResult> UpdataCarAsync([FromRoute] string id, [FromForm] UpdateCarModel model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var result = await _service.UpdateAsync(id, model);
             if (result.IsSuccess)
                 return Ok(new { result.message });

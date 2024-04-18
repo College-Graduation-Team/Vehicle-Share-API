@@ -7,7 +7,7 @@ namespace Vehicle_Share.Service.LicenseService
     {
         Task<ResponseForOneModel<GetLicModel>> GetAsync();
         Task<ResponseModel> AddAsync(LicModel model);
-        Task<ResponseModel> UpdateAsync(string id, LicModel model);
+        Task<ResponseModel> UpdateAsync(string id, UpdateLicModel model);
         Task<int> DeleteAsync(string id);
     }
 }
