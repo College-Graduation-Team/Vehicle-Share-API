@@ -50,7 +50,6 @@ namespace Vehicle_Share.Service.UserDataService
                     NationalCardImageFront = userData.NationalCardImageFront,
                     NationalCardImageBack = userData.NationalCardImageBack,
                     ProfileImage = userData.ProfileImage,
-                    Type = userData.Type
                 },
                 IsSuccess = true
             };
@@ -95,7 +94,6 @@ namespace Vehicle_Share.Service.UserDataService
                     NationalCardImageBack = NationalcardImgBack,
                     ProfileImage = ProfileImg,
                     UserId = userId,
-                    Type = model.Type.GetValueOrDefault(),
                     CreatedOn = DateTime.Now,
                 };
 
@@ -122,7 +120,6 @@ namespace Vehicle_Share.Service.UserDataService
                 userData.Gender = model.Gender ?? userData.Gender;
                 userData.Nationality = model.Nationality ?? userData.Nationality;
                 userData.Address = model.Address ?? userData.Address;
-                userData.Type = model.Type ?? userData.Type;
 
                 // Update images
                 if (model.NationalCardImageFront != null)

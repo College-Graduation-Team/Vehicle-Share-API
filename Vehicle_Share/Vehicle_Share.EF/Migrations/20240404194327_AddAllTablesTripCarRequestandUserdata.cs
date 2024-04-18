@@ -22,7 +22,6 @@ namespace Vehicle_Share.EF.Migrations
                     NationalCardImageFront = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NationalCardImageBack = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfileImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<bool>(type: "bit", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>

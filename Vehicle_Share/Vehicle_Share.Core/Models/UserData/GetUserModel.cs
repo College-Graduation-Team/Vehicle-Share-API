@@ -13,7 +13,6 @@
         public string? NationalCardImageFront { get; set; }
         public string? NationalCardImageBack { get; set; }
         public string? ProfileImage { get; set; }
-        public bool Type { get; set; }
 
     }
 }

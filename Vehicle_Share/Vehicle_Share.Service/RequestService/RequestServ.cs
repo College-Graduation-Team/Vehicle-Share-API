@@ -7,7 +7,8 @@ using System.Security.Claims;
 using Vehicle_Share.Core.Response;
 using static Vehicle_Share.EF.Helper.StatusContainer;
 using Microsoft.Extensions.Localization;
-using Vehicle_Share.Core.Resources;   
+using Vehicle_Share.Core.Resources;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Vehicle_Share.Service.RequestService
 {
@@ -107,7 +108,7 @@ namespace Vehicle_Share.Service.RequestService
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoSendRequest] };
             }
             Request request = new();
-            if (userData.Type is true) //driver
+            if (model.Type is true) //driver
                 request.Seats = 0;
             else
             {
@@ -149,7 +150,7 @@ namespace Vehicle_Share.Service.RequestService
             if (trip is null || trip.IsFinished)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoTrip] };
 
-            if (userData.Type is true) //driver
+            if (request.Seats >0 ) //driver
             {
                 request.Status = Status.Accepted;
 

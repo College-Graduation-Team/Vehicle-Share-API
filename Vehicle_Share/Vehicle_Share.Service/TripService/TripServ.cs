@@ -124,18 +124,15 @@ namespace Vehicle_Share.Service.TripService
             var allTrips = await _trip.GetAllAsync();
 
 
-            if (userData.Type is true)
-                return new GenResponseModel<GetTripDriverModel> { message = _LocaLizer[SharedResourcesKey.ShowTripDriver] };
-
-            var userTrips = allTrips.Where(t => t.CarId is not null).ToList();
+            
+            var userTrips = allTrips.Where(t => t.CarId is not null && t.IsFinished is false && t.AvailableSeats.Value > 0).ToList();
 
             var result = new GenResponseModel<GetTripDriverModel>();
 
             foreach (var trip in userTrips)
             {
                 var car = await _car.FindAsync(e => e.Id == trip.CarId);
-                if (!trip.IsFinished && trip.AvailableSeats.HasValue) // Check if AvailableSeats has a value
-                {
+                
                     result.data?.Add(new GetTripDriverModel
                     {
                         Id = trip.Id,
@@ -149,11 +146,12 @@ namespace Vehicle_Share.Service.TripService
                         CarType = car.Type,
                         CarBrand = car.Brand,
                     });
-                }
+                
                 result.IsSuccess = true;
             }
             return result;
         }
+        
         public async Task<GenResponseModel<GetTripPassengerModel>> GetAllPassengerTripAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
@@ -166,14 +164,11 @@ namespace Vehicle_Share.Service.TripService
 
             var allTrips = await _trip.GetAllAsync();
 
-            if (!userData.Type is true)
-                return new GenResponseModel<GetTripPassengerModel> { message = _LocaLizer[SharedResourcesKey.ShowTripPassanger] };
-            var userTrips = allTrips.Where(t => t.CarId is null).ToList();
+            var userTrips = allTrips.Where(t => t.CarId is null && t.IsFinished is false ).ToList();
             var result = new GenResponseModel<GetTripPassengerModel>();
 
             foreach (var trip in userTrips)
             {
-                if (!trip.IsFinished)
                     result.data?.Add(new GetTripPassengerModel
                     {
                         Id = trip.Id,
@@ -201,9 +196,11 @@ namespace Vehicle_Share.Service.TripService
             if (userData is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] };
 
-            if (userData.Type is false) // Driver
+            if (model.Type is false) // Driver
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoDriver] };
-            if (string.IsNullOrEmpty(model.CarId))
+
+            var car = await _car.FindAsync(e => e.Id == model.CarId);
+            if (string.IsNullOrEmpty(model.CarId) || car is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar] };
 
             Trip trip = new()
@@ -237,7 +234,7 @@ namespace Vehicle_Share.Service.TripService
             if (userData is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] };
 
-            if (userData.Type is true) // Passenger
+            if (model.Type is true) // Passenger
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoPassanger] };
             Trip trip = new()
             {
@@ -268,7 +265,7 @@ namespace Vehicle_Share.Service.TripService
             if (userData is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] };
 
-            if (userData.Type is false) // Driver
+            if (model.Type is false) // Driver
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoDriver] };
 
             var trip = await _trip.FindAsync(e => e.Id == id);
@@ -293,7 +290,7 @@ namespace Vehicle_Share.Service.TripService
             if (userData is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] };
 
-            if (userData.Type is true) // Passenger
+            if (model.Type is true) // Passenger
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoPassanger] };
 
             var trip = await _trip.FindAsync(e => e.Id == id);

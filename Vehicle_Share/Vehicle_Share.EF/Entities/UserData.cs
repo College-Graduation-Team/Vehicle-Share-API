@@ -50,7 +50,7 @@ namespace Vehicle_Share.EF.Models
         [Required(ErrorMessage = "Image is required.")]
         public string? ProfileImage { get; set; }
 
-        public bool Type { get; set; }    // driver of passenger
+      /*  public bool Type { get; set; }    // driver of passenger*/
 
         public DateTime CreatedOn { get; set; }
 
