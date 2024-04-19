@@ -1,4 +1,5 @@
 ﻿using Vehicle_Share.Core.Models.AuthModels;
+using Vehicle_Share.Core.Response;
 
 namespace Vehicle_Share.Core.Repository.AuthRepo
 {
@@ -9,7 +10,7 @@ namespace Vehicle_Share.Core.Repository.AuthRepo
         Task<string> ConfirmedPhoneAsync(ConfirmPhoneModel model);
         Task<string> AddRoleAsync(RoleModel model);
         Task<AuthModel> RefreshTokenAsync(RefreshTokenModel model);
-        Task<string> SendCodeAsync(SendCodeModel model);
+        Task<ResponseModel> SendCodeAsync(SendCodeModel model);
         Task<AuthModel> ResetPasswordAsync(ResetPassModel model);
         // Task<AuthModel> IsPhoneConfirmedAsync(PhoneModel model);
         Task<AuthModel> LogoutAsync();

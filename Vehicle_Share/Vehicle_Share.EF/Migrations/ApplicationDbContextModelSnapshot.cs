@@ -291,7 +291,7 @@ namespace Vehicle_Share.EF.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<float>("RecommendPrice")
+                    b.Property<float>("RecommendedPrice")
                         .HasColumnType("real");
 
                     b.Property<short?>("RequestedSeats")
@@ -431,9 +431,6 @@ namespace Vehicle_Share.EF.Migrations
                     b.Property<string>("ProfileImage")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Type")
-                        .HasColumnType("bit");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");

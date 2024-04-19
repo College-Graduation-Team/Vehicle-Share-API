@@ -8,7 +8,7 @@ namespace Vehicle_Share.Core.Models.TripModels
         public string? From { get; set; }
         public string? To { get; set; }
         public DateTime Date { get; set; }
-        public float RecommendPrice { get; set; }
+        public float RecommendedPrice { get; set; }
         public short? AvailableSeats { get; set; }    //driver
         public DateTime CreatedOn { get; set; }
 

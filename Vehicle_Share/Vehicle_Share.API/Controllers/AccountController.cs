@@ -53,7 +53,7 @@ namespace Vehicle_Share.API.Controllers
             var result = await _autherRepo.RefreshTokenAsync(model);
             if (!result.IsAuth)
                 return BadRequest(result.Message);
-            return Ok(result);
+            return Ok(new { result.Token, result.TokenExpiration, result.RefreshToken, result.RefreshTokenExpiration, result.PhoneConfirmed });
         }
 
         [HttpPost("send-code")] //  resend code 
@@ -62,9 +62,9 @@ namespace Vehicle_Share.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _autherRepo.SendCodeAsync(model);
-            if (result != "Code sent successfully")
+            if (!result.IsSuccess)
                 return BadRequest(result);
-            return Ok(result);
+            return Ok(new {result.message});
         }
 
         [HttpPost("reset-password")] // for reset password 

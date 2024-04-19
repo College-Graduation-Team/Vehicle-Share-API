@@ -1,13 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Vehicle_Share.EF.Migrations
 {
-    public partial class AddAllTablesTripCarRequestandUserdata : Migration
+    public partial class AddAlltables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterColumn<string>(
+                name: "Token",
+                table: "RefreshToken",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "CreatedOn",
+                table: "AspNetUsers",
+                type: "datetime2",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
             migrationBuilder.CreateTable(
                 name: "UserData",
                 columns: table => new
@@ -22,7 +38,8 @@ namespace Vehicle_Share.EF.Migrations
                     NationalCardImageFront = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NationalCardImageBack = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfileImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -31,8 +48,7 @@ namespace Vehicle_Share.EF.Migrations
                         name: "FK_UserData_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -49,7 +65,8 @@ namespace Vehicle_Share.EF.Migrations
                     LicenseImageFront = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LicenseImagBack = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LicenseExpiration = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserDataId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserDataId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -58,8 +75,7 @@ namespace Vehicle_Share.EF.Migrations
                         name: "FK_Car_UserData_UserDataId",
                         column: x => x.UserDataId,
                         principalTable: "UserData",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -70,7 +86,8 @@ namespace Vehicle_Share.EF.Migrations
                     ImageFront = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageBack = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Expiration = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserDataId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserDataId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -79,8 +96,7 @@ namespace Vehicle_Share.EF.Migrations
                         name: "FK_License_UserData_UserDataId",
                         column: x => x.UserDataId,
                         principalTable: "UserData",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -91,10 +107,11 @@ namespace Vehicle_Share.EF.Migrations
                     From = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     To = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RecommendPrice = table.Column<float>(type: "real", nullable: false),
-                    AvailableSeats = table.Column<int>(type: "smallint", nullable: true),
-                    RequestedSeats = table.Column<int>(type: "smallint", nullable: true),
-                    UserDataId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RecommendedPrice = table.Column<float>(type: "real", nullable: false),
+                    AvailableSeats = table.Column<short>(type: "smallint", nullable: true),
+                    RequestedSeats = table.Column<short>(type: "smallint", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserDataId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CarId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -104,14 +121,12 @@ namespace Vehicle_Share.EF.Migrations
                         name: "FK_Trip_Car_CarId",
                         column: x => x.CarId,
                         principalTable: "Car",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Trip_UserData_UserDataId",
                         column: x => x.UserDataId,
                         principalTable: "UserData",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -121,8 +136,9 @@ namespace Vehicle_Share.EF.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Seats = table.Column<short>(type: "smallint", nullable: false),
-                    UserDataId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TripId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserDataId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    TripId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -131,14 +147,12 @@ namespace Vehicle_Share.EF.Migrations
                         name: "FK_Request_Trip_TripId",
                         column: x => x.TripId,
                         principalTable: "Trip",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Request_UserData_UserDataId",
                         column: x => x.UserDataId,
                         principalTable: "UserData",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -175,7 +189,8 @@ namespace Vehicle_Share.EF.Migrations
                 name: "IX_UserData_UserId",
                 table: "UserData",
                 column: "UserId",
-                unique: true);
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -194,6 +209,20 @@ namespace Vehicle_Share.EF.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserData");
+
+            migrationBuilder.DropColumn(
+                name: "CreatedOn",
+                table: "AspNetUsers");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Token",
+                table: "RefreshToken",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
         }
     }
 }

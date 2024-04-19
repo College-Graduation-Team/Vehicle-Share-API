@@ -19,8 +19,6 @@ namespace Vehicle_Share.Core.Models.UserData
 
 
         public bool? Gender { get; set; }
-        public bool? Type { get; set; }
-
 
        // [Required(ErrorMessage = "Nationality is required.")]
         [MaxLength(50)]

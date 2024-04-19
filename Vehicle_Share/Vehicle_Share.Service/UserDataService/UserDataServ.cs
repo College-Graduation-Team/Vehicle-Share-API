@@ -34,7 +34,7 @@ namespace Vehicle_Share.Service.UserDataService
             // ===== DateTime is non-nullable struct can never be null =====
             // if (userData.Birthdate == null) 
             //     userData.Birthdate = DateTime.UtcNow;//DateTime.Parse ("2013-10-01 13:45:01");
-            var age = CalculateAge(userData.Birthdate, DateTime.UtcNow);
+          //  var age = CalculateAge(userData.Birthdate, DateTime.UtcNow);
 
             var result = new ResponseForOneModel<GetUserModel>()
             {
@@ -43,7 +43,7 @@ namespace Vehicle_Share.Service.UserDataService
                     Id = userData.Id,
                     Name = userData.Name,
                     NationalId = userData.NationalId,
-                    Age = age,
+                    Birthdate = userData.Birthdate.ToString("yyyy-MM-DD"),
                     Gender = userData.Gender,
                     Nationality = userData.Nationality,
                     Address = userData.Address,
@@ -66,7 +66,7 @@ namespace Vehicle_Share.Service.UserDataService
             var userData = await _userData.FindAsync(e => e.UserId == userId);
             if (userData is null)
             {
-                if (model.Name == null || model.NationalId == null || model.Address == null || model.Nationality == null || model.Type == null ||
+                if (model.Name == null || model.NationalId == null || model.Address == null || model.Nationality == null ||
                  model.NationalCardImageFront == null || model.NationalCardImageBack == null || model.ProfileImage == null)
                 {
                     return new ResponseForOneModel<ImageModel> { message = _LocaLizer[SharedResourcesKey.Required] };

@@ -13,6 +13,7 @@ using Vehicle_Share.Core.Models.AuthModels;
 using Vehicle_Share.Core.Repository.AuthRepo;
 using Vehicle_Share.Core.Repository.SendOTP;
 using Vehicle_Share.Core.Resources;
+using Vehicle_Share.Core.Response;
 using Vehicle_Share.EF.Helper;
 using Vehicle_Share.EF.Models;
 using static System.Net.WebRequestMethods;
@@ -251,12 +252,12 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
         }
 
         // reset password
-        public async Task<string> SendCodeAsync(SendCodeModel model)
+        public async Task<ResponseModel> SendCodeAsync(SendCodeModel model)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(o => o.PhoneNumber == model.Phone);
 
             if (user == null)
-                return _LocaLizer[SharedResourcesKey.WrongPhoneNumber];
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.WrongPhoneNumber] };
 
             // Generate a random 6-digit code
             var code = GenerateRandomCode();
@@ -269,7 +270,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 
            _smsService.Send(user.PhoneNumber, code);
 
-            return _LocaLizer[SharedResourcesKey.Success];
+            return  new ResponseModel { message = _LocaLizer[SharedResourcesKey.Success] , IsSuccess=true };
         }
 
         public async Task<AuthModel> ResetPasswordAsync(ResetPassModel model)

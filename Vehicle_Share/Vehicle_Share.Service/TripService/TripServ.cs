@@ -61,7 +61,7 @@ namespace Vehicle_Share.Service.TripService
                     From = trip.From,
                     To = trip.To,
                     Date = trip.Date,
-                    RecommendPrice = trip.RecommendPrice,
+                    RecommendedPrice = trip.RecommendedPrice,
                     AvailableSeats = trip.AvailableSeats,
                     RequestedSeats = trip.RequestedSeats,
                     CreatedOn=trip.CreatedOn,
@@ -98,7 +98,7 @@ namespace Vehicle_Share.Service.TripService
                     From = trip.From,
                     To = trip.To,
                     Date = trip.Date,
-                    RecommendPrice = trip.RecommendPrice,
+                    RecommendedPrice = trip.RecommendedPrice,
                     AvailableSeats = trip.AvailableSeats,    //driver
                     RequestedSeats = trip.RequestedSeats,  //passenger
                     IsFinished = trip.IsFinished,
@@ -139,7 +139,7 @@ namespace Vehicle_Share.Service.TripService
                         From = trip.From,
                         To = trip.To,
                         Date = trip.Date,
-                        RecommendPrice = trip.RecommendPrice,
+                        RecommendedPrice = trip.RecommendedPrice,
                         AvailableSeats = trip.AvailableSeats.Value, // Access the Value property
                         CreatedOn=trip.CreatedOn,
                         CarId = trip.CarId, // Assuming CarID is a string property
@@ -175,7 +175,7 @@ namespace Vehicle_Share.Service.TripService
                         From = trip.From,
                         To = trip.To,
                         Date = trip.Date,
-                        RecommendPrice = trip.RecommendPrice,
+                        RecommendedPrice = trip.RecommendedPrice,
                         RequestedSeats = trip.RequestedSeats.Value,
                         CreatedOn=trip.CreatedOn,
                         IsFinished = trip.IsFinished
@@ -210,7 +210,7 @@ namespace Vehicle_Share.Service.TripService
                 To = model.To,
                 Date = model.Date,
                 AvailableSeats = model.AvailableSeats,
-                RecommendPrice = model.RecommendPrice,
+                RecommendedPrice = model.RecommendedPrice,
                 CreatedOn=DateTime.UtcNow,
 
                 // Relation
@@ -243,7 +243,7 @@ namespace Vehicle_Share.Service.TripService
                 To = model.To,
                 Date = model.Date,
                 RequestedSeats = model.RequestedSeats,
-                RecommendPrice = model.RecommendPrice,
+                RecommendedPrice = model.RecommendedPrice,
 
                 // Relation
                 UserDataId = userData.Id
@@ -276,7 +276,7 @@ namespace Vehicle_Share.Service.TripService
             trip.From = model.From ??trip.From;
             trip.To = model.To ?? trip.To;
             trip.Date = model.Date !=null ? model.Date : trip.Date;
-            trip.RecommendPrice = model.RecommendPrice > 0 ? model.RecommendPrice : trip.RecommendPrice;
+            trip.RecommendedPrice = model.RecommendedPrice > 0 ? model.RecommendedPrice : trip.RecommendedPrice;
             trip.AvailableSeats = model.AvailableSeats > 0 ? model.AvailableSeats : trip.AvailableSeats;
             trip.CarId = model.CarId ?? trip.CarId;
 
@@ -301,7 +301,7 @@ namespace Vehicle_Share.Service.TripService
             trip.From = model.From ?? trip.From;
             trip.To = model.To ?? trip.To;
             trip.Date = model.Date != null ? model.Date : trip.Date;
-            trip.RecommendPrice = model.RecommendPrice > 0 ? model.RecommendPrice : trip.RecommendPrice;
+            trip.RecommendedPrice = model.RecommendedPrice > 0 ? model.RecommendedPrice : trip.RecommendedPrice;
             trip.RequestedSeats = model.RequestedSeats > 0 ? model.RequestedSeats : trip.RequestedSeats;
 
             /////////////////////////////////////////////////////////////
