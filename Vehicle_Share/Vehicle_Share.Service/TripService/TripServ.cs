@@ -147,8 +147,8 @@ namespace Vehicle_Share.Service.TripService
                         CarBrand = car.Brand,
                     });
                 
-                result.IsSuccess = true;
             }
+            result.IsSuccess = true;
             return result;
         }
         

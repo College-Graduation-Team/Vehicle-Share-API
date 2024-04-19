@@ -47,8 +47,8 @@ namespace Vehicle_Share.Service.UserDataService
                     Gender = userData.Gender,
                     Nationality = userData.Nationality,
                     Address = userData.Address,
-                    NationalCardImageFront = userData.NationalCardImageFront,
-                    NationalCardImageBack = userData.NationalCardImageBack,
+                   /* NationalCardImageFront = userData.NationalCardImageFront,
+                    NationalCardImageBack = userData.NationalCardImageBack,*/
                     ProfileImage = userData.ProfileImage,
                 },
                 IsSuccess = true

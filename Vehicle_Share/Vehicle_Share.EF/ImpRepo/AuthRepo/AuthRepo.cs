@@ -90,21 +90,21 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
             return new AuthModel { Message = _LocaLizer[SharedResourcesKey.Created], IsAuth = true };
         }
 
-        public async Task<string> ConfirmedPhoneAsync(ConfirmPhoneModel model)
+        public async Task<ResponseModel> ConfirmedPhoneAsync(ConfirmPhoneModel model)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(o => o.PhoneNumber == model.Phone);
 
             if (user == null)
-                return _LocaLizer[SharedResourcesKey.WrongPhoneNumber];
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.WrongPhoneNumber] };
 
             if (model.Code.IsNullOrEmpty() || model.Code != user.ResetCode || user.ResetCodeExpired)
             {
-                return _LocaLizer[SharedResourcesKey.WrongCode];
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.WrongCode] };
             }
 
             user.PhoneNumberConfirmed = true;
             await _userManager.UpdateAsync(user);
-            return _LocaLizer[SharedResourcesKey.Success];
+            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Success], IsSuccess = true };
 
 
         }

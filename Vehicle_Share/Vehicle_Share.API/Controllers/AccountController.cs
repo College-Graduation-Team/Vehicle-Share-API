@@ -31,7 +31,9 @@ namespace Vehicle_Share.API.Controllers
         public async Task<IActionResult> ConfirmedPhoneAsync(ConfirmPhoneModel model)
         {
             var result = await _autherRepo.ConfirmedPhoneAsync(model);
-            return Ok(result);
+            if (!result.IsSuccess)
+                return BadRequest(new { result.message });
+            return Ok(new { result.message });
         }
 
         [HttpPost("login")]
@@ -63,7 +65,7 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _autherRepo.SendCodeAsync(model);
             if (!result.IsSuccess)
-                return BadRequest(result);
+                return BadRequest((new { result.message }));
             return Ok(new {result.message});
         }
 
