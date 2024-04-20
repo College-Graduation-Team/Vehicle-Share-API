@@ -166,7 +166,7 @@
     <value>لقد قمت باضافة البايانات مسبقاا </value>
   </data>
   <data name="WrongCode" xml:space="preserve">
-    <value>هذا الكوج ليس صحيحاا </value>
+    <value>هذا الكود لــيــس صحيحاا </value>
   </data>
   <data name="WrongPhoneOrPassword" xml:space="preserve">
     <value>خطاء في رقم الهاتف او كلمة المرور </value>

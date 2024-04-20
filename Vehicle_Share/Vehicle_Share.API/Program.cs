@@ -46,7 +46,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(
       option => option.UseSqlServer("Data Source=.;Initial Catalog=VehicleSharing;Integrated Security=True"));
   // option => option.UseSqlServer("Server=localhost;Database=VehicleSharing;User Id=sa;Password=Hemakress-123"));
 
-builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
+    options.Password.RequiredLength = 6;
+}).AddEntityFrameworkStores<ApplicationDbContext>()
+ .AddDefaultTokenProviders();
 
 // inject Repository
 builder.Services.AddScoped<IAuthRepo, AuthRepo>();
