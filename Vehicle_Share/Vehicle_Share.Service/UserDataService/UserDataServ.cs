@@ -43,7 +43,7 @@ namespace Vehicle_Share.Service.UserDataService
                     Id = userData.Id,
                     Name = userData.Name,
                     NationalId = userData.NationalId,
-                    Birthdate = userData.Birthdate.ToString("yyyy-MM-DD"),
+                    Birthdate = userData.Birthdate.ToString("yyyy-MM-dd"),
                     Gender = userData.Gender,
                     Nationality = userData.Nationality,
                     Address = userData.Address,

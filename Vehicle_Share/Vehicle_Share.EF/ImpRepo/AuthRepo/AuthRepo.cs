@@ -204,7 +204,11 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
                 authModel.Message = _LocaLizer[SharedResourcesKey.WrongToken];
                 return authModel;
             }
-
+            if (user.PhoneNumberConfirmed == false)
+            {
+                authModel.Message = _LocaLizer[SharedResourcesKey.NotConfirmPhoneNumber];
+                return authModel;
+            }
             var existingRefreshToken = user.RefreshTokens.Single(t => t.Token == model.Token);
 
             if (!existingRefreshToken.IsActive)
@@ -228,6 +232,7 @@ namespace Vehicle_Share.EF.ImpRepo.AuthRepo
 
             authModel.IsAuth = true;
             authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+            authModel.TokenExpiration = jwtToken.ValidTo.ToString(DateTimeFormatInfo.InvariantInfo.UniversalSortableDateTimePattern, DateTimeFormatInfo.InvariantInfo);
             authModel.Phone = user.PhoneNumber;
             authModel.UserName = user.UserName;
             var roles = await _userManager.GetRolesAsync(user);

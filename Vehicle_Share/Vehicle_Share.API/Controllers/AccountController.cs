@@ -22,7 +22,7 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _autherRepo.RegisterAsync(model);
             if (!result.IsAuth)
-                return BadRequest(result.Message);
+                return BadRequest(new { result.Message });
 
             return Ok(new { result.Message });
         }
@@ -43,7 +43,7 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _autherRepo.LoginAsync(model);
             if (!result.IsAuth)
-                return BadRequest(result.Message);
+                return BadRequest(new { result.Message });
             return Ok(new { result.Token, result.TokenExpiration, result.RefreshToken, result.RefreshTokenExpiration, result.PhoneConfirmed });
         }
 
@@ -54,7 +54,7 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _autherRepo.RefreshTokenAsync(model);
             if (!result.IsAuth)
-                return BadRequest(result.Message);
+                return BadRequest(new { result.Message });
             return Ok(new { result.Token, result.TokenExpiration, result.RefreshToken, result.RefreshTokenExpiration, result.PhoneConfirmed });
         }
 
@@ -65,7 +65,7 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _autherRepo.SendCodeAsync(model);
             if (!result.IsSuccess)
-                return BadRequest((new { result.message }));
+                return BadRequest(new { result.message });
             return Ok(new {result.message});
         }
 
@@ -76,8 +76,8 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _autherRepo.ResetPasswordAsync(model);
             if (!result.IsAuth)
-                return BadRequest(result.Message);
-            return Ok(result.Message);
+                return BadRequest(new { result.Message });
+            return Ok(new { result.Message });
 
         }
         
