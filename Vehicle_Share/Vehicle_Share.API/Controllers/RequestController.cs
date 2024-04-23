@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Vehicle_Share.Core.Models.RequestModels;
+using Vehicle_Share.Core.Models.TripModels;
+using Vehicle_Share.Core.Response;
 using Vehicle_Share.Service.RequestService;
 
 namespace Vehicle_Share.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RequestController : ControllerBase
     {
         private readonly IRequestServ _service;
@@ -20,14 +24,15 @@ namespace Vehicle_Share.API.Controllers
         {
             if (id == null) {
                 var result = await _service.GetAllMyRequestAsync();
-                if (result.IsSuccess)
-                    return Ok(new { result.data });
+                if (result is ResponseDataModel<List<GetReqModel>> res)
+                    return Ok(new { res.data });
 
                 return BadRequest(new { result.message });
+
             } else {
                 var result = await _service.GetAllTripRequestedAsync(id);
-                if (result.IsSuccess)
-                    return Ok(new { result.data });
+                if (result is ResponseDataModel<List<GetReqModel>> res)
+                    return Ok(new { res.data });
 
                 return BadRequest(new { result.message });
             }

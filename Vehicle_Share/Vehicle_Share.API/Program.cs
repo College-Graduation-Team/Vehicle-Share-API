@@ -10,15 +10,13 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Globalization;
-using System.Reflection;
+using Vehicle_Share.Service.AuthService;
 using System.Text;
-using Vehicle_Share.Core.Repository.AuthRepo;
 using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Repository.SendOTP;
 using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Data;
 using Vehicle_Share.EF.Helper;
-using Vehicle_Share.EF.ImpRepo.AuthRepo;
 using Vehicle_Share.EF.ImpRepo.GenericRepo;
 using Vehicle_Share.EF.ImpRepo.SendOTPImplement;
 using Vehicle_Share.EF.Models;
@@ -27,6 +25,7 @@ using Vehicle_Share.Service.LicenseService;
 using Vehicle_Share.Service.RequestService;
 using Vehicle_Share.Service.TripService;
 using Vehicle_Share.Service.UserDataService;
+using Vehicle_Share.Service.IAuthService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,7 +52,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
  .AddDefaultTokenProviders();
 
 // inject Repository
-builder.Services.AddScoped<IAuthRepo, AuthRepo>();
+builder.Services.AddScoped<IAuthServ, AuthServ>();
 builder.Services.AddScoped(typeof(IBaseRepo<>), typeof(BaseRepo<>));
 builder.Services.AddScoped<IUserDataServ, UserDataServ>();
 builder.Services.AddScoped<ICarServ, CarServ>();
@@ -71,6 +70,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
+
 
 
 
@@ -221,6 +221,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
 #region LocaLization Mideware
 
 var options = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
@@ -229,7 +230,9 @@ app.UseRequestLocalization(options.Value);
 #endregion
 
 app.UseCors(policyName: "CorsPolicy");
+
 app.UseStaticFiles(); // to upload image in wwwroot 
+
 app.UseAuthentication();
 
 app.UseAuthorization();

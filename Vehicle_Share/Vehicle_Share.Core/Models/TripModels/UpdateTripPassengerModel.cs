@@ -11,7 +11,6 @@ namespace Vehicle_Share.Core.Models.TripModels
         public DateTime Date { get; set; }
         public float RecommendedPrice { get; set; }
         public short RequestedSeats { get; set; } //passenger
-        public bool Type { get; set; }   // Passenger or Driver
 
     }
 }

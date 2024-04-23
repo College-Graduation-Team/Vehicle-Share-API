@@ -29,20 +29,24 @@ namespace Vehicle_Share.Service.RequestService
             _httpContextAccessor = httpContextAccessor;
             _LocaLizer = locaLizer;
         }
-        public async Task<GenResponseModel<GetReqModel>> GetAllTripRequestedAsync(string tripId)
+        public async Task<ResponseModel> GetAllTripRequestedAsync(string tripId)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new GenResponseModel<GetReqModel> { message = _LocaLizer[SharedResourcesKey.NoAuth] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new GenResponseModel<GetReqModel> { message = _LocaLizer[SharedResourcesKey.NoUserData] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] };
 
-            var allRequests = await _request.GetAllAsync();
-            var userRequests = allRequests.Where(r => r.TripId == tripId).ToList();
+            var trip = await _trip.GetByIdAsync(tripId);
+            if (trip is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoTrip] };
 
-            var result = new GenResponseModel<GetReqModel>();
+            var userRequests = await _request.GetAllAsync(r => r.TripId == tripId);
+
+            var result = new ResponseDataModel<List<GetReqModel>>();
+            result.data = new List<GetReqModel>();
             foreach (var request in userRequests)
             {
                 result.data?.Add(new GetReqModel
@@ -58,19 +62,20 @@ namespace Vehicle_Share.Service.RequestService
             result.IsSuccess = true;
             return result;
         }
-        public async Task<GenResponseModel<GetReqModel>> GetAllMyRequestAsync()
+        public async Task<ResponseModel> GetAllMyRequestAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new GenResponseModel<GetReqModel> { message = _LocaLizer[SharedResourcesKey.NoAuth] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new GenResponseModel<GetReqModel> { message = _LocaLizer[SharedResourcesKey.NoAuth] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var allRequests = await _request.GetAllAsync();
             var userRequests = allRequests.Where(t => t.UserDataId == userData.Id).ToList();
-            var result = new GenResponseModel<GetReqModel>();
+            var result = new ResponseDataModel<List<GetReqModel>>();
+            result.data = new List<GetReqModel>();
             foreach (var request in userRequests)
             {
                 result.data?.Add(new GetReqModel

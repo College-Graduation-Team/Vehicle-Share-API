@@ -151,7 +151,7 @@
     <value>بايانات المستخدم غير موجوه . من فضلك اضف البايانات ثم حاول مره اخري </value>
   </data>
   <data name="PhoneInvalid" xml:space="preserve">
-    <value>رقم الهاتف غـيـر صــــالـــح </value>
+    <value>رقم الهاتف غـيـر صالــح </value>
   </data>
   <data name="PhoneRequired" xml:space="preserve">
     <value>رقم الهاتف  مــطــلــوب </value>
@@ -196,7 +196,7 @@
     <value>انـــت لــســـت ســــائــــــق   </value>
   </data>
   <data name="NoLicense" xml:space="preserve">
-    <value>الـــرخــصــه غـــيـــر مـــوجــــوده</value>
+    <value>الرخــصــه الـشـخـصـيـه غـــيـــر مـــوجــــوده</value>
   </data>
   <data name="NoPassanger" xml:space="preserve">
     <value>انت لست راكــــــــــب</value>
@@ -230,5 +230,11 @@
   </data>
   <data name="Required" xml:space="preserve">
     <value>كـــــل الحـــــقـــول مـــطـــلــوبه</value>
+  </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value>تــم اعــادة ضــبــط كــلــمــة الــمـرور بــنــجــاح</value>
+  </data>
+  <data name="NoDelete" xml:space="preserve">
+    <value>لا يمكن الحـذف السـيـاره مربطه برحله</value>
   </data>
 </root>

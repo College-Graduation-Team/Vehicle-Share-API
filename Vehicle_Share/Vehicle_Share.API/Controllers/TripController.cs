@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vehicle_Share.Core.Models.TripModels;
+using Vehicle_Share.Core.Response;
 using Vehicle_Share.Service.TripService;
 
 namespace Vehicle_Share.API.Controllers
@@ -18,18 +19,20 @@ namespace Vehicle_Share.API.Controllers
         }
 
         [HttpGet("{id?}")]
-        public async Task<IActionResult> GetByIdAsync([FromRoute] string? id)
+        public async Task<IActionResult> GetAsync([FromRoute] string? id)
         {
             if (id == null) {
                 var result = await _service.GetAllForUserAsync();
-                if (result.IsSuccess)
-                    return Ok(new { result.data });
+               
+                if (result is ResponseDataModel<List<GetTripModel>> res)
+                    return Ok(new { res.data });
 
                 return BadRequest(new { result.message });
             } else {
                 var result = await _service.GetByIdAsync(id);
-                if (result.IsSuccess)
-                    return Ok(new { result.data });
+                if (result is ResponseDataModel<GetTripModel> res)
+                    return Ok(new { res.data });
+
 
                 return BadRequest(new { result.message });
             }
@@ -39,8 +42,8 @@ namespace Vehicle_Share.API.Controllers
         public async Task<IActionResult> GetAllDriverTripAsync()
         {
             var result = await _service.GetAllDriverTripAsync();
-            if (result.IsSuccess)
-                return Ok(new { result.data });
+            if (result is ResponseDataModel<List<GetTripDriverModel>> res )
+                return Ok(new { res.data });
 
             return BadRequest(new { result.message });
         }
@@ -50,8 +53,8 @@ namespace Vehicle_Share.API.Controllers
         {
 
             var result = await _service.GetAllPassengerTripAsync();
-            if (result.IsSuccess)
-                return Ok(new { result.data });
+            if (result is ResponseDataModel<List<GetTripPassengerModel>> res)
+                return Ok(new { res.data });
 
             return BadRequest(new { result.message });
         }

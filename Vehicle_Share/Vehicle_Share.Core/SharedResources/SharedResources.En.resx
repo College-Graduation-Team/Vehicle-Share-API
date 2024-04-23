@@ -196,7 +196,7 @@
     <value>You are not driver</value>
   </data>
   <data name="NoLicense" xml:space="preserve">
-    <value>License not found </value>
+    <value>Personal license not found </value>
   </data>
   <data name="NoPassanger" xml:space="preserve">
     <value>You are not Passenger</value>
@@ -230,5 +230,11 @@
   </data>
   <data name="Required" xml:space="preserve">
     <value>All fields is required</value>
+  </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value>reset password successfully</value>
+  </data>
+  <data name="NoDelete" xml:space="preserve">
+    <value>can't delete car is related to trip </value>
   </data>
 </root>

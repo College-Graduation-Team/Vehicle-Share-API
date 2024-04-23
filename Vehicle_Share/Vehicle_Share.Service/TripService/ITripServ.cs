@@ -5,10 +5,10 @@ namespace Vehicle_Share.Service.TripService
 {
     public interface ITripServ
     {
-        Task<ResponseForOneModel<GetTripModel>> GetByIdAsync(string id);
-        Task<GenResponseModel<GetTripModel>> GetAllForUserAsync();
-        Task<GenResponseModel<GetTripDriverModel>> GetAllDriverTripAsync();
-        Task<GenResponseModel<GetTripPassengerModel>> GetAllPassengerTripAsync();
+        Task<ResponseModel> GetByIdAsync(string id);
+        Task<ResponseModel> GetAllForUserAsync();
+        Task<ResponseModel> GetAllDriverTripAsync();
+        Task<ResponseModel> GetAllPassengerTripAsync();
         Task<ResponseModel> AddAsync(TripDriverModel model);
         Task<ResponseModel> AddAsync(TripPassengerModel model);
         Task<ResponseModel> UpdateAsync(string id, UpdateTripDriverModel model);

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vehicle_Share.Core.Models.LicModels;
+using Vehicle_Share.Core.Response;
 using Vehicle_Share.Service.LicenseService;
 
 namespace Vehicle_Share.API.Controllers
@@ -20,8 +21,8 @@ namespace Vehicle_Share.API.Controllers
         public async Task<IActionResult> GetAllAsync()
         {
             var result = await _service.GetAsync();
-            if (result.IsSuccess)
-                return Ok(new { result.message });
+            if (result is ResponseDataModel<GetLicModel> res)
+                return Ok(new { res.data });
 
             return BadRequest(new { result.message });
         }

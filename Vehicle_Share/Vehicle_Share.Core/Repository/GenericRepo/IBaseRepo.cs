@@ -9,6 +9,7 @@ namespace Vehicle_Share.Core.Repository.GenericRepo
         Task<T> AddAsync(T entity);
         Task<T> UpdateAsync(T entity);
         Task<int> DeleteAsync(T entity);
+        Task<List<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null);
         Task<string> UploadImageAsync(string Folder, IFormFile imageData);
         //    Task<string> UpdateImageAsync(string folder, IFormFile file, string existingFilePath);
         Task RemoveImageAsync(string filePath);

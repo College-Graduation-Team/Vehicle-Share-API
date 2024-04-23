@@ -6,8 +6,8 @@ namespace Vehicle_Share.Service.UserDataService
     public interface IUserDataServ
     {
         //  Task<IEnumerable<UserData>> GetAllAsyc();
-        Task<ResponseForOneModel<GetUserModel>> GetUserDataAsync();
-        Task<ResponseForOneModel<ImageModel>> AddAndUpdateAsync(UserDataModel model);
+        Task<ResponseModel> GetUserDataAsync();
+        Task<ResponseModel> AddAndUpdateAsync(UserDataModel model);
         //  Task<ResponseModel> UpdateAsync(UserDataModel model);
         //  Task<int> DeleteAsync(string id);
 

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Vehicle_Share.Core.Models.AuthModels;
 using Vehicle_Share.Core.Models.UserData;
+using Vehicle_Share.Core.Response;
 using Vehicle_Share.Service.UserDataService;
 
 namespace Vehicle_Share.API.Controllers
@@ -21,8 +23,8 @@ namespace Vehicle_Share.API.Controllers
         public async Task<IActionResult> GetUserDataAsync()
         {
             var result = await _service.GetUserDataAsync();
-            if (result.IsSuccess)
-                return Ok(new { result.data });
+            if (result is ResponseDataModel<GetUserModel> res)
+                return Ok(new { res.data });
 
             return BadRequest(new { result.message });
         }
@@ -33,10 +35,11 @@ namespace Vehicle_Share.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _service.AddAndUpdateAsync(model);
-            if (result.IsSuccess)
-                return Ok(new { result.message,result.data });
+            if (result is ResponseDataModel<ImageModel> res)
+                return Ok(new { res.message,res.data });
 
             return BadRequest(new { result.message });
+
         }
 
 

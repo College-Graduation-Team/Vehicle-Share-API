@@ -5,8 +5,8 @@ namespace Vehicle_Share.Service.RequestService
 {
     public interface IRequestServ
     {
-        Task<GenResponseModel<GetReqModel>> GetAllTripRequestedAsync(string tripId);
-        Task<GenResponseModel<GetReqModel>> GetAllMyRequestAsync();
+        Task<ResponseModel> GetAllTripRequestedAsync(string tripId);
+        Task<ResponseModel> GetAllMyRequestAsync();
         Task<ResponseModel> SendReqestAsync(ReqModel model);
         Task<ResponseModel> DenyRequestAsync(string requestId);
         Task<ResponseModel> AcceptRequestAsync(string requestId);

@@ -26,19 +26,23 @@ namespace Vehicle_Share.Service.LicenseService
             _user = user;
             _LocaLizer = locaLizer;
         }
-        public async Task<ResponseForOneModel<GetLicModel>> GetAsync()
+        public async Task<ResponseModel> GetAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseForOneModel<GetLicModel> { message = _LocaLizer[SharedResourcesKey.NoAuth] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var userData = await _user.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseForOneModel<GetLicModel> { message = _LocaLizer[SharedResourcesKey.NoUserData] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] };
 
 
             var Lic = await _Lic.FindAsync(e => e.UserDataId == userData.Id);
-            var result = new ResponseForOneModel<GetLicModel>()
+            if (Lic is null)
+            {
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoLicense] };
+            }
+            var result = new ResponseDataModel<GetLicModel>()
             {
                 data = new GetLicModel
                 {
@@ -72,7 +76,7 @@ namespace Vehicle_Share.Service.LicenseService
                 ImageBack = LicBack,
                 Expiration = model.Expiration,
                 UserDataId = userData.Id,
-                CreatedOn=DateTime.UtcNow
+                CreatedOn= DateTime.UtcNow
             };
 
             await _Lic.AddAsync(user);

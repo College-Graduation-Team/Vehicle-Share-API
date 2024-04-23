@@ -112,6 +112,18 @@ namespace Vehicle_Share.EF.ImpRepo.GenericRepo
             return await query.FirstOrDefaultAsync();
         }
 
+
+        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null)
+        {
+            if (predicate != null)
+            {
+                return await _context.Set<T>().Where(predicate).ToListAsync();
+            }
+            else
+            {
+                return await _context.Set<T>().ToListAsync();
+            }
+        }
     }
 
 }

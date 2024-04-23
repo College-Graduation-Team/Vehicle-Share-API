@@ -21,22 +21,22 @@ namespace Vehicle_Share.Service.UserDataService
             _httpContextAccessor = httpContextAccessor;
             _LocaLizer = locaLizer;
         }
-        public async Task<ResponseForOneModel<GetUserModel>> GetUserDataAsync()
+        public async Task<ResponseModel> GetUserDataAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseForOneModel<GetUserModel> { message = _LocaLizer[SharedResourcesKey.NoAuth] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var userData = await _userData.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseForOneModel<GetUserModel> { message = _LocaLizer[SharedResourcesKey.NoUserData] };
-
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] };
+                /*
             // ===== DateTime is non-nullable struct can never be null =====
             // if (userData.Birthdate == null) 
             //     userData.Birthdate = DateTime.UtcNow;//DateTime.Parse ("2013-10-01 13:45:01");
-          //  var age = CalculateAge(userData.Birthdate, DateTime.UtcNow);
+          //  var age = CalculateAge(userData.Birthdate, DateTime.UtcNow);*/
 
-            var result = new ResponseForOneModel<GetUserModel>()
+            var result = new ResponseDataModel<GetUserModel>()
             {
                 data = new GetUserModel
                 {
@@ -56,12 +56,12 @@ namespace Vehicle_Share.Service.UserDataService
 
             return result;
         }
-        public async Task<ResponseForOneModel<ImageModel>> AddAndUpdateAsync(UserDataModel model)
+        public async Task<ResponseModel> AddAndUpdateAsync(UserDataModel model)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
 
             if (userId is null)
-                return new ResponseForOneModel<ImageModel> { message = _LocaLizer[SharedResourcesKey.NoAuth] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] };
 
             var userData = await _userData.FindAsync(e => e.UserId == userId);
             if (userData is null)
@@ -69,7 +69,7 @@ namespace Vehicle_Share.Service.UserDataService
                 if (model.Name == null || model.NationalId == null || model.Address == null || model.Nationality == null ||
                  model.NationalCardImageFront == null || model.NationalCardImageBack == null || model.ProfileImage == null)
                 {
-                    return new ResponseForOneModel<ImageModel> { message = _LocaLizer[SharedResourcesKey.Required] };
+                    return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Required] };
                 }
                 // return new ResponseForOneModel<ImageModel> { message = _LocaLizer[SharedResourcesKey.NoUserData] };
                 var NationalcardImgFront = await ProcessImageFile("User", model.NationalCardImageFront);
@@ -80,7 +80,7 @@ namespace Vehicle_Share.Service.UserDataService
 
                 if (IsNationlIdExist is not null)
                 {
-                    return new ResponseForOneModel<ImageModel> { message = _LocaLizer[SharedResourcesKey.NationalId] };
+                    return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NationalId] };
                 }
 
                 UserData user = new()
@@ -94,12 +94,12 @@ namespace Vehicle_Share.Service.UserDataService
                     NationalCardImageBack = NationalcardImgBack,
                     ProfileImage = ProfileImg,
                     UserId = userId,
-                    CreatedOn = DateTime.Now,
+                    CreatedOn = DateTime.UtcNow,
                 };
 
                 await _userData.AddAsync(user);
 
-                var result = new ResponseForOneModel<ImageModel>
+                var result = new ResponseDataModel<ImageModel>
                 {
                     IsSuccess = true,
                     message = _LocaLizer[SharedResourcesKey.Created],
@@ -141,7 +141,7 @@ namespace Vehicle_Share.Service.UserDataService
                 }
 
                 await _userData.UpdateAsync(userData);
-                var result = new ResponseForOneModel<ImageModel>
+                var result = new ResponseDataModel<ImageModel>
                 {
                     IsSuccess = true,
                     message = _LocaLizer[SharedResourcesKey.Updated],
@@ -174,7 +174,7 @@ namespace Vehicle_Share.Service.UserDataService
             await _userData.RemoveImageAsync(relativeUrl);
         }
 
-        private static int CalculateAge(DateTime birthDate, DateTime now)
+       /* private static int CalculateAge(DateTime birthDate, DateTime now)
         {
             int age = now.Year - birthDate.Year;
 
@@ -182,6 +182,6 @@ namespace Vehicle_Share.Service.UserDataService
                 age--;
 
             return age;
-        }
+        }*/
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vehicle_Share.Core.Models.AuthModels;
-using Vehicle_Share.Core.Repository.AuthRepo;
+using Vehicle_Share.Core.Response;
+using Vehicle_Share.Service.IAuthService;
 
 namespace Vehicle_Share.API.Controllers
 {
@@ -8,9 +9,9 @@ namespace Vehicle_Share.API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IAuthRepo _autherRepo;
+        private readonly IAuthServ _autherRepo;
 
-        public AccountController(IAuthRepo autherServ)
+        public AccountController(IAuthServ autherServ)
         {
             _autherRepo = autherServ;
         }
@@ -21,10 +22,10 @@ namespace Vehicle_Share.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _autherRepo.RegisterAsync(model);
-            if (!result.IsAuth)
-                return BadRequest(new { result.Message });
+            if (!result.IsSuccess)
+                return BadRequest(new { result.message });
 
-            return Ok(new { result.Message });
+            return Ok(new { result.message });
         }
 
         [HttpPost("confirm-phone")]
@@ -42,9 +43,10 @@ namespace Vehicle_Share.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _autherRepo.LoginAsync(model);
-            if (!result.IsAuth)
-                return BadRequest(new { result.Message });
-            return Ok(new { result.Token, result.TokenExpiration, result.RefreshToken, result.RefreshTokenExpiration, result.PhoneConfirmed });
+
+            if (result is ResponseDataModel<AuthModel> res )
+            return Ok(new { res.data.Token, res.data.TokenExpiration, res.data.RefreshToken, res.data.RefreshTokenExpiration, res.data.PhoneConfirmed });
+            return BadRequest(new { result.message , result.code});
         }
 
         [HttpPost("refresh-token")]
@@ -53,9 +55,9 @@ namespace Vehicle_Share.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _autherRepo.RefreshTokenAsync(model);
-            if (!result.IsAuth)
-                return BadRequest(new { result.Message });
-            return Ok(new { result.Token, result.TokenExpiration, result.RefreshToken, result.RefreshTokenExpiration, result.PhoneConfirmed });
+            if (result is ResponseDataModel<AuthModel> res)
+                return Ok(new { res.data.Token, res.data.TokenExpiration, res.data.RefreshToken, res.data.RefreshTokenExpiration, res.data.PhoneConfirmed });
+            return BadRequest(new { result.message, result.code });
         }
 
         [HttpPost("send-code")] //  resend code 
@@ -75,22 +77,13 @@ namespace Vehicle_Share.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _autherRepo.ResetPasswordAsync(model);
-            if (!result.IsAuth)
-                return BadRequest(new { result.Message });
-            return Ok(new { result.Message });
+            if (!result.IsSuccess)
+                return BadRequest(new { result.message ,result.code });
+            return Ok(new { result.message });
 
         }
         
-        // [HttpPost("is-phone-confimed")]
-        // public async Task<IActionResult> IsPhoneConfirmedAsync([FromBody] PhoneModel model)
-        // {
-        //     if (!ModelState.IsValid)
-        //         return BadRequest(ModelState);
-        //     var result = await _autherRepo.IsPhoneConfirmedAsync(model);
-        //     if (!result.PhoneConfirmed)
-        //         return BadRequest("Phone isn't Confirmed");
-        //     return Ok(new { result.PhoneConfirmed, result.Message });
-        // }
+      
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()

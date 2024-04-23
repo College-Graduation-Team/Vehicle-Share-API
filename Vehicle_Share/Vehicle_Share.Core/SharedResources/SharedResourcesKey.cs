@@ -40,6 +40,8 @@
         public const string PasswordRequired = "PasswordRequired";
         public const string UserName = "UserName";
         public const string Required = "Required";
+        public const string ResetPassword = "ResetPassword";
+        public const string NoDelete = "NoDelete";
 
 
 

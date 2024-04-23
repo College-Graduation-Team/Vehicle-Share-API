@@ -16,7 +16,6 @@ namespace Vehicle_Share.Core.Models.TripModels
         public float RecommendedPrice { get; set; }
         public short AvailableSeats { get; set; } //driver
         public string? CarId { get; set; } //driver
-        public bool Type { get; set; }   // Passenger or Driver
 
     }
 }

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using Vehicle_Share.Core.Models.CarModels;
+using Vehicle_Share.Core.Models.TripModels;
+using Vehicle_Share.Core.Response;
 using Vehicle_Share.Service.CarService;
 namespace Vehicle_Share.API.Controllers
 {
@@ -19,16 +22,19 @@ namespace Vehicle_Share.API.Controllers
         [HttpGet("{id?}")]
         public async Task<IActionResult> GetByIdAsync([FromRoute] string? id)
         {
-            if (id == null) {
+            if (id == null)
+            {
                 var result = await _service.GetAllAsync();
-                if (result.IsSuccess)
-                    return Ok(new { result.data });
+                if (result is ResponseDataModel<List<GetCarModel>> res)
+                    return Ok(new { res.data });
 
                 return BadRequest(new { result.message });
-            } else {
+            }
+            else
+            {
                 var result = await _service.GetByIdAsync(id);
-                if (result.IsSuccess)
-                    return Ok(new { result.data });
+                if (result is ResponseDataModel<GetCarModel> res)
+                    return Ok(new { res.data });
 
                 return BadRequest(new { result.message });
             }
@@ -62,10 +68,10 @@ namespace Vehicle_Share.API.Controllers
         public async Task<IActionResult> DeleteCarAsync([FromRoute] string id)
         {
             var result = await _service.DeleteAsync(id);
-            if (result > 0)
-                return Ok(result);
+            if (result.IsSuccess)
+                return Ok(new { result.message });
 
-            return BadRequest(result);
+            return BadRequest(new { result.message });
         }
 
     }
