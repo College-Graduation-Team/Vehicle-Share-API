@@ -16,6 +16,16 @@ namespace Vehicle_Share.EF.Data
         {
 
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.Cascade;
+            }
+        }
+
         /*   
          *   protected override void OnModelCreating(ModelBuilder modelBuilder)
                 {

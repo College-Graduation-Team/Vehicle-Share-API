@@ -311,7 +311,35 @@ namespace Vehicle_Share.Service.AuthService
 
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.ResetPassword], IsSuccess = true };
         }
-       
+
+        public async Task<ResponseModel> DeleteAccountAsync()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId == null)
+            {
+                return new ResponseModel { message = "User not Authorize" };
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return new ResponseModel { message = "User not found" };
+            }
+            // Handle any associated data cleanup here (e.g., user profile, settings, etc.)
+
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                var errors = string.Empty;
+
+                foreach (var error in result.Errors)
+                    errors += $"{error.Description},";
+
+                return new ResponseModel { message = errors };
+            }
+
+            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Deleted] , IsSuccess=true};
+        }
         public async Task<AuthModel> LogoutAsync()
         {
             // Get the current user's ID from HttpContext

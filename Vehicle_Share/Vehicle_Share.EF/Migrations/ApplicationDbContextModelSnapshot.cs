@@ -499,7 +499,8 @@ namespace Vehicle_Share.EF.Migrations
                 {
                     b.HasOne("Vehicle_Share.EF.Models.UserData", "UserData")
                         .WithMany()
-                        .HasForeignKey("UserDataId");
+                        .HasForeignKey("UserDataId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("UserData");
                 });
@@ -508,7 +509,8 @@ namespace Vehicle_Share.EF.Migrations
                 {
                     b.HasOne("Vehicle_Share.EF.Models.UserData", "UserData")
                         .WithMany()
-                        .HasForeignKey("UserDataId");
+                        .HasForeignKey("UserDataId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("UserData");
                 });
@@ -517,11 +519,13 @@ namespace Vehicle_Share.EF.Migrations
                 {
                     b.HasOne("Vehicle_Share.EF.Models.Trip", "Trip")
                         .WithMany()
-                        .HasForeignKey("TripId");
+                        .HasForeignKey("TripId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Vehicle_Share.EF.Models.UserData", "UserData")
                         .WithMany()
-                        .HasForeignKey("UserDataId");
+                        .HasForeignKey("UserDataId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Trip");
 
@@ -532,11 +536,13 @@ namespace Vehicle_Share.EF.Migrations
                 {
                     b.HasOne("Vehicle_Share.EF.Models.Car", "Car")
                         .WithMany()
-                        .HasForeignKey("CarId");
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Vehicle_Share.EF.Models.UserData", "UserData")
                         .WithMany()
-                        .HasForeignKey("UserDataId");
+                        .HasForeignKey("UserDataId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Car");
 
@@ -583,7 +589,8 @@ namespace Vehicle_Share.EF.Migrations
                 {
                     b.HasOne("Vehicle_Share.EF.Models.User", "User")
                         .WithOne("UserData")
-                        .HasForeignKey("Vehicle_Share.EF.Models.UserData", "UserId");
+                        .HasForeignKey("Vehicle_Share.EF.Models.UserData", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
                 });

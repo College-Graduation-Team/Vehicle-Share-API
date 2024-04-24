@@ -82,8 +82,18 @@ namespace Vehicle_Share.API.Controllers
             return Ok(new { result.message });
 
         }
-        
-      
+
+        [HttpDelete] // for reset password 
+        public async Task<IActionResult> DeleteAccountAsync()
+        {
+           
+            var result = await _autherRepo.DeleteAccountAsync();
+            if (!result.IsSuccess)
+                return BadRequest(new { result.message});
+            return Ok(new { result.message });
+
+        }
+
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Vehicle_Share.EF.Migrations
 {
-    public partial class AddAlltables : Migration
+    public partial class AllBaseTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -48,7 +48,8 @@ namespace Vehicle_Share.EF.Migrations
                         name: "FK_UserData_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -75,7 +76,8 @@ namespace Vehicle_Share.EF.Migrations
                         name: "FK_Car_UserData_UserDataId",
                         column: x => x.UserDataId,
                         principalTable: "UserData",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -96,7 +98,8 @@ namespace Vehicle_Share.EF.Migrations
                         name: "FK_License_UserData_UserDataId",
                         column: x => x.UserDataId,
                         principalTable: "UserData",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -121,12 +124,14 @@ namespace Vehicle_Share.EF.Migrations
                         name: "FK_Trip_Car_CarId",
                         column: x => x.CarId,
                         principalTable: "Car",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Trip_UserData_UserDataId",
                         column: x => x.UserDataId,
                         principalTable: "UserData",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -147,12 +152,14 @@ namespace Vehicle_Share.EF.Migrations
                         name: "FK_Request_Trip_TripId",
                         column: x => x.TripId,
                         principalTable: "Trip",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Request_UserData_UserDataId",
                         column: x => x.UserDataId,
                         principalTable: "UserData",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
