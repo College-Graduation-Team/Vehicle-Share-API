@@ -19,7 +19,7 @@ namespace Vehicle_Share.EF.Models
         [Required(ErrorMessage = "Model is required.")]
         [MaxLength(4, ErrorMessage = "the max length is 4 digit")]
         [StringLength(4, ErrorMessage = "the max length is 4 digit", MinimumLength = 4)]
-        public int Model { get; set; }
+        public int ModelYear { get; set; }
 
 
         [Required(ErrorMessage = "Brand is required.")]

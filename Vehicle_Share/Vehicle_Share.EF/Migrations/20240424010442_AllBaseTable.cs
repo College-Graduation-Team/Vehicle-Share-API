@@ -58,7 +58,7 @@ namespace Vehicle_Share.EF.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Model = table.Column<int>(type: "int", maxLength: 4, nullable: false),
+                    ModelYear = table.Column<int>(type: "int", maxLength: 4, nullable: false),
                     Brand = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Plate = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     Seats = table.Column<short>(type: "smallint", maxLength: 2, nullable: false),

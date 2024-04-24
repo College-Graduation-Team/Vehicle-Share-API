@@ -43,7 +43,8 @@ builder.Services.Configure<JWT>(builder.Configuration.GetSection(nameof(JWT)));
 // add connection to db and inject identity .
 builder.Services.AddDbContext<ApplicationDbContext>(
       option => option.UseSqlServer("Data Source=.;Initial Catalog=VehicleSharing;Integrated Security=True"));
-  // option => option.UseSqlServer("Server=localhost;Database=VehicleSharing;User Id=sa;Password=Hemakress-123"));
+    //  option => option.UseSqlServer("Server=db4413.public.databaseasp.net; Database=db4413; User Id=db4413; Password=k=3YD8e#tJ?6; Encrypt=False; MultipleActiveResultSets=True;"));
+   // option => option.UseSqlServer("Server=localhost;Database=VehicleSharing;User Id=sa;Password=Hemakress-123"));
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
@@ -100,27 +101,6 @@ builder.Services.AddAuthentication(options =>
 
 #region LocaLization confgration
 
-// builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-
-// builder.Services.AddMvc()
-//     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-//     .AddDataAnnotationsLocalization();
-
-// builder.Services.AddLocalization(options => options.ResourcesPath = "SharedResources");
-
-// builder.Services.AddMvc()
-//         .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-//         .AddDataAnnotationsLocalization(options => {
-//             options.DataAnnotationLocalizerProvider = (type, factory) =>
-//                 factory.Create(typeof(Vehicle_Share.API.SharedResources.SharedResources));
-//         });
-
-// builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-
-// builder.Services.AddMvc()
-//     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-//     .AddDataAnnotationsLocalization();
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddLocalization(opt =>
 {
@@ -145,34 +125,9 @@ builder.Services.AddMvc()
     options.DataAnnotationLocalizerProvider = (type, factory) =>
         factory.Create(typeof(SharedResources));
 });
+
 #endregion
 
-/*
-  // Adding Authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.SaveToken = false;
-    options.RequireHttpsMetadata = false;
-    options.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ClockSkew = TimeSpan.Zero,
-
-        ValidAudience = builder.Configuration["JWT:ValidAudience"],
-        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
-    };
-});
-*/
 
 builder.Services.AddSwaggerGen(opt =>
 {

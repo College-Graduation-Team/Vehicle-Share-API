@@ -6,7 +6,7 @@ namespace Vehicle_Share.Core.Models.CarModels
     {
         public string? Id { get; set; }
         public string? Type { get; set; }
-        public int Model { get; set; }
+        public int ModelYear { get; set; }
         public string? Brand { get; set; }
         public string? Plate { get; set; }
         public short Seats { get; set; }

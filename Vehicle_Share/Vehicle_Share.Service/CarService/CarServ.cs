@@ -47,7 +47,7 @@ namespace Vehicle_Share.Service.CarService
                 {
                     Id = car.Id,
                     Type = car.Type,
-                    Model = car.Model,
+                    ModelYear = car.ModelYear,
                     Brand = car.Brand,
                     Plate = car.Plate,
                     Seats = car.Seats,
@@ -82,7 +82,7 @@ namespace Vehicle_Share.Service.CarService
                 {
                     Id = car.Id,
                     Type = car.Type,
-                    Model = car.Model,
+                    ModelYear = car.ModelYear,
                     Brand = car.Brand,
                     Plate = car.Plate,
                     Seats = car.Seats,
@@ -119,7 +119,7 @@ namespace Vehicle_Share.Service.CarService
             {
                 Id = Guid.NewGuid().ToString(),
                 Type = model.Type,
-                Model = model.ModelYear,
+                ModelYear = model.ModelYear,
                 Brand = model.Brand,
                 Plate = model.Plate,
                 Seats = model.Seats,
@@ -147,7 +147,7 @@ namespace Vehicle_Share.Service.CarService
 
             // userData.Name = model.Name ?? userData.Name;
             car.Type = model.Type ?? car.Type;
-            car.Model = model.ModelYear == 0 ? car.Model : model.ModelYear;
+            car.ModelYear = model.ModelYear == 0 ? car.ModelYear : model.ModelYear;
             car.Brand = model.Brand ?? car.Brand;
             car.Plate = model.Plate ?? car.Plate;
             car.Seats = model.Seats == 0 ? car.Seats : model.Seats;

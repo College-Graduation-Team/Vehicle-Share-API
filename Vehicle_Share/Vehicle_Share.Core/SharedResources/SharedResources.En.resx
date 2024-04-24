@@ -237,4 +237,10 @@
   <data name="NoDelete" xml:space="preserve">
     <value>can't delete car is related to trip </value>
   </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Logout successfully</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value>User not found</value>
+  </data>
 </root>

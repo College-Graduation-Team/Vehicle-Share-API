@@ -13,7 +13,7 @@ namespace Vehicle_Share.Service.IAuthService
         Task<ResponseModel> SendCodeAsync(SendCodeModel model);
         Task<ResponseModel> ResetPasswordAsync(ResetPassModel model);
         // Task<AuthModel> IsPhoneConfirmedAsync(PhoneModel model);
-        Task<AuthModel> LogoutAsync();
+        Task<ResponseModel> LogoutAsync();
         Task<ResponseModel> DeleteAccountAsync();
         /*
         Task<string> SendMsgToConfirmAsync(EmailModel model);

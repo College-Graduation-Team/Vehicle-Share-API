@@ -44,8 +44,8 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _autherRepo.LoginAsync(model);
 
-            if (result is ResponseDataModel<AuthModel> res )
-            return Ok(new { res.data.Token, res.data.TokenExpiration, res.data.RefreshToken, res.data.RefreshTokenExpiration, res.data.PhoneConfirmed });
+            if (result is ResponseDataModel<AuthModel> res)
+                return Ok(new { res.data.Token, res.data.TokenExpiration, res.data.RefreshToken, res.data.RefreshTokenExpiration });
             return BadRequest(new { result.message , result.code});
         }
 
@@ -56,7 +56,7 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _autherRepo.RefreshTokenAsync(model);
             if (result is ResponseDataModel<AuthModel> res)
-                return Ok(new { res.data.Token, res.data.TokenExpiration, res.data.RefreshToken, res.data.RefreshTokenExpiration, res.data.PhoneConfirmed });
+                return Ok(new { res.data.Token, res.data.TokenExpiration, res.data.RefreshToken, res.data.RefreshTokenExpiration });
             return BadRequest(new { result.message, result.code });
         }
 
@@ -94,15 +94,14 @@ namespace Vehicle_Share.API.Controllers
 
         }
 
-
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
 
             var result = await _autherRepo.LogoutAsync();
-            if (result.IsAuth)
-                return BadRequest(result.Message);
-            return Ok(result.Message);
+            if (result.IsSuccess)
+                return Ok(new {result.message});
+            return BadRequest(new { result.message });
         }
     }
 }

@@ -237,4 +237,10 @@
   <data name="NoDelete" xml:space="preserve">
     <value>لا يمكن الحـذف السـيـاره مربطه برحله</value>
   </data>
+  <data name="Logout" xml:space="preserve">
+    <value>تــم تــســجــيــل الــخــروج بــنــجــاح</value>
+  </data>
+  <data name="NoUser" xml:space="preserve">
+    <value>المــســتــخــدم غــيــر مــوجــود</value>
+  </data>
 </root>

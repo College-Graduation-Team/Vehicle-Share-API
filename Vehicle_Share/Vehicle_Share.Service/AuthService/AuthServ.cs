@@ -16,6 +16,7 @@ using Vehicle_Share.Core.Resources;
 using Vehicle_Share.Core.Response;
 using Vehicle_Share.EF.Helper;
 using Vehicle_Share.EF.Models;
+using Twilio.TwiML.Messaging;
 namespace Vehicle_Share.Service.AuthService
 {
     public class AuthServ : IAuthServ
@@ -311,7 +312,7 @@ namespace Vehicle_Share.Service.AuthService
 
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.ResetPassword], IsSuccess = true };
         }
-
+        
         public async Task<ResponseModel> DeleteAccountAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
@@ -340,19 +341,20 @@ namespace Vehicle_Share.Service.AuthService
 
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Deleted] , IsSuccess=true};
         }
-        public async Task<AuthModel> LogoutAsync()
+        
+        public async Task<ResponseModel> LogoutAsync()
         {
             // Get the current user's ID from HttpContext
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId == null)
             {
-                return new AuthModel { Message = "User not Authorize" };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] };
             }
 
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return new AuthModel { Message = "User not found" };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUser] };
             }
             var authModel = new AuthModel();
 
@@ -360,12 +362,9 @@ namespace Vehicle_Share.Service.AuthService
 
             authModel.IsAuth = false;
 
-            var result = await _userManager.UpdateAsync(user);
+            await _userManager.UpdateAsync(user);
 
-            if (!result.Succeeded)
-                return new AuthModel { Message = " Logout failed " };
-            authModel.Message = " Logout successful  ";
-            return authModel;
+            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Logout], IsSuccess = true };
         }
         //  private method to create GenerateRandomCode
         private string GenerateRandomCode()
