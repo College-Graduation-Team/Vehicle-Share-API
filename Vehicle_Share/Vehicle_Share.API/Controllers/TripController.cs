@@ -65,8 +65,8 @@ namespace Vehicle_Share.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _service.AddAsync(model);
-            if (result.IsSuccess)
-                return Ok(new { result.Id, result.message });
+            if (result is ResponseDataModel<IdResponseModel> res)
+                return Ok(new { res.message, res.data });
 
             return BadRequest(new { result.code, result.message });
         }
@@ -77,8 +77,8 @@ namespace Vehicle_Share.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _service.AddAsync(model);
-            if (result.IsSuccess)
-                return Ok(new { result.Id, result.message });
+            if (result is ResponseDataModel<IdResponseModel> res)
+                return Ok(new { res.message, res.data });
 
             return BadRequest(new { result.code, result.message });
         }

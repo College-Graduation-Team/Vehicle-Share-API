@@ -41,7 +41,7 @@ namespace Vehicle_Share.Service.RequestService
 
             var trip = await _trip.GetByIdAsync(tripId);
             if (trip is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoTrip] , code = ResponseCode.NoTrip };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoTrip], code = ResponseCode.NoTrip };
 
             var userRequests = await _request.GetAllAsync(r => r.TripId == tripId);
 
@@ -53,7 +53,7 @@ namespace Vehicle_Share.Service.RequestService
                 {
                     Id = request.Id,
                     Status = request.Status.ToString(),
-                    CreatedOn=request.CreatedOn,
+                    CreatedOn = request.CreatedOn,
                     TripId = request.TripId,
                     UserDataId = request.UserDataId
                 });
@@ -62,15 +62,15 @@ namespace Vehicle_Share.Service.RequestService
             result.IsSuccess = true;
             return result;
         }
-        public async Task<ResponseModel> GetAllMyRequestAsync() 
+        public async Task<ResponseModel> GetAllMyRequestAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code = ResponseCode.NoAuth };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
 
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code = ResponseCode.NoAuth };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
 
             var allRequests = await _request.GetAllAsync();
             var userRequests = allRequests.Where(t => t.UserDataId == userData.Id).ToList();
@@ -82,7 +82,7 @@ namespace Vehicle_Share.Service.RequestService
                 {
                     Id = request.Id,
                     Status = request.Status.ToString(),
-                    CreatedOn=request.CreatedOn,
+                    CreatedOn = request.CreatedOn,
                     TripId = request.TripId,
                     UserDataId = request.UserDataId
                 }
@@ -96,16 +96,16 @@ namespace Vehicle_Share.Service.RequestService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code = ResponseCode.NoAuth };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
 
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
 
             // Find the trip associated with the request
             var trip = await _trip.FindAsync(e => e.Id == model.TripId);
             if (trip is null || trip.IsFinished)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoTrip] , code = ResponseCode.NoTrip };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoTrip], code = ResponseCode.NoTrip };
 
             // Check if the user who added the trip is trying to make a request for the same trip
             if (trip.UserDataId == userData.Id)
@@ -132,9 +132,18 @@ namespace Vehicle_Share.Service.RequestService
             request.UserDataId = userData.Id;
             request.CreatedOn = DateTime.UtcNow;
             await _request.AddAsync(request);
-            return new ResponseModel {Id=request.Id, message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
-
+            var result = new ResponseDataModel<IdResponseModel>
+            {
+                message = _LocaLizer[SharedResourcesKey.Created],
+                IsSuccess = true,
+                data = new IdResponseModel { Id = request.Id }
+            };
+            return result;
         }
+
+    
+        
+        
         public async Task<ResponseModel> AcceptRequestAsync(string requestId)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");

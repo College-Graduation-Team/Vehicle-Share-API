@@ -101,12 +101,12 @@ namespace Vehicle_Share.Service.UserDataService
 
                 var result = new ResponseDataModel<ImageModel>
                 {
-                    Id=user.Id,
                     IsSuccess = true,
                     message = _LocaLizer[SharedResourcesKey.Created],
                     data = new ImageModel
                     {
-                        ProfileImage= ProfileImg,
+                        Id = user.Id,
+                        ProfileImage = ProfileImg,
                         NationalCardImageFront=NationalcardImgFront,
                         NationalCardImageBack=NationalcardImgBack
                     }

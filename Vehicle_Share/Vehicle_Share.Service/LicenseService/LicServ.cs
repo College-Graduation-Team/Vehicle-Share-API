@@ -83,11 +83,12 @@ namespace Vehicle_Share.Service.LicenseService
             await _Lic.AddAsync(license);
             var result = new ResponseDataModel<GetImageModel>
             {
-                Id=license.Id,
+
                 IsSuccess = true,
                 message = _LocaLizer[SharedResourcesKey.Created],
                 data = new GetImageModel
                 {
+                    Id = license.Id,
                     ImageFront = license.ImageFront,
                     ImageBack = license.ImageBack
                 }

@@ -139,11 +139,12 @@ namespace Vehicle_Share.Service.CarService
             await _car.AddAsync(car);
             var result = new ResponseDataModel<GetImageCarModel>
             {
-                Id = car.Id,
+
                 IsSuccess = true,
                 message = _LocaLizer[SharedResourcesKey.Created],
                 data = new GetImageCarModel
                 {
+                    Id = car.Id,
                     Image = car.Image,
                     LicenseImageFront = car.LicenseImageFront,
                     LicenseImageBack = car.LicenseImagBack

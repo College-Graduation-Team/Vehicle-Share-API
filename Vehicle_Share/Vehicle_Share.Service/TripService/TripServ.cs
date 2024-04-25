@@ -6,6 +6,7 @@ using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Response;
 using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Models;
+using Twilio.Http;
 
 namespace Vehicle_Share.Service.TripService
 {
@@ -213,8 +214,13 @@ namespace Vehicle_Share.Service.TripService
 
             await _trip.AddAsync(trip);
 
-
-            return new ResponseModel { Id=trip.Id , message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
+            var result = new ResponseDataModel<IdResponseModel>
+            {
+                data = new IdResponseModel { Id = trip.Id },
+                message = _LocaLizer[SharedResourcesKey.Created],
+                IsSuccess = true
+            };
+            return result;
         }
 
         public async Task<ResponseModel> AddAsync(TripPassengerModel model)
@@ -242,9 +248,14 @@ namespace Vehicle_Share.Service.TripService
             };
 
             await _trip.AddAsync(trip);
-            return new ResponseModel { Id = trip.Id, message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
 
-
+            var result = new ResponseDataModel<IdResponseModel>
+            {
+                message = _LocaLizer[SharedResourcesKey.Created],
+                IsSuccess = true,
+                data = new IdResponseModel { Id = trip.Id }
+            };
+            return result;
         }
 
         public async Task<ResponseModel> UpdateAsync(string id, UpdateTripDriverModel model)

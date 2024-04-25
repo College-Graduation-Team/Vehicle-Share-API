@@ -8,6 +8,7 @@ namespace Vehicle_Share.Core.Models.UserData
 {
     public class ImageModel
     {
+        public string? Id { get; set; }
         public string? NationalCardImageFront { get; set; }
         public string? NationalCardImageBack { get; set; }
         public string? ProfileImage { get; set; }
