@@ -183,7 +183,7 @@ namespace Vehicle_Share.EF.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Model")
+                    b.Property<int>("ModelYear")
                         .HasMaxLength(4)
                         .HasColumnType("int");
 

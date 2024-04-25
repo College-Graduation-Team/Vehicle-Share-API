@@ -30,17 +30,17 @@ namespace Vehicle_Share.Service.LicenseService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
 
             var userData = await _user.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
 
 
             var Lic = await _Lic.FindAsync(e => e.UserDataId == userData.Id);
             if (Lic is null)
             {
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoLicense] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoLicense] , code = ResponseCode.NoLicense };
             }
             var result = new ResponseDataModel<GetLicModel>()
             {
@@ -60,16 +60,16 @@ namespace Vehicle_Share.Service.LicenseService
         {
             var userId = _httpContextAccessor.HttpContext.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code = ResponseCode.NoAuth };
             var userData = await _user.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
 
 
             var LicFront = await ProcessImageFile("License", model.ImageFront);
             var LicBack = await ProcessImageFile("License", model.ImageBack);
 
-            License user = new License
+            License license = new License
             {
                 Id = Guid.NewGuid().ToString(),
                 ImageFront = LicFront,
@@ -79,13 +79,13 @@ namespace Vehicle_Share.Service.LicenseService
                 CreatedOn= DateTime.UtcNow
             };
 
-            await _Lic.AddAsync(user);
-            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
+            await _Lic.AddAsync(license);
+            return new ResponseModel { Id = license.Id, message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
         }
         public async Task<ResponseModel> UpdateAsync(string id, UpdateLicModel model)
         {
             var lic = await _Lic.GetByIdAsync(id);
-            if (lic == null) return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoLicense] };
+            if (lic == null) return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoLicense] , code = ResponseCode.NoLicense };
 
 
             lic.Expiration = model.Expiration != null ? model.Expiration : lic.Expiration;

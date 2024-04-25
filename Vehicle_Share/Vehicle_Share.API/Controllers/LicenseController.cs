@@ -24,7 +24,7 @@ namespace Vehicle_Share.API.Controllers
             if (result is ResponseDataModel<GetLicModel> res)
                 return Ok(new { res.data });
 
-            return BadRequest(new { result.message });
+            return BadRequest(new { result.code, result.message });
         }
 
         [HttpPost]
@@ -38,9 +38,9 @@ namespace Vehicle_Share.API.Controllers
 
             var result = await _service.AddAsync(model);
             if (result.IsSuccess)
-                return Ok(new { result.message });
+                return Ok(new { result.Id, result.message });
 
-            return BadRequest(new { result.message });
+            return BadRequest(new { result.code, result.message });
         }
 
         [HttpPut("{id}")]
@@ -51,7 +51,7 @@ namespace Vehicle_Share.API.Controllers
             if (result.IsSuccess)
                 return Ok(new { result.message });
 
-            return BadRequest(new { result.message });
+            return BadRequest(new { result.code, result.message });
         }
 
         [HttpDelete("{id}")]

@@ -12,7 +12,7 @@ using Vehicle_Share.EF.Data;
 namespace Vehicle_Share.EF.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240424010442_AllBaseTable")]
+    [Migration("20240424233022_AllBaseTable")]
     partial class AllBaseTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -185,7 +185,7 @@ namespace Vehicle_Share.EF.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Model")
+                    b.Property<int>("ModelYear")
                         .HasMaxLength(4)
                         .HasColumnType("int");
 

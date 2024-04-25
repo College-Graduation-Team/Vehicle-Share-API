@@ -27,14 +27,14 @@ namespace Vehicle_Share.API.Controllers
                 if (result is ResponseDataModel<List<GetTripModel>> res)
                     return Ok(new { res.data });
 
-                return BadRequest(new { result.message });
+                return BadRequest(new { result.code, result.message });
             } else {
                 var result = await _service.GetByIdAsync(id);
                 if (result is ResponseDataModel<GetTripModel> res)
                     return Ok(new { res.data });
 
 
-                return BadRequest(new { result.message });
+                return BadRequest(new { result.code, result.message });
             }
         }
         
@@ -45,7 +45,7 @@ namespace Vehicle_Share.API.Controllers
             if (result is ResponseDataModel<List<GetTripDriverModel>> res )
                 return Ok(new { res.data });
 
-            return BadRequest(new { result.message });
+            return BadRequest(new { result.code, result.message });
         }
 
         [HttpGet("passenger")]
@@ -56,7 +56,7 @@ namespace Vehicle_Share.API.Controllers
             if (result is ResponseDataModel<List<GetTripPassengerModel>> res)
                 return Ok(new { res.data });
 
-            return BadRequest(new { result.message });
+            return BadRequest(new { result.code, result.message });
         }
 
         [HttpPost("driver")] // driver add trip 
@@ -66,9 +66,9 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _service.AddAsync(model);
             if (result.IsSuccess)
-                return Ok(new { result.message });
+                return Ok(new { result.Id, result.message });
 
-            return BadRequest(new { result.message });
+            return BadRequest(new { result.code, result.message });
         }
 
         [HttpPost("passenger")] //passenger add trip
@@ -78,9 +78,9 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _service.AddAsync(model);
             if (result.IsSuccess)
-                return Ok(new { result.message });
+                return Ok(new { result.Id, result.message });
 
-            return BadRequest(new { result.message });
+            return BadRequest(new { result.code, result.message });
         }
 
         [HttpPut("driver/{id}")] //update for driver
@@ -91,7 +91,7 @@ namespace Vehicle_Share.API.Controllers
             if (result.IsSuccess)
                 return Ok(new { result.message });
 
-            return BadRequest(new { result.message });
+            return BadRequest(new { result.code, result.message });
         }
 
         [HttpPut("passenger/{id}")]//update for Passenger
@@ -101,7 +101,7 @@ namespace Vehicle_Share.API.Controllers
             if (result.IsSuccess)
                 return Ok(new { result.message });
 
-            return BadRequest(new { result.message });
+            return BadRequest(new { result.code, result.message });
         }
         
         [HttpDelete("{id}")]

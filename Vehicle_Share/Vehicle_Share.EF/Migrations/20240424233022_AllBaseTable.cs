@@ -77,7 +77,7 @@ namespace Vehicle_Share.EF.Migrations
                         column: x => x.UserDataId,
                         principalTable: "UserData",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -131,7 +131,7 @@ namespace Vehicle_Share.EF.Migrations
                         column: x => x.UserDataId,
                         principalTable: "UserData",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

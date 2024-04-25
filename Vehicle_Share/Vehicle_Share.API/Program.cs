@@ -13,7 +13,6 @@ using System.Globalization;
 using Vehicle_Share.Service.AuthService;
 using System.Text;
 using Vehicle_Share.Core.Repository.GenericRepo;
-using Vehicle_Share.Core.Repository.SendOTP;
 using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Data;
 using Vehicle_Share.EF.Helper;
@@ -35,14 +34,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
-builder.Services.AddTransient<ISendOTP, SendOTP>();
+//builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
+//builder.Services.AddTransient<ISendOTP, SendOTP>();
 //map betwwen jwt member and json file .
 builder.Services.Configure<JWT>(builder.Configuration.GetSection(nameof(JWT)));
 
 // add connection to db and inject identity .
 builder.Services.AddDbContext<ApplicationDbContext>(
-      option => option.UseSqlServer("Data Source=.;Initial Catalog=VehicleSharing;Integrated Security=True"));
+      option => option.UseSqlServer("Data Source=.;Initial Catalog=VehicleSharingg;Integrated Security=True"));
     //  option => option.UseSqlServer("Server=db4413.public.databaseasp.net; Database=db4413; User Id=db4413; Password=k=3YD8e#tJ?6; Encrypt=False; MultipleActiveResultSets=True;"));
    // option => option.UseSqlServer("Server=localhost;Database=VehicleSharing;User Id=sa;Password=Hemakress-123"));
 

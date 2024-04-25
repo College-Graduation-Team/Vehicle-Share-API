@@ -23,7 +23,7 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _autherRepo.RegisterAsync(model);
             if (!result.IsSuccess)
-                return BadRequest(new { result.message });
+                return BadRequest(new {result.code, result.message });
 
             return Ok(new { result.message });
         }
@@ -46,7 +46,7 @@ namespace Vehicle_Share.API.Controllers
 
             if (result is ResponseDataModel<AuthModel> res)
                 return Ok(new { res.data.Token, res.data.TokenExpiration, res.data.RefreshToken, res.data.RefreshTokenExpiration });
-            return BadRequest(new { result.message , result.code});
+            return BadRequest(new { result.code, result.message });
         }
 
         [HttpPost("refresh-token")]
@@ -57,7 +57,7 @@ namespace Vehicle_Share.API.Controllers
             var result = await _autherRepo.RefreshTokenAsync(model);
             if (result is ResponseDataModel<AuthModel> res)
                 return Ok(new { res.data.Token, res.data.TokenExpiration, res.data.RefreshToken, res.data.RefreshTokenExpiration });
-            return BadRequest(new { result.message, result.code });
+            return BadRequest(new { result.code, result.message });
         }
 
         [HttpPost("send-code")] //  resend code 

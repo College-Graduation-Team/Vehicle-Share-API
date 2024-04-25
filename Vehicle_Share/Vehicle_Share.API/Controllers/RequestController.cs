@@ -27,14 +27,14 @@ namespace Vehicle_Share.API.Controllers
                 if (result is ResponseDataModel<List<GetReqModel>> res)
                     return Ok(new { res.data });
 
-                return BadRequest(new { result.message });
+                return BadRequest(new { result.code, result.message });
 
             } else {
                 var result = await _service.GetAllTripRequestedAsync(id);
                 if (result is ResponseDataModel<List<GetReqModel>> res)
                     return Ok(new { res.data });
 
-                return BadRequest(new { result.message });
+                return BadRequest(new { result.code, result.message });
             }
         }
 
@@ -45,9 +45,9 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _service.SendReqestAsync(model);
             if (result.IsSuccess)
-                return Ok(new { result.message });
+                return Ok(new {result.Id, result.message });
 
-            return BadRequest(new { result.message });
+            return BadRequest(new { result.code, result.message });
         }
 
         [HttpPost("accept/{id}")]
@@ -59,7 +59,7 @@ namespace Vehicle_Share.API.Controllers
             if (result.IsSuccess)
                 return Ok(new { result.message });
 
-            return BadRequest(new { result.message });
+            return BadRequest(new { result.code, result.message });
         }
 
         [HttpPost("decline/{id}")]
@@ -71,7 +71,7 @@ namespace Vehicle_Share.API.Controllers
             if (result.IsSuccess)
                 return Ok(new { result.message });
 
-            return BadRequest(new { result.message });
+            return BadRequest(new { result.code, result.message });
         }
 
         [HttpDelete("{id}")]

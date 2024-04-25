@@ -7,6 +7,7 @@ using Vehicle_Share.Core.Response;
 using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Models;
 using Twilio.TwiML.Messaging;
+using System.ComponentModel;
 
 namespace Vehicle_Share.Service.CarService
 {
@@ -31,15 +32,15 @@ namespace Vehicle_Share.Service.CarService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code = ResponseCode.NoAuth };
 
             var userData = await _user.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
             var car = await _car.GetByIdAsync(id);
 
             if (car is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar], code = ResponseCode.NoCar };
 
             var result = new ResponseDataModel<GetCarModel>
             {
@@ -66,11 +67,11 @@ namespace Vehicle_Share.Service.CarService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code = ResponseCode.NoAuth };
 
             var userData = await _user.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
 
             var allCars = await _car.GetAllAsync();
             var userCars = allCars.Where(t => t.UserDataId == userData.Id).ToList();
@@ -100,11 +101,11 @@ namespace Vehicle_Share.Service.CarService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code = ResponseCode.NoAuth };
             var userData = await _user.FindAsync(e => e.UserId == userId);
 
             if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
 
 
 
@@ -134,16 +135,15 @@ namespace Vehicle_Share.Service.CarService
                 CreatedOn= DateTime.UtcNow
 
             };
-
             await _car.AddAsync(car);
 
-            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
+            return new ResponseModel { Id = car.Id, message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
         }
 
-        public async Task<ResponseModel> UpdateAsync(string id, UpdateCarModel model)
+        public async Task<ResponseModel> UpdateAsync(string id, UpdateCarModel model)   
         {
             var car = await _car.GetByIdAsync(id);
-            if (car == null) new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar] };
+            if (car == null) new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar] , code = ResponseCode.NoCar };
 
             // userData.Name = model.Name ?? userData.Name;
             car.Type = model.Type ?? car.Type;
@@ -180,7 +180,7 @@ namespace Vehicle_Share.Service.CarService
         {
             var car = await _car.FindAsync(e => e.Id == id);
             if (car is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar] , code = ResponseCode.NoCar };
 
             var trips = await _trip.GetAllAsync(e => e.CarId == id);
             var unfinishedTrips = trips.Where(t => !t.IsFinished).ToList();

@@ -11,12 +11,12 @@ using System.Security.Cryptography;
 using System.Text;
 using Vehicle_Share.Core.Models.AuthModels;
 using Vehicle_Share.Service.IAuthService;
-using Vehicle_Share.Core.Repository.SendOTP;
 using Vehicle_Share.Core.Resources;
 using Vehicle_Share.Core.Response;
 using Vehicle_Share.EF.Helper;
 using Vehicle_Share.EF.Models;
 using Twilio.TwiML.Messaging;
+using Vehicle_Share.EF.ImpRepo.SendOTPImplement;
 namespace Vehicle_Share.Service.AuthService
 {
     public class AuthServ : IAuthServ
@@ -25,18 +25,16 @@ namespace Vehicle_Share.Service.AuthService
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JWT _jwt;
-        private readonly ISendOTP _smsService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStringLocalizer<SharedResources> _LocaLizer;
 
         public AuthServ(UserManager<User> userManager, IOptions<JWT> jwt,
-            RoleManager<IdentityRole> roleManager, ISendOTP smsService,
+            RoleManager<IdentityRole> roleManager,
             IHttpContextAccessor httpContextAccessor, IStringLocalizer<SharedResources> locaLizer)
         {
             _userManager = userManager;
             _jwt = jwt.Value;
             _roleManager = roleManager;
-            _smsService = smsService;
             _httpContextAccessor = httpContextAccessor;
             _LocaLizer = locaLizer;
         }
@@ -46,7 +44,7 @@ namespace Vehicle_Share.Service.AuthService
         {
 
             if (await _userManager.FindByNameAsync(model.UserName) is not null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.ExistsName], code = 0 };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.ExistsName], code = ResponseCode.ExistsUser };
 
             var user = new User
             {
@@ -65,21 +63,13 @@ namespace Vehicle_Share.Service.AuthService
                 foreach (var error in result.Errors)
                     errors += $"{error.Description},";
 
-                return new ResponseModel { message = errors, code = 1 };
+                return new ResponseModel { message = errors, code = ResponseCode.InValidPassword };
             }
 
 
             var otp = GenerateRandomCode();
-            try
-            {
-                _smsService.Send(user.PhoneNumber, otp);
 
-            }
-            catch (Exception)
-            {
-
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Error], code = 2 };
-            }
+            await SendOTP.Send(user.PhoneNumber, otp);
 
             user.ResetCode = otp;
             user.ResetCodeGeneateAt = DateTime.UtcNow;
@@ -95,11 +85,11 @@ namespace Vehicle_Share.Service.AuthService
             var user = await _userManager.Users.FirstOrDefaultAsync(o => o.PhoneNumber == model.Phone);
 
             if (user == null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.WrongPhoneNumber] ,code=0 };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.WrongPhoneNumber]};
 
             if (model.Code.IsNullOrEmpty() || model.Code != user.ResetCode || user.ResetCodeExpired)
             {
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.WrongCode], code = 1 };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.WrongCode]};
             }
 
             user.PhoneNumberConfirmed = true;
@@ -119,13 +109,13 @@ namespace Vehicle_Share.Service.AuthService
                 !await _userManager.CheckPasswordAsync(user, model.Password))
             {
                // authModel.Message = _LocaLizer[SharedResourcesKey.WrongPhoneOrPassword];
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.WrongPhoneOrPassword], code = 0 };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.WrongPhoneOrPassword] ,code=ResponseCode.WrongPhoneOrPassword };
             }
 
             if (user.PhoneNumberConfirmed == false)
             {
                 // authModel.Message = _LocaLizer[SharedResourcesKey.NotConfirmPhoneNumber];
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NotConfirmPhoneNumber], code = 1 };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NotConfirmPhoneNumber], code=ResponseCode.NotConfirmPhoneNumber };
             }
 
             var jwtSecurityToken = await CreateToken(user);
@@ -201,17 +191,17 @@ namespace Vehicle_Share.Service.AuthService
 
             if (user == null)
             {
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.WrongToken], code=0 };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.WrongToken]};
             }
             if (user.PhoneNumberConfirmed == false)
             {
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NotConfirmPhoneNumber] ,code=1 };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NotConfirmPhoneNumber] ,code=ResponseCode.NotConfirmPhoneNumber };
             }
             var existingRefreshToken = user.RefreshTokens.Single(t => t.Token == model.Token);
 
             if (!existingRefreshToken.IsActive)
             {
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.WrongToken], code=0 };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.WrongToken] };
             }
 
             // Revoke the existing refresh token
@@ -270,7 +260,7 @@ namespace Vehicle_Share.Service.AuthService
 
             await _userManager.UpdateAsync(user);
 
-           _smsService.Send(user.PhoneNumber, code);
+           await SendOTP.Send(user.PhoneNumber, code);
 
             return  new ResponseModel { message = _LocaLizer[SharedResourcesKey.Success] , IsSuccess=true };
         }
