@@ -8,6 +8,7 @@ using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Models;
 using Twilio.TwiML.Messaging;
 using System.ComponentModel;
+using Vehicle_Share.Core.Models.LicModels;
 
 namespace Vehicle_Share.Service.CarService
 {
@@ -136,8 +137,20 @@ namespace Vehicle_Share.Service.CarService
 
             };
             await _car.AddAsync(car);
-
-            return new ResponseModel { Id = car.Id, message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
+            var result = new ResponseDataModel<GetImageCarModel>
+            {
+                Id = car.Id,
+                IsSuccess = true,
+                message = _LocaLizer[SharedResourcesKey.Created],
+                data = new GetImageCarModel
+                {
+                    Image = car.Image,
+                    LicenseImageFront = car.LicenseImageFront,
+                    LicenseImageBack = car.LicenseImagBack
+                }
+            };
+            return result;
+          //  return new ResponseModel { Id = car.Id, message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
         }
 
         public async Task<ResponseModel> UpdateAsync(string id, UpdateCarModel model)   

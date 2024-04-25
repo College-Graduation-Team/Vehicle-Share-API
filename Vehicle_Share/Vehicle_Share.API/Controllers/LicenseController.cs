@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vehicle_Share.Core.Models.LicModels;
+using Vehicle_Share.Core.Models.UserData;
 using Vehicle_Share.Core.Response;
 using Vehicle_Share.Service.LicenseService;
 
@@ -35,10 +36,9 @@ namespace Vehicle_Share.API.Controllers
 
                 return BadRequest(ModelState);
 
-
             var result = await _service.AddAsync(model);
-            if (result.IsSuccess)
-                return Ok(new { result.Id, result.message });
+            if (result is ResponseDataModel<GetImageModel> res)
+                return Ok(new { res.Id, res.message, res.data });
 
             return BadRequest(new { result.code, result.message });
         }

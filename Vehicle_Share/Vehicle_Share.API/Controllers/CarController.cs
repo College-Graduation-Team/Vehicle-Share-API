@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Vehicle_Share.Core.Models.CarModels;
 using Vehicle_Share.Core.Models.TripModels;
+using Vehicle_Share.Core.Models.UserData;
 using Vehicle_Share.Core.Response;
 using Vehicle_Share.Service.CarService;
 namespace Vehicle_Share.API.Controllers
@@ -47,8 +48,8 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
 
             var result = await _service.AddAsync(model);
-            if (result.IsSuccess)
-                return Ok(new {result.Id , result.message });
+            if (result is ResponseDataModel<GetImageCarModel> res)
+                return Ok(new { res.Id, res.message, res.data });
 
             return BadRequest(new { result.code, result.message });
         }

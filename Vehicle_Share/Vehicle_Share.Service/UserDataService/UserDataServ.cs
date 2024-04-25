@@ -25,11 +25,11 @@ namespace Vehicle_Share.Service.UserDataService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] ,code=ResponseCode.NoAuth};
 
             var userData = await _userData.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] ,code=ResponseCode.NoUserData};
                 /*
             // ===== DateTime is non-nullable struct can never be null =====
             // if (userData.Birthdate == null) 
@@ -61,7 +61,7 @@ namespace Vehicle_Share.Service.UserDataService
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
 
             if (userId is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code=ResponseCode.NoAuth};
 
             var userData = await _userData.FindAsync(e => e.UserId == userId);
             if (userData is null)
@@ -101,6 +101,7 @@ namespace Vehicle_Share.Service.UserDataService
 
                 var result = new ResponseDataModel<ImageModel>
                 {
+                    Id=user.Id,
                     IsSuccess = true,
                     message = _LocaLizer[SharedResourcesKey.Created],
                     data = new ImageModel

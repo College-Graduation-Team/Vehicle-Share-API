@@ -8,6 +8,7 @@ using System.Security.Claims;
 using Vehicle_Share.Core.Response;
 using Microsoft.Extensions.Localization;
 using Vehicle_Share.Core.Resources;
+using Vehicle_Share.Core.Models.UserData;
 
 namespace Vehicle_Share.Service.LicenseService
 {
@@ -80,7 +81,19 @@ namespace Vehicle_Share.Service.LicenseService
             };
 
             await _Lic.AddAsync(license);
-            return new ResponseModel { Id = license.Id, message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
+            var result = new ResponseDataModel<GetImageModel>
+            {
+                Id=license.Id,
+                IsSuccess = true,
+                message = _LocaLizer[SharedResourcesKey.Created],
+                data = new GetImageModel
+                {
+                    ImageFront = license.ImageFront,
+                    ImageBack = license.ImageBack
+                }
+            };
+            return result;
+           // return new ResponseModel { Id = license.Id, message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
         }
         public async Task<ResponseModel> UpdateAsync(string id, UpdateLicModel model)
         {

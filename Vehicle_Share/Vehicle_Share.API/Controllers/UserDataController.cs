@@ -26,7 +26,7 @@ namespace Vehicle_Share.API.Controllers
             if (result is ResponseDataModel<GetUserModel> res)
                 return Ok(new { res.data });
 
-            return BadRequest(new { result.message });
+            return BadRequest(new { result.code, result.message });
         }
 
         [HttpPost]
@@ -36,7 +36,7 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _service.AddAndUpdateAsync(model);
             if (result is ResponseDataModel<ImageModel> res)
-                return Ok(new { res.message,res.data });
+                return Ok(new {res.Id, res.message,res.data });
 
             return BadRequest(new { result.message });
 
