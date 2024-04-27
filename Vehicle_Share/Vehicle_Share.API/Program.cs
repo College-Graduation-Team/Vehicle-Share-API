@@ -42,9 +42,9 @@ builder.Services.Configure<JWT>(builder.Configuration.GetSection(nameof(JWT)));
 
 // add connection to db and inject identity .
 builder.Services.AddDbContext<ApplicationDbContext>(
-      option => option.UseSqlServer("Data Source=.;Initial Catalog=VehicleSharingg;Integrated Security=True"));
-     // option => option.UseSqlServer("Server=db4413.public.databaseasp.net; Database=db4413; User Id=db4413; Password=k=3YD8e#tJ?6; Encrypt=False; MultipleActiveResultSets=True;"));
-   // option => option.UseSqlServer("Server=localhost;Database=VehicleSharing;User Id=sa;Password=Hemakress-123"));
+    option => option.UseSqlServer("Data Source=.;Initial Catalog=VehicleSharingg;Integrated Security=True"));
+    // option => option.UseSqlServer("Server=db4413.public.databaseasp.net; Database=db4413; User Id=db4413; Password=k=3YD8e#tJ?6; Encrypt=False; MultipleActiveResultSets=True;"));
+    // option => option.UseSqlServer("Server=localhost;Database=VehicleSharingg;User Id=sa;Password=Hemakress-123"));
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
