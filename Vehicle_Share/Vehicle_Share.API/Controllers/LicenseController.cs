@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Vehicle_Share.Core.Models.LicModels;
 using Vehicle_Share.Core.Models.UserData;
 using Vehicle_Share.Core.Response;
@@ -8,6 +9,7 @@ namespace Vehicle_Share.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class LicenseController : ControllerBase
     {
 
@@ -21,7 +23,7 @@ namespace Vehicle_Share.API.Controllers
         [HttpGet]  //get from user and userdata 
         public async Task<IActionResult> GetAllAsync()
         {
-            var result = await _service.GetAsync();
+            var result = await _service.GetLicenseAsync();
             if (result is ResponseDataModel<GetLicModel> res)
                 return Ok(new { res.data });
 
@@ -32,18 +34,16 @@ namespace Vehicle_Share.API.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddLicenseAsync([FromForm] LicModel model)
         {
-            if (!ModelState.IsValid )
-
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
-            var result = await _service.AddAsync(model);
+            var result = await _service.AddAndUpdateAsync(model);
             if (result is ResponseDataModel<GetImageModel> res)
-                return Ok(new {  res.message, res.data });
+                return Ok(new { res.message, res.data });
 
-            return BadRequest(new { result.code, result.message });
+            return BadRequest(new { result.message });
         }
 
-        [HttpPut("{id}")]
+       /* [HttpPut("{id}")]
         public async Task<IActionResult> UpdateLicenseAsync([FromRoute] string id, [FromForm] UpdateLicModel model)
         {
            
@@ -52,16 +52,16 @@ namespace Vehicle_Share.API.Controllers
                 return Ok(new { result.message });
 
             return BadRequest(new { result.code, result.message });
-        }
+        }*/
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteLicenseAsync([FromRoute] string id)
+        [HttpDelete()]
+        public async Task<IActionResult> DeleteLicenseAsync()
         {
-            var result = await _service.DeleteAsync(id);
-            if (result > 0)
-                return Ok(result);
+            var result = await _service.DeleteAsync();
+            if (result .IsSuccess)
+                return Ok(new { result.message });
 
-            return BadRequest(result);
+            return BadRequest(new { result.message });
         }
 
     }

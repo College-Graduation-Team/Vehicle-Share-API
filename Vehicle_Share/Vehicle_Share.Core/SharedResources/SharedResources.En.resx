@@ -130,7 +130,7 @@
     <value>Deleted Successfully</value>
   </data>
   <data name="Error" xml:space="preserve">
-    <value>please check enternet connection and try again or error when sending</value>
+    <value>An error occurred . try again later</value>
   </data>
   <data name="ExistsName" xml:space="preserve">
     <value>Username is already registered</value>

@@ -15,6 +15,7 @@ namespace Vehicle_Share.Service.IAuthService
         // Task<AuthModel> IsPhoneConfirmedAsync(PhoneModel model);
         Task<ResponseModel> LogoutAsync();
         Task<ResponseModel> DeleteAccountAsync();
+        Task<bool> IsUserAdmin(string userId);
         /*
         Task<string> SendMsgToConfirmAsync(EmailModel model);
          */

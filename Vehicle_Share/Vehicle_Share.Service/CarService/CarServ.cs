@@ -6,27 +6,30 @@ using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Response;
 using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Models;
-using Twilio.TwiML.Messaging;
+using Vehicle_Share.Service.IAuthService;
 using System.ComponentModel;
 using Vehicle_Share.Core.Models.LicModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace Vehicle_Share.Service.CarService
 {
     public class CarServ : ICarServ
     {
+        private readonly IAuthServ _autherRepo;
         private readonly IBaseRepo<Car> _car;
         private readonly IBaseRepo<Trip> _trip;
-        private readonly IBaseRepo<UserData> _user;
+        private readonly IBaseRepo<UserData> _userdata;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStringLocalizer<SharedResources> _LocaLizer;
 
-        public CarServ(IBaseRepo<Car> car, IHttpContextAccessor httpContextAccessor, IBaseRepo<UserData> user, IStringLocalizer<SharedResources> locaLizer = null, IBaseRepo<Trip> trip = null)
+        public CarServ(IBaseRepo<Car> car, IHttpContextAccessor httpContextAccessor, IBaseRepo<UserData> userdata, IStringLocalizer<SharedResources> locaLizer = null, IBaseRepo<Trip> trip = null, IAuthServ autherRepo = null)
         {
             _car = car;
             _httpContextAccessor = httpContextAccessor;
-            _user = user;
+            _userdata = userdata;
             _LocaLizer = locaLizer;
             _trip = trip;
+            _autherRepo = autherRepo;
         }
 
         public async Task<ResponseModel> GetByIdAsync(string id)
@@ -35,7 +38,7 @@ namespace Vehicle_Share.Service.CarService
             if (userId is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code = ResponseCode.NoAuth };
 
-            var userData = await _user.FindAsync(e => e.UserId == userId);
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
             var car = await _car.GetByIdAsync(id);
@@ -70,10 +73,15 @@ namespace Vehicle_Share.Service.CarService
             if (userId is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code = ResponseCode.NoAuth };
 
-            var userData = await _user.FindAsync(e => e.UserId == userId);
-            if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
+              var userData = await _userdata.FindAsync(e => e.UserId == userId);
 
+            if (!await _autherRepo.IsUserAdmin(userId))
+            {
+                if (userData is null)
+                    return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+            }
+
+           
             var allCars = await _car.GetAllAsync();
             var userCars = allCars.Where(t => t.UserDataId == userData.Id).ToList();
             var result = new ResponseDataModel<List<GetCarModel>>();
@@ -103,7 +111,7 @@ namespace Vehicle_Share.Service.CarService
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code = ResponseCode.NoAuth };
-            var userData = await _user.FindAsync(e => e.UserId == userId);
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
 
             if (userData is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
@@ -230,6 +238,8 @@ namespace Vehicle_Share.Service.CarService
             string relativeUrl = uri.PathAndQuery;
             await _car.RemoveImageAsync(relativeUrl);
         }
+
+       
 
     }
 }

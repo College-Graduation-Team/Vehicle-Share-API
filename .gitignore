@@ -32,4 +32,11 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
-/wwwroot/
+<<<<<<< HEAD
+
+=======
+
+# Custom
+Vehicle_Share/Vehicle_Share.API/wwwroot/
+>>>>>>> c7bdd6f7a4cde0511807f77ba87f17538dbf74c3
+

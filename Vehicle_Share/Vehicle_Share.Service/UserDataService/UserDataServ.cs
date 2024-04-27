@@ -148,6 +148,7 @@ namespace Vehicle_Share.Service.UserDataService
                     message = _LocaLizer[SharedResourcesKey.Updated],
                     data = new ImageModel
                     {
+                        Id= userData.Id,
                         ProfileImage = userData.ProfileImage,
                         NationalCardImageFront = userData.NationalCardImageFront,
                         NationalCardImageBack = userData.NationalCardImageBack

@@ -127,7 +127,7 @@
     <value>تم الــحــــذف بنــجــــاح</value>
   </data>
   <data name="Error" xml:space="preserve">
-    <value>من فضل حاول الاتصال بالانترنت واعادة المحاوله او حدث خطاء في الارســال   </value>
+    <value> حدث خطاء ما  . حاول في وقت لاحق   </value>
   </data>
   <data name="ExistsName" xml:space="preserve">
     <value>هذا الاســـم مســتــخــدم بالـــفــعــل </value>

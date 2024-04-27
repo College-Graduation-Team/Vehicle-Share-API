@@ -21,7 +21,7 @@ namespace Vehicle_Share.API.Controllers
         }
 
         [HttpGet("{id?}")]
-        public async Task<IActionResult> GetByIdAsync([FromRoute] string? id)
+        public async Task<IActionResult> GetCarAsync([FromRoute] string? id)
         {
             if (id == null)
             {

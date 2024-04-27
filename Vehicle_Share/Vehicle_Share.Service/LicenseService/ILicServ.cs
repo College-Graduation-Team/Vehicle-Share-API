@@ -5,9 +5,9 @@ namespace Vehicle_Share.Service.LicenseService
 {
     public interface ILicServ
     {
-        Task<ResponseModel> GetAsync();
-        Task<ResponseModel> AddAsync(LicModel model);
-        Task<ResponseModel> UpdateAsync(string id, UpdateLicModel model);
-        Task<int> DeleteAsync(string id);
+        Task<ResponseModel> GetLicenseAsync();
+        Task<ResponseModel> AddAndUpdateAsync(LicModel model);
+       // Task<ResponseModel> UpdateAsync(string id, UpdateLicModel model);
+        Task<ResponseModel> DeleteAsync();
     }
 }

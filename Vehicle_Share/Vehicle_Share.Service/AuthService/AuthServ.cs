@@ -362,7 +362,14 @@ namespace Vehicle_Share.Service.AuthService
             var random = new Random();
             return random.Next(100000, 999999).ToString();
         }
+        public async Task<bool> IsUserAdmin(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return false;
 
+            return await _userManager.IsInRoleAsync(user, "admin");
+        }
         private RefreshToken GenerateRefreshToken()
         {
             var randomNum = new byte[32];

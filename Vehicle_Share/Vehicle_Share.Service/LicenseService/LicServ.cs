@@ -8,7 +8,6 @@ using System.Security.Claims;
 using Vehicle_Share.Core.Response;
 using Microsoft.Extensions.Localization;
 using Vehicle_Share.Core.Resources;
-using Vehicle_Share.Core.Models.UserData;
 
 namespace Vehicle_Share.Service.LicenseService
 {
@@ -27,7 +26,7 @@ namespace Vehicle_Share.Service.LicenseService
             _user = user;
             _LocaLizer = locaLizer;
         }
-        public async Task<ResponseModel> GetAsync()
+        public async Task<ResponseModel> GetLicenseAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
@@ -57,7 +56,7 @@ namespace Vehicle_Share.Service.LicenseService
 
             return result;
         }
-        public async Task<ResponseModel> AddAsync(LicModel model)
+        public async Task<ResponseModel> AddAndUpdateAsync(LicModel model)
         {
             var userId = _httpContextAccessor.HttpContext.User.FindFirstValue("uid");
             if (userId is null)
@@ -66,68 +65,90 @@ namespace Vehicle_Share.Service.LicenseService
             if (userData is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
 
-
-            var LicFront = await ProcessImageFile("License", model.ImageFront);
-            var LicBack = await ProcessImageFile("License", model.ImageBack);
-
-            License license = new License
+            var lic = await _Lic.FindAsync(e => e.UserDataId == userData.Id);
+            if(lic is null)
             {
-                Id = Guid.NewGuid().ToString(),
-                ImageFront = LicFront,
-                ImageBack = LicBack,
-                Expiration = model.Expiration,
-                UserDataId = userData.Id,
-                CreatedOn= DateTime.UtcNow
-            };
+                var LicFront = await ProcessImageFile("License", model.ImageFront);
+                var LicBack = await ProcessImageFile("License", model.ImageBack);
 
-            await _Lic.AddAsync(license);
-            var result = new ResponseDataModel<GetImageModel>
-            {
-
-                IsSuccess = true,
-                message = _LocaLizer[SharedResourcesKey.Created],
-                data = new GetImageModel
+                License license = new License
                 {
-                    Id = license.Id,
-                    ImageFront = license.ImageFront,
-                    ImageBack = license.ImageBack
+                    Id = Guid.NewGuid().ToString(),
+                    ImageFront = LicFront,
+                    ImageBack = LicBack,
+                    Expiration = model.Expiration,
+                    UserDataId = userData.Id,
+                    CreatedOn = DateTime.UtcNow
+                };
+
+                await _Lic.AddAsync(license);
+                var result = new ResponseDataModel<GetImageModel>
+                {
+
+                    IsSuccess = true,
+                    message = _LocaLizer[SharedResourcesKey.Created],
+                    data = new GetImageModel
+                    {
+                        Id = license.Id,
+                        ImageFront = license.ImageFront,
+                        ImageBack = license.ImageBack
+                    }
+                };
+                return result;
+            }
+            else
+            {
+
+                lic.Expiration = model.Expiration != null ? model.Expiration : lic.Expiration;
+
+                // updata the image 
+
+                if (model.ImageBack != null)
+                {
+                    await RemoveImageFile(lic.ImageBack);
+                    lic.ImageBack = await ProcessImageFile("License", model.ImageBack);
                 }
-            };
-            return result;
-           // return new ResponseModel { Id = license.Id, message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
-        }
-        public async Task<ResponseModel> UpdateAsync(string id, UpdateLicModel model)
-        {
-            var lic = await _Lic.GetByIdAsync(id);
-            if (lic == null) return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoLicense] , code = ResponseCode.NoLicense };
+                if (model.ImageFront != null)
+                {
+                    await RemoveImageFile(lic.ImageFront);
+                    lic.ImageFront = await ProcessImageFile("License", model.ImageFront);
+                }
 
+                await _Lic.UpdateAsync(lic);
 
-            lic.Expiration = model.Expiration != null ? model.Expiration : lic.Expiration;
+                var result = new ResponseDataModel<GetImageModel>
+                {
 
-            // updata the image 
-
-            if (model.ImageBack != null)
-            {
-                await RemoveImageFile(lic.ImageBack);
-                lic.ImageBack = await ProcessImageFile("License", model.ImageBack);
+                    IsSuccess = true,
+                    message = _LocaLizer[SharedResourcesKey.Updated],
+                    data = new GetImageModel
+                    {
+                        Id = lic.Id,
+                        ImageFront = lic.ImageFront,
+                        ImageBack = lic.ImageBack
+                    }
+                };
+                return result;
             }
-            if (model.ImageFront != null)
-            {
-                await RemoveImageFile(lic.ImageFront);
-                lic.ImageFront = await ProcessImageFile("License", model.ImageFront);
-            }
-
-            await _Lic.UpdateAsync(lic);
-
-            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
+            // return new ResponseModel { Id = license.Id, message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
         }
-        public async Task<int> DeleteAsync(string id)
+      
+        public async Task<ResponseModel> DeleteAsync()
         {
-            if (id is null)
-                return 0;
-            var car = await _Lic.FindAsync(e => e.Id == id);
-            int res = await _Lic.DeleteAsync(car);
-            return res;
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+            var userData = await _user.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+
+            var lic = await _Lic.FindAsync(e => e.UserDataId == userData.Id);
+            if (lic is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoLicense], code = ResponseCode.NoLicense };
+           
+            int res = await _Lic.DeleteAsync(lic);
+            return res > 0 ? new ResponseModel { message = _LocaLizer[SharedResourcesKey.Deleted] ,IsSuccess=true }
+            : new ResponseModel { message = _LocaLizer[SharedResourcesKey.Error] };
         }
         private async Task<string> ProcessImageFile(string folder, IFormFile file)
         {
