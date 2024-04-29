@@ -243,4 +243,7 @@
   <data name="String1" xml:space="preserve">
     <value>User not found</value>
   </data>
+  <data name="ExistsPhone" xml:space="preserve">
+    <value>Phone number is already registered</value>
+  </data>
 </root>

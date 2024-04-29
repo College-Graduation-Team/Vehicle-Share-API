@@ -243,4 +243,7 @@
   <data name="NoUser" xml:space="preserve">
     <value>المــســتــخــدم غــيــر مــوجــود</value>
   </data>
+  <data name="ExistsPhone" xml:space="preserve">
+    <value>هذا الــرقــــم مســتــخــدم بالـــفــعــل</value>
+  </data>
 </root>

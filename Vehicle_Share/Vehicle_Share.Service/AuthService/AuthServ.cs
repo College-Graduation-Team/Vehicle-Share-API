@@ -45,6 +45,8 @@ namespace Vehicle_Share.Service.AuthService
 
             if (await _userManager.FindByNameAsync(model.UserName) is not null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.ExistsName], code = ResponseCode.ExistsUser };
+            if(await _userManager.Users.FirstOrDefaultAsync(o => o.PhoneNumber == model.Phone) is not null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.ExistsPhone], code = 11 };
 
             var user = new User
             {

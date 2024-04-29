@@ -18,5 +18,6 @@ namespace Vehicle_Share.Core.Response
         public const short ExistsUser = 8;
         public const short InValidPassword = 9;
         public const short InvalidPhone = 10;
+        public const short ExistsPhone = 11;
     }
 }
