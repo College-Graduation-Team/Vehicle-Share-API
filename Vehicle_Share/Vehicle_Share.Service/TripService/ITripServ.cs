@@ -6,7 +6,8 @@ namespace Vehicle_Share.Service.TripService
     public interface ITripServ
     {
         Task<ResponseModel> GetByIdAsync(string id);
-        Task<ResponseModel> GetAllForUserAsync();
+        Task<ResponseModel> GetAllForUserAsDriverAsync();
+        Task<ResponseModel> GetAllForUserAsPassengerAsync();
         Task<ResponseModel> GetAllDriverTripAsync();
         Task<ResponseModel> GetAllPassengerTripAsync();
         Task<ResponseModel> AddAsync(TripDriverModel model);

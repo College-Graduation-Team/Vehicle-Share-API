@@ -68,7 +68,7 @@ namespace Vehicle_Share.Service.TripService
             return result;
         }
 
-        public async Task<ResponseModel> GetAllForUserAsync()
+        public async Task<ResponseModel> GetAllForUserAsDriverAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
@@ -79,7 +79,41 @@ namespace Vehicle_Share.Service.TripService
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
 
             var allTrips = await _trip.GetAllAsync();
-            var userTrips = allTrips.Where(t => t.UserDataId == userData.Id).ToList();
+            var userTrips = allTrips.Where(t => t.CarId is not null && t.UserDataId == userData.Id).ToList();
+            var result = new ResponseDataModel<List<GetTripModel>>();
+            result.data = new List<GetTripModel>();
+            foreach (var trip in userTrips)
+            {
+                result.data?.Add(new GetTripModel
+                {
+                    Id = trip.Id,
+                    From = trip.From,
+                    To = trip.To,
+                    Date = trip.Date,
+                    RecommendedPrice = trip.RecommendedPrice,
+                    AvailableSeats = trip.AvailableSeats,    //driver
+                    RequestedSeats = trip.RequestedSeats,  //passenger
+                    IsFinished = trip.IsFinished,
+                    UserDataId = trip.UserDataId,
+                    CarId = trip.CarId,
+                });
+            }
+
+            result.IsSuccess = true;
+            return result;
+        }
+        public async Task<ResponseModel> GetAllForUserAsPassengerAsync()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+
+            var allTrips = await _trip.GetAllAsync();
+            var userTrips = allTrips.Where(t => t.CarId is null && t.UserDataId == userData.Id).ToList();
             var result = new ResponseDataModel<List<GetTripModel>>();
             result.data = new List<GetTripModel>();
             foreach (var trip in userTrips)
@@ -116,8 +150,8 @@ namespace Vehicle_Share.Service.TripService
             var allTrips = await _trip.GetAllAsync();
 
 
-            
-            var userTrips = allTrips.Where(t => t.CarId is not null && t.IsFinished is false && t.AvailableSeats.Value > 0).ToList();
+
+            var userTrips = allTrips.Where(t => t.CarId is not null && t.IsFinished is false && t.AvailableSeats.Value > 0 && t.UserDataId != userData.Id).ToList();
 
             var result = new ResponseDataModel<List<GetTripDriverModel>>();
             result.data =new List<GetTripDriverModel>();
@@ -156,7 +190,7 @@ namespace Vehicle_Share.Service.TripService
 
             var allTrips = await _trip.GetAllAsync();
 
-            var userTrips = allTrips.Where(t => t.CarId is null && t.IsFinished is false ).ToList();
+            var userTrips = allTrips.Where(t => t.CarId is null && t.IsFinished is false && t.UserDataId != userData.Id).ToList();
             var result = new ResponseDataModel<List<GetTripPassengerModel>>();
             result.data = new List<GetTripPassengerModel>();
             foreach (var trip in userTrips)
@@ -214,11 +248,11 @@ namespace Vehicle_Share.Service.TripService
 
             await _trip.AddAsync(trip);
 
-            var result = new ResponseDataModel<IdResponseModel>
+            var result = new ResponseDataModel<UserDataResponseModel>
             {
-                data = new IdResponseModel { Id = trip.Id },
                 message = _LocaLizer[SharedResourcesKey.Created],
-                IsSuccess = true
+                IsSuccess = true,
+                data = new UserDataResponseModel { Id = trip.Id, UserDataId = userData.Id }
             };
             return result;
         }
@@ -249,11 +283,11 @@ namespace Vehicle_Share.Service.TripService
 
             await _trip.AddAsync(trip);
 
-            var result = new ResponseDataModel<IdResponseModel>
+            var result = new ResponseDataModel<UserDataResponseModel>
             {
                 message = _LocaLizer[SharedResourcesKey.Created],
                 IsSuccess = true,
-                data = new IdResponseModel { Id = trip.Id }
+                data = new UserDataResponseModel { Id = trip.Id, UserDataId = userData.Id }
             };
             return result;
         }

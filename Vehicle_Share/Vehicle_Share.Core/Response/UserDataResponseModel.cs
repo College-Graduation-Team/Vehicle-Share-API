@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Vehicle_Share.Core.Response
 {
-    public class IdResponseModel
+    public class UserDataResponseModel
     {
         public string Id { get; set; }
-     //   public string UserDataId { get; set; }
+           public string UserDataId { get; set; }
     }
 }

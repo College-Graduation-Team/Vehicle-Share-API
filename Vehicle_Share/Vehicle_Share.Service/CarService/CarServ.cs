@@ -73,17 +73,20 @@ namespace Vehicle_Share.Service.CarService
             if (userId is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code = ResponseCode.NoAuth };
 
-              var userData = await _userdata.FindAsync(e => e.UserId == userId);
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
 
-            if (!await _autherRepo.IsUserAdmin(userId))
+            UserData userData = null;
+            if (!isAdmin)
             {
+                userData = await _userdata.FindAsync(e => e.UserId == userId);
                 if (userData is null)
                     return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
             }
 
-           
+
             var allCars = await _car.GetAllAsync();
-            var userCars = allCars.Where(t => t.UserDataId == userData.Id).ToList();
+            var userCars = isAdmin ? allCars.ToList() : allCars.Where(t => t.UserDataId == userData.Id).ToList();
             var result = new ResponseDataModel<List<GetCarModel>>();
             result.data = new List<GetCarModel>();
             foreach (var car in userCars)

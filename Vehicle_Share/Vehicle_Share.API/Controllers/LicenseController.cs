@@ -43,16 +43,6 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(new { result.message });
         }
 
-       /* [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateLicenseAsync([FromRoute] string id, [FromForm] UpdateLicModel model)
-        {
-           
-            var result = await _service.UpdateAsync(id, model);
-            if (result.IsSuccess)
-                return Ok(new { result.message });
-
-            return BadRequest(new { result.code, result.message });
-        }*/
 
         [HttpDelete()]
         public async Task<IActionResult> DeleteLicenseAsync()

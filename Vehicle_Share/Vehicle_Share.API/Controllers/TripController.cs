@@ -18,26 +18,36 @@ namespace Vehicle_Share.API.Controllers
             _service = service;
         }
 
-        [HttpGet("{id?}")]
-        public async Task<IActionResult> GetAsync([FromRoute] string? id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAsync([FromRoute] string id)
         {
-            if (id == null) {
-                var result = await _service.GetAllForUserAsync();
-               
-                if (result is ResponseDataModel<List<GetTripModel>> res)
-                    return Ok(new { res.data });
+            var result = await _service.GetByIdAsync(id);
+            if (result is ResponseDataModel<GetTripModel> res)
+                return Ok(new { res.data });
 
-                return BadRequest(new { result.code, result.message });
-            } else {
-                var result = await _service.GetByIdAsync(id);
-                if (result is ResponseDataModel<GetTripModel> res)
-                    return Ok(new { res.data });
-
-
-                return BadRequest(new { result.code, result.message });
-            }
+            return BadRequest(new { result.code, result.message });
         }
-        
+        [HttpGet("MyTripDriver")]
+        public async Task<IActionResult> GetAllForUserAsDriverAsync()
+        {
+            var result = await _service.GetAllForUserAsDriverAsync();
+
+            if (result is ResponseDataModel<List<GetTripModel>> res)
+                return Ok(new { res.data });
+
+            return BadRequest(new { result.code, result.message });
+        }
+        [HttpGet("MyTripPassenger")]
+        public async Task<IActionResult> GetAllForUserAsPassengerAsync()
+        {
+            var result = await _service.GetAllForUserAsPassengerAsync();
+
+            if (result is ResponseDataModel<List<GetTripModel>> res)
+                return Ok(new { res.data });
+
+            return BadRequest(new { result.code, result.message });
+        }
+
         [HttpGet("driver")]
         public async Task<IActionResult> GetAllDriverTripAsync()
         {
@@ -65,7 +75,7 @@ namespace Vehicle_Share.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _service.AddAsync(model);
-            if (result is ResponseDataModel<IdResponseModel> res)
+            if (result is ResponseDataModel<UserDataResponseModel> res)
                 return Ok(new { res.message, res.data });
 
             return BadRequest(new { result.code, result.message });
@@ -77,7 +87,7 @@ namespace Vehicle_Share.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _service.AddAsync(model);
-            if (result is ResponseDataModel<IdResponseModel> res)
+            if (result is ResponseDataModel<UserDataResponseModel> res)
                 return Ok(new { res.message, res.data });
 
             return BadRequest(new { result.code, result.message });

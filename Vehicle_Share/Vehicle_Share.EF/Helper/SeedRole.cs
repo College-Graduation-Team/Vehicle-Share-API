@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Vehicle_Share.EF.Data;
+using Vehicle_Share.EF.Models;
 
 namespace Vehicle_Share.EF.Helper
 {
@@ -19,6 +21,34 @@ namespace Vehicle_Share.EF.Helper
                 try
                 {
                     await context.SaveChangesAsync();
+
+                    // Seed admin user
+                    var adminUser = new User
+                    {
+                        UserName = "admin@example.com", // Set admin username/email here
+                        PhoneNumber = "+201234567890", // Set admin email here
+                        PhoneNumberConfirmed = true
+                    };
+
+                    var password = "@Abdo123"; // Set admin password here
+
+                    var userStore = new UserStore<User>(context);
+                    var userManager = new UserManager<User>(userStore, null, null, null, null, null, null, null, null);
+
+                    var result = await userManager.CreateAsync(adminUser, password);
+
+                    if (result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(adminUser, "Admin");
+                    }
+                    else
+                    {
+                        // Handle errors if user creation or role assignment fails
+                        foreach (var error in result.Errors)
+                        {
+                            Console.WriteLine(error.Description);
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -28,5 +58,6 @@ namespace Vehicle_Share.EF.Helper
                 }
             }
         }
+
     }
 }

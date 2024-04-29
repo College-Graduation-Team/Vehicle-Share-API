@@ -19,14 +19,26 @@ namespace Vehicle_Share.API.Controllers
             _service = service;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetUserDataAsync()
+        [HttpGet("{id?}")]
+        public async Task<IActionResult> GetUserDataAsync([FromRoute]string? id)
         {
-            var result = await _service.GetUserDataAsync();
-            if (result is ResponseDataModel<GetUserModel> res)
-                return Ok(new { res.data });
+            if(id is null)
+            {
+                var result = await _service.GetUserDataAsync();
+                if (result is ResponseDataModel<GetUserModel> res)
+                    return Ok(new { res.data });
 
-            return BadRequest(new { result.code, result.message });
+                return BadRequest(new { result.code, result.message });
+            }
+            else
+            {
+                var result = await _service.GetUserDataByIdAsyc(id);
+                if (result is ResponseDataModel<GetUserModel> res)
+                    return Ok(new { res.data });
+
+                return BadRequest(new { result.code, result.message });
+            }
+           
         }
 
         [HttpPost]
@@ -36,7 +48,7 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _service.AddAndUpdateAsync(model);
             if (result is ResponseDataModel<ImageModel> res)
-                return Ok(new { res.message, res.data });
+                return Ok(new { res.message, res.data.Id });
 
             return BadRequest(new { result.message });
 

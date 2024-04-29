@@ -56,6 +56,37 @@ namespace Vehicle_Share.Service.UserDataService
 
             return result;
         }
+
+        public async Task<ResponseModel> GetUserDataByIdAsyc(string id)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var userData = await _userData.GetByIdAsync(id);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+
+            var result = new ResponseDataModel<GetUserModel>()
+            {
+                data = new GetUserModel
+                {
+                    Id = userData.Id,
+                    Name = userData.Name,
+                    NationalId = userData.NationalId,
+                    Birthdate = userData.Birthdate.ToString("yyyy-MM-dd"),
+                    Gender = userData.Gender,
+                    Nationality = userData.Nationality,
+                    Address = userData.Address,
+                    /* NationalCardImageFront = userData.NationalCardImageFront,
+                     NationalCardImageBack = userData.NationalCardImageBack,*/
+                    ProfileImage = userData.ProfileImage,
+                },
+                IsSuccess = true
+            };
+
+            return result;
+        }
         public async Task<ResponseModel> AddAndUpdateAsync(UserDataModel model)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
@@ -157,6 +188,7 @@ namespace Vehicle_Share.Service.UserDataService
                 return result;
             }
         }
+        
         private async Task<string> ProcessImageFile(string folder, IFormFile? file)
         {
             if (file == null) return string.Empty;
