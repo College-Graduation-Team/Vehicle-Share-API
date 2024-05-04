@@ -1,6 +1,7 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static Vehicle_Share.Core.Helper.StatusContainer;
 
 
 namespace Vehicle_Share.EF.Models
@@ -50,10 +51,11 @@ namespace Vehicle_Share.EF.Models
         [Required(ErrorMessage = "Image is required.")]
         public string? ProfileImage { get; set; }
 
-      /*  public bool Type { get; set; }    // driver of passenger*/
-
         public DateTime CreatedOn { get; set; }
 
+        [Required]
+        public Status Status { get; set; }
+        public string? Message { get; set; }
         // relation 
         public string? UserId { get; set; }
         [ForeignKey("UserId")]

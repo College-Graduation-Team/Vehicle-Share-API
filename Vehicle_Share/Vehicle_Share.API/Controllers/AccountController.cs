@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bogus;
+using Microsoft.AspNetCore.Mvc;
 using Vehicle_Share.Core.Models.AuthModels;
 using Vehicle_Share.Core.Response;
+using Vehicle_Share.EF.Models;
 using Vehicle_Share.Service.IAuthService;
 
 namespace Vehicle_Share.API.Controllers
@@ -103,5 +105,26 @@ namespace Vehicle_Share.API.Controllers
                 return Ok(new {result.message});
             return BadRequest(new { result.message });
         }
+
+ /*       [HttpPost("generate-fake-users")]
+        public async Task<IActionResult> GenerateFakeUsers(int count)
+        {
+            var faker = new Faker<RegisterModel>()
+                .RuleFor(u => u.UserName, f => f.Internet.UserName())
+                .RuleFor(u => u.Phone, f => f.Random.Replace("012345678#"))
+                .RuleFor(u => u.Password, f => "@Abdo123")
+                .RuleFor(u => u.ConfirmPassword, f => "@Abdo123");
+
+            var fakeUsers = faker.Generate(count);
+
+            // Save fake users to the database or use them as needed
+            foreach (var user in fakeUsers)
+            {
+             await _autherRepo.RegisterAsync(user);
+            }
+
+            return Ok(fakeUsers);
+        }*/
+  
     }
 }

@@ -5,6 +5,7 @@ namespace Vehicle_Share.Core.Models.CarModels
     public class GetCarModel
     {
         public string? Id { get; set; }
+        public string? UserDataId { get; set; }
         public string? Type { get; set; }
         public int ModelYear { get; set; }
         public string? Brand { get; set; }

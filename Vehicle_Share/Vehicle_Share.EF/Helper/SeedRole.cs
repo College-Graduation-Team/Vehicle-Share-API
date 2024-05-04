@@ -25,7 +25,7 @@ namespace Vehicle_Share.EF.Helper
                     // Seed admin user
                     var adminUser = new User
                     {
-                        UserName = "admin@example.com", // Set admin username/email here
+                        UserName = "Admin", // Set admin username/email here
                         PhoneNumber = "+201234567890", // Set admin email here
                         PhoneNumberConfirmed = true
                     };

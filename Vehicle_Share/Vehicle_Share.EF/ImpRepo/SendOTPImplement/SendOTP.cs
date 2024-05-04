@@ -1,7 +1,6 @@
 ﻿
 using System.Net;
 using System.Text;
-using static System.Net.WebRequestMethods;
 
 namespace Vehicle_Share.EF.ImpRepo.SendOTPImplement
 {
@@ -50,7 +49,7 @@ namespace Vehicle_Share.EF.ImpRepo.SendOTPImplement
 
             UTF8Encoding encoding = new UTF8Encoding();
             byte[] bytes = encoding.GetBytes(serializedRequest);
-            System.Net.HttpWebRequest httpRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(GenerateRequestUrl("Sender/SendOtp"));
+            HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(GenerateRequestUrl("Sender/SendOtp"));
             httpRequest.Method = "POST";
             httpRequest.ContentType = "application/json";
             httpRequest.ContentLength = bytes.Length;
@@ -61,7 +60,7 @@ namespace Vehicle_Share.EF.ImpRepo.SendOTPImplement
             }
 
             WebResponse webResponse = httpRequest.GetResponse();
-            Console.WriteLine(((HttpWebResponse)webResponse).StatusDescription);
+           // Console.WriteLine(((HttpWebResponse)webResponse).StatusDescription);
             var webData = webResponse.GetResponseStream();
             StreamReader reader = new StreamReader(webData);
             string responseFromServer = reader.ReadToEnd();

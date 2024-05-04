@@ -7,29 +7,28 @@ using Vehicle_Share.Core.Response;
 using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Models;
 using Vehicle_Share.Service.IAuthService;
-using System.ComponentModel;
-using Vehicle_Share.Core.Models.LicModels;
-using Microsoft.AspNetCore.Identity;
+using Vehicle_Share.Core.Models.GeneralModels;
 
 namespace Vehicle_Share.Service.CarService
 {
     public class CarServ : ICarServ
     {
-        private readonly IAuthServ _autherRepo;
         private readonly IBaseRepo<Car> _car;
         private readonly IBaseRepo<Trip> _trip;
         private readonly IBaseRepo<UserData> _userdata;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStringLocalizer<SharedResources> _LocaLizer;
 
-        public CarServ(IBaseRepo<Car> car, IHttpContextAccessor httpContextAccessor, IBaseRepo<UserData> userdata, IStringLocalizer<SharedResources> locaLizer = null, IBaseRepo<Trip> trip = null, IAuthServ autherRepo = null)
+        public CarServ(IBaseRepo<Car> car, IHttpContextAccessor httpContextAccessor
+            , IBaseRepo<UserData> userdata,
+            IStringLocalizer<SharedResources> locaLizer = null,
+            IBaseRepo<Trip> trip = null)
         {
             _car = car;
             _httpContextAccessor = httpContextAccessor;
             _userdata = userdata;
             _LocaLizer = locaLizer;
             _trip = trip;
-            _autherRepo = autherRepo;
         }
 
         public async Task<ResponseModel> GetByIdAsync(string id)
@@ -37,10 +36,18 @@ namespace Vehicle_Share.Service.CarService
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code = ResponseCode.NoAuth };
+           
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
 
-            var userData = await _userdata.FindAsync(e => e.UserId == userId);
-            if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
+            UserData userData = null;
+            if (!isAdmin)
+            {
+                userData = await _userdata.FindAsync(e => e.UserId == userId);
+                if (userData is null)
+                    return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+            }
+
             var car = await _car.GetByIdAsync(id);
 
             if (car is null)
@@ -51,6 +58,7 @@ namespace Vehicle_Share.Service.CarService
                 data = new GetCarModel
                 {
                     Id = car.Id,
+                    UserDataId=car.UserDataId,
                     Type = car.Type,
                     ModelYear = car.ModelYear,
                     Brand = car.Brand,
@@ -66,7 +74,6 @@ namespace Vehicle_Share.Service.CarService
 
             return result;
         }
-
         public async Task<ResponseModel> GetAllAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
@@ -94,6 +101,7 @@ namespace Vehicle_Share.Service.CarService
                 result.data?.Add(new GetCarModel
                 {
                     Id = car.Id,
+                    UserDataId=car.UserDataId,
                     Type = car.Type,
                     ModelYear = car.ModelYear,
                     Brand = car.Brand,
@@ -108,7 +116,6 @@ namespace Vehicle_Share.Service.CarService
             result.IsSuccess = true;
             return result;
         }
-
         public async Task<ResponseModel> AddAsync(CarModel model)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
@@ -164,11 +171,25 @@ namespace Vehicle_Share.Service.CarService
             return result;
           //  return new ResponseModel { Id = car.Id, message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
         }
-
-        public async Task<ResponseModel> UpdateAsync(string id, UpdateCarModel model)   
+        public async Task<ResponseModel> UpdateAsync(string id, UpdateCarModel model)
         {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+
+            UserData userData = null;
+            if (!isAdmin)
+            {
+                userData = await _userdata.FindAsync(e => e.UserId == userId);
+                if (userData is null)
+                    return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+            }
+
             var car = await _car.GetByIdAsync(id);
-            if (car == null) new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar] , code = ResponseCode.NoCar };
+            if (car is null) return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar] , code = ResponseCode.NoCar };
 
             // userData.Name = model.Name ?? userData.Name;
             car.Type = model.Type ?? car.Type;
@@ -200,7 +221,32 @@ namespace Vehicle_Share.Service.CarService
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
 
         }
+        public async Task<ResponseModel> UpdateStatusRequestAsync(string id, UpdateStatusRequestModel model)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
 
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+
+            if (!isAdmin)
+                return new ResponseModel { message = "this route for admin" };
+
+            var car = await _car.GetByIdAsync(id);
+            if (car is null)return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar], code = ResponseCode.NoCar };
+
+            car.Status = model.Status;
+
+            if(model.Status == Core.Helper.StatusContainer.Status.Refused)
+            {
+                car.Message = model.Message;
+            }
+            await _car.UpdateAsync(car);
+
+            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
+
+        }
         public async Task<ResponseModel> DeleteAsync(string id)
         {
             var car = await _car.FindAsync(e => e.Id == id);
@@ -225,6 +271,44 @@ namespace Vehicle_Share.Service.CarService
 
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Deleted] ,IsSuccess=true};
         }
+        public async Task<ResponseModel> GetByUserDataIdAsync(string id)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+
+            if (!isAdmin)
+                    return new ResponseModel { message ="this route for admin" };
+
+            var car = await _car.FindAsync(e => e.UserDataId == id);
+
+            if (car is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar], code = ResponseCode.NoCar };
+
+            var result = new ResponseDataModel<GetCarModel>
+            {
+                data = new GetCarModel
+                {
+                    Id = car.Id,
+                    UserDataId = car.UserDataId,
+                    Type = car.Type,
+                    ModelYear = car.ModelYear,
+                    Brand = car.Brand,
+                    Plate = car.Plate,
+                    Seats = car.Seats,
+                    Image = car.Image,
+                    LicenseImageFront = car.LicenseImageFront,
+                    LicenseImageBack = car.LicenseImagBack,
+                    LicenseExpiration = car.LicenseExpiration
+                },
+                IsSuccess = true
+            };
+
+            return result;
+        }
 
         private async Task<string> ProcessImageFile(string folder, IFormFile file)
         {
@@ -234,7 +318,6 @@ namespace Vehicle_Share.Service.CarService
             var Image = await _car.UploadImageAsync(folder, file);
             return baseUrl + Image;
         }
-
         private async Task RemoveImageFile(string file)
         {
             Uri uri = new Uri(file);

@@ -60,14 +60,12 @@ namespace Vehicle_Share.Service.DashboardService
 
         public async Task<ResponseModel> GetCarByIdAsync(string id)
         {
-            throw new NotImplementedException();
-
+            return await _carservice.GetByIdAsync(id);
         }
 
         public async Task<ResponseModel> UpdateCar(string id, UpdateCarModel model)
         {
-            throw new NotImplementedException();
-
+            return await _carservice.UpdateAsync(id, model);
         }
 
         #endregion

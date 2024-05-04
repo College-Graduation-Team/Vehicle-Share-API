@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static Vehicle_Share.EF.Helper.StatusContainer;
+using static Vehicle_Share.Core.Helper.StatusContainer;
 
 namespace Vehicle_Share.EF.Models
 {

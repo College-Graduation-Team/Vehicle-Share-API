@@ -53,6 +53,7 @@ namespace Vehicle_Share.Service.AuthService
                 UserName = model.UserName,
                 PhoneNumber = model.Phone,
                 CreatedOn = DateTime.UtcNow,
+                
 
             };
 

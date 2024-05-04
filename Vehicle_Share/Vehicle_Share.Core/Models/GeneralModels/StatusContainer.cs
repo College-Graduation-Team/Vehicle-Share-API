@@ -1,5 +1,5 @@
 ﻿
-namespace Vehicle_Share.EF.Helper
+namespace Vehicle_Share.Core.Helper
 {
     public class StatusContainer
     {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Vehicle_Share.Core.Models.CarModels;
+using Vehicle_Share.Core.Models.GeneralModels;
 using Vehicle_Share.Core.Models.TripModels;
 using Vehicle_Share.Core.Models.UserData;
 using Vehicle_Share.Core.Response;
@@ -10,7 +11,7 @@ namespace Vehicle_Share.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize()]
     public class CarController : ControllerBase
     {
         private readonly ICarServ _service;
@@ -62,6 +63,27 @@ namespace Vehicle_Share.API.Controllers
                 return Ok(new { result.message });
 
             return BadRequest(new { result.code, result.message });
+        }
+
+        [HttpPut("Admin/{id}")]
+        public async Task<IActionResult> UpdataCarStatusAsync([FromRoute] string id, [FromBody] UpdateStatusRequestModel model)
+        {
+            var result = await _service.UpdateStatusRequestAsync(id, model);
+            if (result.IsSuccess)
+                return Ok(new { result.message });
+
+            return BadRequest(new { result.code, result.message });
+        }
+
+        [HttpGet("Admin/{userdataId}")]
+        public async Task<IActionResult> GetByUserDataIdAsync([FromRoute] string userdataId)
+        {
+           
+                var result = await _service.GetByUserDataIdAsync(userdataId);
+                if (result is ResponseDataModel<GetCarModel> res)
+                    return Ok(new { res.data });
+                return BadRequest(new { result.code, result.message });
+            
         }
 
         [HttpDelete("{id}")]

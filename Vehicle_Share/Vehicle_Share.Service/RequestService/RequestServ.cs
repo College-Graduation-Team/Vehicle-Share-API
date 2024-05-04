@@ -5,7 +5,7 @@ using Vehicle_Share.Core.Repository.GenericRepo;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Vehicle_Share.Core.Response;
-using static Vehicle_Share.EF.Helper.StatusContainer;
+using static Vehicle_Share.Core.Helper.StatusContainer;
 using Microsoft.Extensions.Localization;
 using Vehicle_Share.Core.Resources;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;

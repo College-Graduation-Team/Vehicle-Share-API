@@ -1,6 +1,7 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static Vehicle_Share.Core.Helper.StatusContainer;
 
 
 namespace Vehicle_Share.EF.Models
@@ -48,9 +49,12 @@ namespace Vehicle_Share.EF.Models
         public string? LicenseImagBack { get; set; }
         [Required]
         public DateTime LicenseExpiration { get; set; }
+        [Required]
         public DateTime CreatedOn { get; set; }
 
-
+        [Required]
+        public Status Status { get; set; }
+        public string? Message { get; set; }
         // relations 
         public string? UserDataId { get; set; }
         [ForeignKey("UserDataId")]
