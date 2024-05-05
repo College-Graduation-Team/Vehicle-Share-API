@@ -12,8 +12,8 @@ using Vehicle_Share.EF.Data;
 namespace Vehicle_Share.EF.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240503033834_addStatusToTable")]
-    partial class addStatusToTable
+    [Migration("20240504210716_addalltable")]
+    partial class addalltable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -430,11 +430,9 @@ namespace Vehicle_Share.EF.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("NationalCardImageBack")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NationalCardImageFront")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("NationalId")

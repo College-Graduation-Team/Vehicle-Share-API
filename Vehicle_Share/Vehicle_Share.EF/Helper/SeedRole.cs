@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Vehicle_Share.EF.Data;
 using Vehicle_Share.EF.Models;
 
@@ -26,16 +27,21 @@ namespace Vehicle_Share.EF.Helper
                     var adminUser = new User
                     {
                         UserName = "Admin", // Set admin username/email here
-                        PhoneNumber = "+201234567890", // Set admin email here
-                        PhoneNumberConfirmed = true
+                        PhoneNumber = "+201234567890", // Set admin phone number here
+                        PhoneNumberConfirmed = true,
+                        CreatedOn=DateTime.UtcNow,
                     };
 
                     var password = "@Abdo123"; // Set admin password here
 
-                    var userStore = new UserStore<User>(context);
-                    var userManager = new UserManager<User>(userStore, null, null, null, null, null, null, null, null);
+                    var userManager = new UserStore<User>(context);
+                    // Hash the password
+                    var passwordHasher = new PasswordHasher<User>();
+                    var hashedPassword = passwordHasher.HashPassword(adminUser, password);
 
-                    var result = await userManager.CreateAsync(adminUser, password);
+                    adminUser.PasswordHash = hashedPassword;
+
+                    var result = await userManager.CreateAsync(adminUser);
 
                     if (result.Succeeded)
                     {
@@ -46,16 +52,19 @@ namespace Vehicle_Share.EF.Helper
                         // Handle errors if user creation or role assignment fails
                         foreach (var error in result.Errors)
                         {
-                            Console.WriteLine(error.Description);
+                            await Console.Out.WriteLineAsync(error.Description);
                         }
                     }
                 }
+
                 catch (Exception ex)
                 {
                     // Handle any errors that may occur during seeding
                     Console.WriteLine(ex.Message);
                     throw;
                 }
+           
+            
             }
         }
 

@@ -40,11 +40,11 @@ namespace Vehicle_Share.EF.Models
         public string? Address { get; set; }
 
 
-        [Required(ErrorMessage = "Image is required.")]
+        // [Required(ErrorMessage = "Image is required.")]
         public string? NationalCardImageFront { get; set; }
 
 
-        [Required(ErrorMessage = "Image is required.")]
+        // [Required(ErrorMessage = "Image is required.")]
         public string? NationalCardImageBack { get; set; }
 
 

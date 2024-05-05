@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Vehicle_Share.EF.Migrations
 {
-    public partial class AllBaseTable : Migration
+    public partial class addalltable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -35,10 +35,12 @@ namespace Vehicle_Share.EF.Migrations
                     Gender = table.Column<bool>(type: "bit", nullable: false),
                     Nationality = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    NationalCardImageFront = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NationalCardImageBack = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NationalCardImageFront = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NationalCardImageBack = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProfileImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -67,6 +69,8 @@ namespace Vehicle_Share.EF.Migrations
                     LicenseImagBack = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LicenseExpiration = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserDataId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -77,7 +81,7 @@ namespace Vehicle_Share.EF.Migrations
                         column: x => x.UserDataId,
                         principalTable: "UserData",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,6 +93,8 @@ namespace Vehicle_Share.EF.Migrations
                     ImageBack = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Expiration = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserDataId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -131,7 +137,7 @@ namespace Vehicle_Share.EF.Migrations
                         column: x => x.UserDataId,
                         principalTable: "UserData",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(

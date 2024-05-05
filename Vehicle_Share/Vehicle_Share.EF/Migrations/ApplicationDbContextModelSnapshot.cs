@@ -428,11 +428,9 @@ namespace Vehicle_Share.EF.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("NationalCardImageBack")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NationalCardImageFront")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("NationalId")

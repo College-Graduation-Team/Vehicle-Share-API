@@ -8,6 +8,7 @@ using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Models;
 using Vehicle_Share.Core.Models.GeneralModels;
 using Vehicle_Share.Core.Models.CarModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Vehicle_Share.Service.UserDataService
 {
@@ -77,13 +78,12 @@ namespace Vehicle_Share.Service.UserDataService
                     return new ResponseModel { message = "Admin can't add user data" };
 
                 if (model.Name == null || model.NationalId == null || model.Address == null || model.Nationality == null ||
-                 model.NationalCardImageFront == null || model.NationalCardImageBack == null || model.ProfileImage == null)
+                 model.ProfileImage == null)
                 {
                     return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Required] };
                 }
                 // return new ResponseForOneModel<ImageModel> { message = _LocaLizer[SharedResourcesKey.NoUserData] };
-                var NationalcardImgFront = await ProcessImageFile("User", model.NationalCardImageFront);
-                var NationalcardImgBack = await ProcessImageFile("User", model.NationalCardImageBack);
+               
                 var ProfileImg = await ProcessImageFile("User", model.ProfileImage);
 
                 var IsNationlIdExist = await _userData.FindAsync(e => e.NationalId == model.NationalId);
@@ -100,8 +100,6 @@ namespace Vehicle_Share.Service.UserDataService
                     NationalId = model.NationalId.GetValueOrDefault(),
                     Address = model.Address,
                     Nationality = model.Nationality,
-                    NationalCardImageFront = NationalcardImgFront,
-                    NationalCardImageBack = NationalcardImgBack,
                     ProfileImage = ProfileImg,
                     UserId = userId,
                     CreatedOn = DateTime.UtcNow,
@@ -109,16 +107,14 @@ namespace Vehicle_Share.Service.UserDataService
 
                 await _userData.AddAsync(user);
 
-                var result = new ResponseDataModel<ImageModel>
+                var result = new ResponseDataModel<ProfileImageModel>
                 {
                     IsSuccess = true,
                     message = _LocaLizer[SharedResourcesKey.Created],
-                    data = new ImageModel
+                    data = new ProfileImageModel
                     {
                         Id = user.Id,
                         ProfileImage = ProfileImg,
-                        NationalCardImageFront=NationalcardImgFront,
-                        NationalCardImageBack=NationalcardImgBack
                     }
                 };
                 return result;
@@ -133,18 +129,7 @@ namespace Vehicle_Share.Service.UserDataService
                 userData.Address = model.Address ?? userData.Address;
 
                 // Update images
-                if (model.NationalCardImageFront != null)
-                {
-                    await RemoveImageFile(userData.NationalCardImageFront);
-                    userData.NationalCardImageFront = await ProcessImageFile("User", model.NationalCardImageFront);
-                }
-
-                if (model.NationalCardImageBack != null)
-                {
-                    await RemoveImageFile(userData.NationalCardImageBack);
-                    userData.NationalCardImageBack = await ProcessImageFile("User", model.NationalCardImageBack);
-                }
-
+                
                 if (model.ProfileImage != null)
                 {
                     await RemoveImageFile(userData.ProfileImage);
@@ -152,25 +137,96 @@ namespace Vehicle_Share.Service.UserDataService
                 }
 
                 await _userData.UpdateAsync(userData);
+                var result = new ResponseDataModel<ProfileImageModel>
+                {
+                    IsSuccess = true,
+                    message = _LocaLizer[SharedResourcesKey.Updated],
+                    data = new ProfileImageModel
+                    {
+                        Id= userData.Id,
+                        ProfileImage = userData.ProfileImage,
+                    }
+                };
+                return result;
+            }
+        }
+        public async Task<ResponseModel> AddAndUpdateNationalImageAsync(NationalImageModel model)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+          
+
+            var userData = await _userData.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                  return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoUserData };
+
+
+            // Update images
+            if (model.NationalCardImageFront != null)
+            {
+                await RemoveImageFile(userData.NationalCardImageFront);
+                userData.NationalCardImageFront = await ProcessImageFile("User", model.NationalCardImageFront);
+            }
+            else
+            {
+                userData.NationalCardImageFront = await ProcessImageFile("User", model.NationalCardImageFront);
+            }
+
+
+            if (model.NationalCardImageBack != null)
+            {
+                await RemoveImageFile(userData.NationalCardImageBack);
+                userData.NationalCardImageBack = await ProcessImageFile("User", model.NationalCardImageBack);
+            }
+            else
+            {
+                userData.NationalCardImageBack = await ProcessImageFile("User", model.NationalCardImageBack);
+
+            }
+
+            await _userData.UpdateAsync(userData);
                 var result = new ResponseDataModel<ImageModel>
                 {
                     IsSuccess = true,
                     message = _LocaLizer[SharedResourcesKey.Updated],
                     data = new ImageModel
                     {
-                        Id= userData.Id,
-                        ProfileImage = userData.ProfileImage,
+                        Id = userData.Id,
                         NationalCardImageFront = userData.NationalCardImageFront,
                         NationalCardImageBack = userData.NationalCardImageBack
                     }
                 };
                 return result;
-            }
+            
+        }
+        public async Task<ResponseModel> seedAsync(SeedModel model)
+        {
+           
+            UserData user = new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = model.Name,
+                NationalId = model.NationalId.GetValueOrDefault(),
+                Address = model.Address,
+                Nationality = model.Nationality,
+                NationalCardImageFront = model.NationalCardImageFront,
+                NationalCardImageBack =model.NationalCardImageBack,
+                ProfileImage = model.ProfileImage,
+                UserId =model.userId,
+                CreatedOn = DateTime.UtcNow,
+            };
+
+            await _userData.AddAsync(user);
+            return new ResponseModel {message="ssssssss" ,IsSuccess=true};
         }
 
-        #region For Admin
+                #region For Admin
 
-        public async Task<ResponseModel> GetAllAsync()
+                public async Task<ResponseModel> GetAllAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)

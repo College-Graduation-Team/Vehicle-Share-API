@@ -8,11 +8,13 @@ namespace Vehicle_Share.Service.UserDataService
     {
         Task<ResponseModel> GetUserDataAsync();
         Task<ResponseModel> AddAndUpdateAsync(UserDataModel model);
+        Task<ResponseModel> AddAndUpdateNationalImageAsync(NationalImageModel model);
 
         Task<ResponseModel> GetAllAsync();
         Task<ResponseModel> GetUserDataByIdAsyc(string id);
         Task<ResponseModel> UpdateStatusRequestAsync(string id, UpdateStatusRequestModel model);
 
+        Task<ResponseModel> seedAsync(SeedModel model);
         //  Task<ResponseModel> UpdateAsync(UserDataModel model);
         //  Task<int> DeleteAsync(string id);
 
