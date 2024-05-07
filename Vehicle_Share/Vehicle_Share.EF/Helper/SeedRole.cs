@@ -43,18 +43,16 @@ namespace Vehicle_Share.EF.Helper
 
                     var result = await userManager.CreateAsync(adminUser);
 
-                    if (result.Succeeded)
+                    if (!result.Succeeded)
                     {
-                        await userManager.AddToRoleAsync(adminUser, "Admin");
-                    }
-                    else
-                    {
-                        // Handle errors if user creation or role assignment fails
                         foreach (var error in result.Errors)
                         {
                             await Console.Out.WriteLineAsync(error.Description);
                         }
+                      //  await userManager.AddToRoleAsync(adminUser, "User");
                     }
+                         await userManager.AddToRoleAsync(adminUser, "Admin");
+                         await context.SaveChangesAsync();
                 }
 
                 catch (Exception ex)

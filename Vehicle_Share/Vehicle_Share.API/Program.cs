@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -44,10 +42,10 @@ builder.Services.Configure<JWT>(builder.Configuration.GetSection(nameof(JWT)));
 
 // add connection to db and inject identity .
 builder.Services.AddDbContext<ApplicationDbContext>(
-      option => option.UseSqlServer("Data Source=.;Initial Catalog=VehicleSharing;Integrated Security=True"));
-     // option => option.UseSqlServer("Server=db4413.public.databaseasp.net; Database=db4413; User Id=db4413; Password=k=3YD8e#tJ?6; Encrypt=False; MultipleActiveResultSets=True;"));
-     // option => option.UseSqlServer("Server=localhost;Database=VehicleSharing;User Id=sa;Password=Hemakress-123"));
-
+     // option => option.UseSqlServer("Data Source=.;Initial Catalog=VehicleSharing;Integrated Security=True"));
+      option => option.UseSqlServer("Server=db4761.public.databaseasp.net; Database=db4761; User Id=db4761; Password=8x!W%Nb2w7B+; Encrypt=False; MultipleActiveResultSets=True;"));
+// option => option.UseSqlServer("Server=localhost;Database=VehicleSharing;User Id=sa;Password=Hemakress-123"));
+//Server=db4761.databaseasp.net; Database=db4761; User Id=db4761; Password=********; Encrypt=False; MultipleActiveResultSets=True;
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {

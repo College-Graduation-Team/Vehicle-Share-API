@@ -39,16 +39,15 @@ namespace Vehicle_Share.EF.ImpRepo.GenericRepo
             await _context.SaveChangesAsync();
             return entity;
         }
-
         public async Task<int> DeleteAsync(T entity)
         {
             _dbSet.Remove(entity);
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<string> UploadImageAsync(string Folder, IFormFile file)
+        public async Task<string> UploadImageAsync(string Folder, IFormFile file, string SubFolder )
         {
-            var path = _webHostEnvironment.WebRootPath + "/" + Folder + "/";
+            var path = _webHostEnvironment.WebRootPath + "/" + Folder + "/" + SubFolder + "/";
             // var extention = Path.GetExtension(file.FileName);
             var fileName = Guid.NewGuid().ToString() + "." + file.FileName;
             if (file.Length > 0)
@@ -59,7 +58,7 @@ namespace Vehicle_Share.EF.ImpRepo.GenericRepo
                 {
                     await file.CopyToAsync(stream);
                     await stream.FlushAsync();
-                    return $"/{Folder}/{fileName}";
+                    return $"/{Folder}/{SubFolder}/{fileName}";
                 }
 
             }
@@ -69,7 +68,6 @@ namespace Vehicle_Share.EF.ImpRepo.GenericRepo
                 return "failed to upload . ";
             }
         }
-
         public async Task RemoveImageAsync(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))

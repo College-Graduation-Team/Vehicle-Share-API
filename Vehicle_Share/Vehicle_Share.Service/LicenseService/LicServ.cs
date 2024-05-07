@@ -52,7 +52,9 @@ namespace Vehicle_Share.Service.LicenseService
                     UserDataId=Lic.UserDataId,
                     ImageFront = Lic.ImageFront,
                     ImageBack = Lic.ImageBack,
-                    Expiration = Lic.Expiration
+                    Expiration = Lic.Expiration,
+                    Status = Lic.Status,
+                    Message = Lic.Message,
                 },
                 IsSuccess = true
             };
@@ -78,8 +80,8 @@ namespace Vehicle_Share.Service.LicenseService
                 if (isAdmin)
                     return new ResponseModel { message = "Admin can't add user data" };
 
-                var LicFront = await ProcessImageFile("License", model.ImageFront);
-                var LicBack = await ProcessImageFile("License", model.ImageBack);
+                var LicFront = await ProcessImageFile("License", model.ImageFront, userData.Name);
+                var LicBack = await ProcessImageFile("License", model.ImageBack, userData.Name);
 
                 License license = new License
                 {
@@ -116,12 +118,12 @@ namespace Vehicle_Share.Service.LicenseService
                 if (model.ImageBack != null)
                 {
                     await RemoveImageFile(lic.ImageBack);
-                    lic.ImageBack = await ProcessImageFile("License", model.ImageBack);
+                    lic.ImageBack = await ProcessImageFile("License", model.ImageBack, userData.Name);
                 }
                 if (model.ImageFront != null)
                 {
                     await RemoveImageFile(lic.ImageFront);
-                    lic.ImageFront = await ProcessImageFile("License", model.ImageFront);
+                    lic.ImageFront = await ProcessImageFile("License", model.ImageFront, userData.Name);
                 }
 
                 await _Lic.UpdateAsync(lic);
@@ -160,6 +162,24 @@ namespace Vehicle_Share.Service.LicenseService
             : new ResponseModel { message = _LocaLizer[SharedResourcesKey.Error] };
         }
 
+        public async Task<ResponseModel> seedAsync(LicSeedModel model)
+        {
+
+            License license = new License
+            {
+                Id = Guid.NewGuid().ToString(),
+                ImageFront = model.ImageFront,
+                ImageBack = model.ImageBack,
+                Expiration = model.Expiration,
+                UserDataId = model.UserDataId,
+                CreatedOn = DateTime.UtcNow
+            };
+
+            await _Lic.AddAsync(license);
+            return new ResponseModel { message = "ssssssss", IsSuccess = true };
+        }
+
+
         #region For Admin
         public async Task<ResponseModel> GetAllAsync()
         {
@@ -185,7 +205,9 @@ namespace Vehicle_Share.Service.LicenseService
                     UserDataId = Lic.UserDataId,
                     ImageFront = Lic.ImageFront,
                     ImageBack = Lic.ImageBack,
-                    Expiration = Lic.Expiration
+                    Expiration = Lic.Expiration,
+                    Status = Lic.Status,
+                    Message = Lic.Message,
                 });
                     
             }
@@ -216,13 +238,43 @@ namespace Vehicle_Share.Service.LicenseService
                     UserDataId = Lic.UserDataId,
                     ImageFront = Lic.ImageFront,
                     ImageBack = Lic.ImageBack,
-                    Expiration = Lic.Expiration
+                    Expiration = Lic.Expiration,
+                    Status = Lic.Status,
+                    Message = Lic.Message,
                 },
             
                 IsSuccess = true
             };
 
             return result;
+        }
+        public async Task<ResponseModel> UpdateAsync(string id, LicModel model)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var lic = await _Lic.GetByIdAsync(id);
+            lic.Expiration = model.Expiration != null ? model.Expiration : lic.Expiration;
+
+            var user = await _user.GetByIdAsync(lic.UserDataId);
+
+            // updata the image 
+
+            if (model.ImageBack != null)
+            {
+                await RemoveImageFile(lic.ImageBack);
+                lic.ImageBack = await ProcessImageFile("License", model.ImageBack , user.Name);
+            }
+            if (model.ImageFront != null)
+            {
+                await RemoveImageFile(lic.ImageFront);
+                lic.ImageFront = await ProcessImageFile("License", model.ImageFront, user.Name);
+            }
+
+            await _Lic.UpdateAsync(lic);
+            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Updated],IsSuccess=true };
+
         }
         public async Task<ResponseModel> UpdateStatusRequestAsync(string id, UpdateStatusRequestModel model)
         {
@@ -250,25 +302,28 @@ namespace Vehicle_Share.Service.LicenseService
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
 
         }
-       
-        #endregion 
+
+        #endregion
 
         #region  ProcessImageFile
-        private async Task<string> ProcessImageFile(string folder, IFormFile file)
+        private async Task<string> ProcessImageFile(string folder, IFormFile? file, string SubFolder)
         {
-            var req = _httpContextAccessor.HttpContext.Request;
+            if (file == null) return string.Empty;
+
+            var req = _httpContextAccessor.HttpContext?.Request;
             var baseUrl = req.Scheme + "://" + req.Host;
 
-            var Image = await _Lic.UploadImageAsync(folder, file);
+            var Image = await _Lic.UploadImageAsync(folder, file, SubFolder);
             return baseUrl + Image;
         }
-        private async Task RemoveImageFile(string file)
+        private async Task RemoveImageFile(string? file)
         {
-            Uri uri = new Uri(file);
+            if (file == null) return;
+
+            Uri uri = new(file);
             string relativeUrl = uri.PathAndQuery;
             await _Lic.RemoveImageAsync(relativeUrl);
         }
-
         #endregion
     }
 }

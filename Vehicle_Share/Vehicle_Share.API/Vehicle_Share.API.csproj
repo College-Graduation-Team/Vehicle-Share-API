@@ -27,8 +27,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\Car\" />
-    <Folder Include="wwwroot\License\" />
-    <Folder Include="wwwroot\User\" />
   </ItemGroup>
 
   <ItemGroup>

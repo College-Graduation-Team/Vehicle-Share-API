@@ -1,5 +1,7 @@
 ﻿
 
+using static Vehicle_Share.Core.Helper.StatusContainer;
+
 namespace Vehicle_Share.Core.Models.CarModels
 {
     public class GetCarModel
@@ -16,5 +18,8 @@ namespace Vehicle_Share.Core.Models.CarModels
         public string? LicenseImageFront { get; set; }
         public string? LicenseImageBack { get; set; }
         public DateTime LicenseExpiration { get; set; }
+
+        public Status Status { get; set; }
+        public string? Message { get; set; }
     }
 }

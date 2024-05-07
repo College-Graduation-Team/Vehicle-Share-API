@@ -1,4 +1,6 @@
-﻿namespace Vehicle_Share.Core.Models.UserData
+﻿using static Vehicle_Share.Core.Helper.StatusContainer;
+
+namespace Vehicle_Share.Core.Models.UserData
 {
     public class GetUserDataModel
     {
@@ -13,6 +15,8 @@
         public string? NationalCardImageFront { get; set; }
         public string? NationalCardImageBack { get; set; }
         public string? ProfileImage { get; set; }
+        public Status Status { get; set; }
+        public string? Message { get; set; }
 
 
     }

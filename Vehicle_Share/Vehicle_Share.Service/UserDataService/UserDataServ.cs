@@ -7,8 +7,8 @@ using Vehicle_Share.Core.Response;
 using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Models;
 using Vehicle_Share.Core.Models.GeneralModels;
-using Vehicle_Share.Core.Models.CarModels;
-using Microsoft.EntityFrameworkCore;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Vehicle_Share.Service.UserDataService
 {
@@ -17,12 +17,13 @@ namespace Vehicle_Share.Service.UserDataService
         private readonly IBaseRepo<UserData> _userData;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStringLocalizer<SharedResources> _LocaLizer;
-
-        public UserDataServ(IBaseRepo<UserData> userData, IHttpContextAccessor httpContextAccessor, IStringLocalizer<SharedResources> locaLizer)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public UserDataServ(IBaseRepo<UserData> userData, IHttpContextAccessor httpContextAccessor, IStringLocalizer<SharedResources> locaLizer, IWebHostEnvironment webHostEnvironment)
         {
             _userData = userData;
             _httpContextAccessor = httpContextAccessor;
             _LocaLizer = locaLizer;
+            _webHostEnvironment = webHostEnvironment;
         }
         public async Task<ResponseModel> GetUserDataAsync()
         {
@@ -30,10 +31,15 @@ namespace Vehicle_Share.Service.UserDataService
             if (userId is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] ,code=ResponseCode.NoAuth};
 
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+            if(isAdmin)
+                return new ResponseModel { message = " Admin not have user data . " };
+
             var userData = await _userData.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] ,code=ResponseCode.NoUserData};
-              
+
             /*
               // ===== DateTime is non-nullable struct can never be null =====
               // if (userData.Birthdate == null) 
@@ -52,9 +58,9 @@ namespace Vehicle_Share.Service.UserDataService
                     Gender = userData.Gender,
                     Nationality = userData.Nationality,
                     Address = userData.Address,
-                   /* NationalCardImageFront = userData.NationalCardImageFront,
-                    NationalCardImageBack = userData.NationalCardImageBack,*/
                     ProfileImage = userData.ProfileImage,
+                    Status = userData.Status,
+                    Message = userData.Message,
                 },
                 IsSuccess = true
             };
@@ -70,21 +76,22 @@ namespace Vehicle_Share.Service.UserDataService
 
             var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
             bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+            if (isAdmin)
+                return new ResponseModel { message = "Admin can't add user data" };
+
 
             var userData = await _userData.FindAsync(e => e.UserId == userId);
             if (userData is null)
             {
-                if (isAdmin)
-                    return new ResponseModel { message = "Admin can't add user data" };
-
+               
                 if (model.Name == null || model.NationalId == null || model.Address == null || model.Nationality == null ||
                  model.ProfileImage == null)
                 {
                     return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Required] };
                 }
                 // return new ResponseForOneModel<ImageModel> { message = _LocaLizer[SharedResourcesKey.NoUserData] };
-               
-                var ProfileImg = await ProcessImageFile("User", model.ProfileImage);
+
+                var ProfileImg = await ProcessImageFile("User", model.ProfileImage, model.Name);
 
                 var IsNationlIdExist = await _userData.FindAsync(e => e.NationalId == model.NationalId);
 
@@ -103,6 +110,8 @@ namespace Vehicle_Share.Service.UserDataService
                     ProfileImage = ProfileImg,
                     UserId = userId,
                     CreatedOn = DateTime.UtcNow,
+                    Birthdate = (DateTime)model.Birthdate,
+                    Gender = (bool)model.Gender
                 };
 
                 await _userData.AddAsync(user);
@@ -133,7 +142,7 @@ namespace Vehicle_Share.Service.UserDataService
                 if (model.ProfileImage != null)
                 {
                     await RemoveImageFile(userData.ProfileImage);
-                    userData.ProfileImage = await ProcessImageFile("User", model.ProfileImage);
+                    userData.ProfileImage = await ProcessImageFile("User", model.ProfileImage,userData.Name);
                 }
 
                 await _userData.UpdateAsync(userData);
@@ -169,22 +178,22 @@ namespace Vehicle_Share.Service.UserDataService
             if (model.NationalCardImageFront != null)
             {
                 await RemoveImageFile(userData.NationalCardImageFront);
-                userData.NationalCardImageFront = await ProcessImageFile("User", model.NationalCardImageFront);
+                userData.NationalCardImageFront = await ProcessImageFile("User", model.NationalCardImageFront,userData.Name);
             }
             else
             {
-                userData.NationalCardImageFront = await ProcessImageFile("User", model.NationalCardImageFront);
+                userData.NationalCardImageFront = await ProcessImageFile("User", model.NationalCardImageFront, userData.Name);
             }
 
 
             if (model.NationalCardImageBack != null)
             {
                 await RemoveImageFile(userData.NationalCardImageBack);
-                userData.NationalCardImageBack = await ProcessImageFile("User", model.NationalCardImageBack);
+                userData.NationalCardImageBack = await ProcessImageFile("User", model.NationalCardImageBack, userData.Name);
             }
             else
             {
-                userData.NationalCardImageBack = await ProcessImageFile("User", model.NationalCardImageBack);
+                userData.NationalCardImageBack = await ProcessImageFile("User", model.NationalCardImageBack, userData.Name);
 
             }
 
@@ -218,15 +227,21 @@ namespace Vehicle_Share.Service.UserDataService
                 ProfileImage = model.ProfileImage,
                 UserId =model.userId,
                 CreatedOn = DateTime.UtcNow,
-            };
+                Birthdate= (DateTime)model.Birthdate,
+                Gender=(bool)model.Gender
 
-            await _userData.AddAsync(user);
+            };
+            var path = _webHostEnvironment.WebRootPath + "/" + "User" + "/" + model.Name + "/";
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            
+                await _userData.AddAsync(user);
             return new ResponseModel {message="ssssssss" ,IsSuccess=true};
         }
 
-                #region For Admin
+        #region For Admin
 
-                public async Task<ResponseModel> GetAllAsync()
+        public async Task<ResponseModel> GetAllAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
@@ -257,6 +272,8 @@ namespace Vehicle_Share.Service.UserDataService
                     NationalCardImageFront = userData.NationalCardImageFront,
                     NationalCardImageBack = userData.NationalCardImageBack,
                     ProfileImage = userData.ProfileImage,
+                    Status = userData.Status,
+                    Message = userData.Message,
                 }
                     );
             }
@@ -277,7 +294,7 @@ namespace Vehicle_Share.Service.UserDataService
 
             var userData = await _userData.GetByIdAsync(id);
             if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUser], code = ResponseCode.NoUserData };
 
             var result = new ResponseDataModel<GetUserDataModel>()
             {
@@ -293,11 +310,45 @@ namespace Vehicle_Share.Service.UserDataService
                     NationalCardImageFront = userData.NationalCardImageFront,
                     NationalCardImageBack = userData.NationalCardImageBack,
                     ProfileImage = userData.ProfileImage,
+                    Status = userData.Status,
+                    Message = userData.Message,
                 },
                 IsSuccess = true
             };
 
             return result;
+        }
+        public async Task<ResponseModel> UpdateAsync(string id, UserDataModel model)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+            if(!isAdmin)
+                return new ResponseModel { message = "the route for admin" };
+
+            var userData = await _userData.GetByIdAsync(id);
+
+            userData.Name = model.Name ?? userData.Name;
+            userData.NationalId = model.NationalId ?? userData.NationalId;
+            userData.Birthdate = model.Birthdate ?? userData.Birthdate;
+            userData.Gender = model.Gender ?? userData.Gender;
+            userData.Nationality = model.Nationality ?? userData.Nationality;
+            userData.Address = model.Address ?? userData.Address;
+
+            // Update images
+
+            if (model.ProfileImage != null)
+            {
+                await RemoveImageFile(userData.ProfileImage);
+                userData.ProfileImage = await ProcessImageFile("User", model.ProfileImage, userData.Id);
+            }
+
+            await _userData.UpdateAsync(userData);
+
+            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
         }
         public async Task<ResponseModel> UpdateStatusRequestAsync(string id, UpdateStatusRequestModel model)
         {
@@ -330,14 +381,14 @@ namespace Vehicle_Share.Service.UserDataService
 
 
         #region  ProcessImageFile
-        private async Task<string> ProcessImageFile(string folder, IFormFile? file)
+        private async Task<string> ProcessImageFile(string folder, IFormFile? file,string SubFolder)
         {
             if (file == null) return string.Empty;
 
-            var req = _httpContextAccessor.HttpContext.Request;
+            var req = _httpContextAccessor.HttpContext?.Request;
             var baseUrl = req.Scheme + "://" + req.Host;
 
-            var Image = await _userData.UploadImageAsync(folder, file);
+            var Image = await _userData.UploadImageAsync(folder, file, SubFolder);
             return baseUrl + Image;
         }
         private async Task RemoveImageFile(string? file)

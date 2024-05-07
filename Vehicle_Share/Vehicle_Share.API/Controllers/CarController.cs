@@ -64,18 +64,12 @@ namespace Vehicle_Share.API.Controllers
 
             return BadRequest(new { result.code, result.message });
         }
+        
 
-        [HttpPut("Admin/{id}")]
-        public async Task<IActionResult> UpdataCarStatusAsync([FromRoute] string id, [FromBody] UpdateStatusRequestModel model)
-        {
-            var result = await _service.UpdateStatusRequestAsync(id, model);
-            if (result.IsSuccess)
-                return Ok(new { result.message });
-
-            return BadRequest(new { result.code, result.message });
-        }
+        #region Admin
 
         [HttpGet("Admin/{userdataId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetByUserDataIdAsync([FromRoute] string userdataId)
         {
            
@@ -85,6 +79,19 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(new { result.code, result.message });
             
         }
+
+        [HttpPut("Admin/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdataCarStatusAsync([FromRoute] string id, [FromBody] UpdateStatusRequestModel model)
+        {
+            var result = await _service.UpdateStatusRequestAsync(id, model);
+            if (result.IsSuccess)
+                return Ok(new { result.message });
+
+            return BadRequest(new { result.code, result.message });
+        }
+
+        #endregion
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCarAsync([FromRoute] string id)

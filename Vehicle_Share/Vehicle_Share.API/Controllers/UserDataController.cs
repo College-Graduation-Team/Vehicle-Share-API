@@ -1,7 +1,8 @@
 ﻿using Bogus;
+using Bogus.DataSets;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Vehicle_Share.Core.Models.AuthModels;
+using Vehicle_Share.Core.Models.GeneralModels;
 using Vehicle_Share.Core.Models.UserData;
 using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Response;
@@ -24,28 +25,17 @@ namespace Vehicle_Share.API.Controllers
             _user = user;
         }
 
-        [HttpGet("{id?}")]
-        public async Task<IActionResult> GetUserDataAsync([FromRoute] string? id)
+        [HttpGet]
+        public async Task<IActionResult> GetMyUserDataAsync()
         {
-            if (id is null)
-            {
-                var result = await _service.GetUserDataAsync();
-                if (result is ResponseDataModel<GetUserModel> res)
-                    return Ok(new { res.data });
 
-                return BadRequest(new { result.code, result.message });
-            }
-            else
-            {
-                var result = await _service.GetUserDataByIdAsyc(id);
-                if (result is ResponseDataModel<GetUserModel> res)
-                    return Ok(new { res.data });
+            var result = await _service.GetUserDataAsync();
+            if (result is ResponseDataModel<GetUserModel> res)
+                return Ok(new { res.data });
 
-                return BadRequest(new { result.code, result.message });
-            }
-
+            return BadRequest(new { result.code, result.message });
         }
-
+       
         [HttpPost]
         public async Task<IActionResult> AddAndUpdateAsync([FromForm] UserDataModel model)
         {
@@ -71,11 +61,62 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(new { result.message });
 
         }
-       
+
+
+        #region  Admin
+
+
+        [HttpGet("Admin/{id?}")]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> GetUserDataAsync([FromRoute] string? id)
+        {
+            if (id is null)
+            {
+                var result = await _service.GetAllAsync();
+                if (result is ResponseDataModel<List<GetUserDataModel>> res)
+                    return Ok(new { res.data });
+
+                return BadRequest(new { result.code, result.message });
+            }
+            else
+            {
+                var result = await _service.GetUserDataByIdAsyc(id);
+                if (result is ResponseDataModel<GetUserDataModel> res)
+                    return Ok(new { res.data });
+
+                return BadRequest(new { result.code, result.message });
+            }
+
+        }
+
+        [HttpPut("Admin/UpdateDate/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateAsync([FromRoute] string id, [FromForm] UserDataModel model)
+        {
+            var result = await _service.UpdateAsync(id, model);
+            if (result.IsSuccess)
+                return Ok(new { result.message });
+            return BadRequest(new { result.message });
+        }
+
+        [HttpPut("Admin/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateStatusRequestAsync([FromRoute] string id, [FromForm] UpdateStatusRequestModel model)
+        {
+            var result = await _service.UpdateStatusRequestAsync(id, model);
+            if (result.IsSuccess)
+                return Ok(new { result.message });
+            return BadRequest(new { result.message });
+        }
+
+        #endregion
+
         [HttpPost("generate-fake-userData")]
+        [AllowAnonymous]
         public async Task<IActionResult> GenerateFakeUsers(int count)
         {
             var users = await _user.GetAllAsync();
+            var nonAdminUsers = users.Where(u => u.UserName != "Admin").ToList();
             var faker = new Faker<SeedModel>()
                 .RuleFor(u => u.Name, f => f.Internet.UserName())
                 .RuleFor(u => u.NationalId, f => f.Random.Long(10000000000000, 99999999999999))
@@ -83,10 +124,10 @@ namespace Vehicle_Share.API.Controllers
                 .RuleFor(u => u.Gender, f => f.PickRandom(true, false))
                 .RuleFor(u => u.Nationality, f => f.Address.Country())
                 .RuleFor(u => u.Address, f => f.Address.FullAddress())
-                .RuleFor(u => u.NationalCardImageFront, f => "https://localhost:44305/User/3f6f18a6-470c-4beb-85c7-9a2621d010c2.1.jpeg") // You may customize this rule as needed
-                .RuleFor(u => u.NationalCardImageBack, f => "https://localhost:44305/User/3f6f18a6-470c-4beb-85c7-9a2621d010c2.1.jpeg")  // You may customize this rule as needed
-                .RuleFor(u => u.ProfileImage, f => "https://localhost:44305/User/3f6f18a6-470c-4beb-85c7-9a2621d010c2.1.jpeg")          // You may customize this rule as needed                                                                                                                        //.RuleFor(u => u.userId, f => f.PickRandom(users).Id); // Get a random user ID
-                .RuleFor(u => u.userId, f => users[(f.UniqueIndex + 1) % (users.Count - 1)].Id);
+                .RuleFor(u => u.NationalCardImageFront, (f, u) => $"https://localhost:44305/User/{u.Name}/1435eb1a-5588-446b-9197-586390e5168c.3.jpeg") // You may customize this rule as needed
+                .RuleFor(u => u.NationalCardImageBack, (f, u) => $"https://localhost:44305/User/{u.Name}/4f516309-72b5-44db-97b0-7b01c8aec159.4.jpeg")  // You may customize this rule as needed
+                .RuleFor(u => u.ProfileImage, (f, u) => $"https://localhost:44305/User/{u.Name}/11f83072-cc95-4633-9654-0e3b5baa97c4.10.jpeg")          // You may customize this rule as needed                                                                                                                        //.RuleFor(u => u.userId, f => f.PickRandom(users).Id); // Get a random user ID
+                .RuleFor(u => u.userId, f => users[(f.UniqueIndex) % (nonAdminUsers.Count)].Id);
             // You may customize this rule as needed
 
             var fakeUsers = faker.Generate(count);
@@ -100,6 +141,7 @@ namespace Vehicle_Share.API.Controllers
             return Ok(fakeUsers);
         }
 
+    
     }
 }
 

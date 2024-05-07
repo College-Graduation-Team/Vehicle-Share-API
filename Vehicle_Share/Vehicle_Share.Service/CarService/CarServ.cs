@@ -67,7 +67,9 @@ namespace Vehicle_Share.Service.CarService
                     Image = car.Image,
                     LicenseImageFront = car.LicenseImageFront,
                     LicenseImageBack = car.LicenseImagBack,
-                    LicenseExpiration = car.LicenseExpiration
+                    LicenseExpiration = car.LicenseExpiration,
+                    Status=car.Status,
+                    Message=car.Message
                 },
                 IsSuccess = true
             };
@@ -110,7 +112,9 @@ namespace Vehicle_Share.Service.CarService
                     Image = car.Image,
                     LicenseImageFront = car.LicenseImageFront,
                     LicenseImageBack = car.LicenseImagBack,
-                    LicenseExpiration = car.LicenseExpiration
+                    LicenseExpiration = car.LicenseExpiration,
+                    Status = car.Status,
+                    Message = car.Message
                 });
             }
             result.IsSuccess = true;
@@ -127,13 +131,9 @@ namespace Vehicle_Share.Service.CarService
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
 
 
-
-            var LecFront = await ProcessImageFile("Car", model.LicenseImageFront);
-            var LecBack = await ProcessImageFile("Car", model.LicenseImageBack);
-
-            var carImg = await ProcessImageFile("Car", model.Image);
-
-
+            var LecFront = await ProcessImageFile("Car", model.LicenseImageFront,userData.Name);
+            var LecBack = await ProcessImageFile("Car", model.LicenseImageBack, userData.Name);
+            var carImg = await ProcessImageFile("Car", model.Image, userData.Name);
 
             Car car = new Car
             {
@@ -191,6 +191,7 @@ namespace Vehicle_Share.Service.CarService
             var car = await _car.GetByIdAsync(id);
             if (car is null) return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar] , code = ResponseCode.NoCar };
 
+            var user = await _userdata.GetByIdAsync(car.UserDataId);
             // userData.Name = model.Name ?? userData.Name;
             car.Type = model.Type ?? car.Type;
             car.ModelYear = model.ModelYear == 0 ? car.ModelYear : model.ModelYear;
@@ -203,45 +204,19 @@ namespace Vehicle_Share.Service.CarService
             if (model.Image != null)
             {
                 await RemoveImageFile(car.Image);
-                car.Image = await ProcessImageFile("Car", model.Image);
+                car.Image = await ProcessImageFile("Car", model.Image, user.Id);
             }
             if (model.LicenseImageBack != null)
             {
                 await RemoveImageFile(car.LicenseImagBack);
-                car.LicenseImagBack = await ProcessImageFile("Car", model.LicenseImageBack);
+                car.LicenseImagBack = await ProcessImageFile("Car", model.LicenseImageBack, user.Id);
             }
             if (model.LicenseImageFront != null)
             {
                 await RemoveImageFile(car.LicenseImageFront);
-                car.LicenseImageFront = await ProcessImageFile("Car", model.LicenseImageFront);
+                car.LicenseImageFront = await ProcessImageFile("Car", model.LicenseImageFront, user.Id);
             }
 
-            await _car.UpdateAsync(car);
-
-            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
-
-        }
-        public async Task<ResponseModel> UpdateStatusRequestAsync(string id, UpdateStatusRequestModel model)
-        {
-            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
-            if (userId is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
-
-            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
-            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
-
-            if (!isAdmin)
-                return new ResponseModel { message = "this route for admin" };
-
-            var car = await _car.GetByIdAsync(id);
-            if (car is null)return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar], code = ResponseCode.NoCar };
-
-            car.Status = model.Status;
-
-            if(model.Status == Core.Helper.StatusContainer.Status.Refused)
-            {
-                car.Message = model.Message;
-            }
             await _car.UpdateAsync(car);
 
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
@@ -249,10 +224,24 @@ namespace Vehicle_Share.Service.CarService
         }
         public async Task<ResponseModel> DeleteAsync(string id)
         {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
             var car = await _car.FindAsync(e => e.Id == id);
             if (car is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar] , code = ResponseCode.NoCar };
 
+            UserData userData = null;
+            if (!isAdmin)
+            {
+                userData = await _userdata.FindAsync(e => e.Id == car.UserDataId);
+                if (userData is null)
+                    return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+            }
+            
             var trips = await _trip.GetAllAsync(e => e.CarId == id);
             var unfinishedTrips = trips.Where(t => !t.IsFinished).ToList();
 
@@ -271,6 +260,10 @@ namespace Vehicle_Share.Service.CarService
 
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Deleted] ,IsSuccess=true};
         }
+
+
+        #region Admin
+
         public async Task<ResponseModel> GetByUserDataIdAsync(string id)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
@@ -302,30 +295,65 @@ namespace Vehicle_Share.Service.CarService
                     Image = car.Image,
                     LicenseImageFront = car.LicenseImageFront,
                     LicenseImageBack = car.LicenseImagBack,
-                    LicenseExpiration = car.LicenseExpiration
+                    LicenseExpiration = car.LicenseExpiration,
+                    Status = car.Status,
+                    Message = car.Message
                 },
                 IsSuccess = true
             };
 
             return result;
         }
-
-        private async Task<string> ProcessImageFile(string folder, IFormFile file)
+        public async Task<ResponseModel> UpdateStatusRequestAsync(string id, UpdateStatusRequestModel model)
         {
-            var req = _httpContextAccessor.HttpContext.Request;
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+
+            if (!isAdmin)
+                return new ResponseModel { message = "this route for admin" };
+
+            var car = await _car.GetByIdAsync(id);
+            if (car is null)return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar], code = ResponseCode.NoCar };
+
+            car.Status = model.Status;
+
+            if(model.Status == Core.Helper.StatusContainer.Status.Refused)
+            {
+                car.Message = model.Message;
+            }
+            await _car.UpdateAsync(car);
+
+            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
+
+        }
+
+        #endregion
+
+        #region  ProcessImageFile
+        private async Task<string> ProcessImageFile(string folder, IFormFile? file, string SubFolder)
+        {
+            if (file == null) return string.Empty;
+
+            var req = _httpContextAccessor.HttpContext?.Request;
             var baseUrl = req.Scheme + "://" + req.Host;
 
-            var Image = await _car.UploadImageAsync(folder, file);
+            var Image = await _car.UploadImageAsync(folder, file, SubFolder);
             return baseUrl + Image;
         }
-        private async Task RemoveImageFile(string file)
+        private async Task RemoveImageFile(string? file)
         {
-            Uri uri = new Uri(file);
+            if (file == null) return;
+
+            Uri uri = new(file);
             string relativeUrl = uri.PathAndQuery;
             await _car.RemoveImageAsync(relativeUrl);
         }
+        #endregion
 
-       
 
     }
 }

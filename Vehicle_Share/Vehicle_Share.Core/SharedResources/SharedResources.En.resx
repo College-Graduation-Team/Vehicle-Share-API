@@ -246,4 +246,7 @@
   <data name="ExistsPhone" xml:space="preserve">
     <value>Phone number is already registered</value>
   </data>
+  <data name="NoUser" xml:space="preserve">
+    <value>User not found </value>
+  </data>
 </root>
