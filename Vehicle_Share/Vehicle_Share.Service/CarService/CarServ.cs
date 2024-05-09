@@ -6,8 +6,8 @@ using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Response;
 using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Models;
-using Vehicle_Share.Service.IAuthService;
 using Vehicle_Share.Core.Models.GeneralModels;
+using Vehicle_Share.Core.Models.LicModels;
 
 namespace Vehicle_Share.Service.CarService
 {
@@ -35,8 +35,8 @@ namespace Vehicle_Share.Service.CarService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code = ResponseCode.NoAuth };
-           
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
             var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
             bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
 
@@ -58,7 +58,7 @@ namespace Vehicle_Share.Service.CarService
                 data = new GetCarModel
                 {
                     Id = car.Id,
-                    UserDataId=car.UserDataId,
+                    UserDataId = car.UserDataId,
                     Type = car.Type,
                     ModelYear = car.ModelYear,
                     Brand = car.Brand,
@@ -68,8 +68,8 @@ namespace Vehicle_Share.Service.CarService
                     LicenseImageFront = car.LicenseImageFront,
                     LicenseImageBack = car.LicenseImagBack,
                     LicenseExpiration = car.LicenseExpiration,
-                    Status=car.Status,
-                    Message=car.Message
+                    Status = car.Status,
+                    Message = car.Message
                 },
                 IsSuccess = true
             };
@@ -80,7 +80,7 @@ namespace Vehicle_Share.Service.CarService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code = ResponseCode.NoAuth };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
 
             var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
             bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
@@ -103,7 +103,7 @@ namespace Vehicle_Share.Service.CarService
                 result.data?.Add(new GetCarModel
                 {
                     Id = car.Id,
-                    UserDataId=car.UserDataId,
+                    UserDataId = car.UserDataId,
                     Type = car.Type,
                     ModelYear = car.ModelYear,
                     Brand = car.Brand,
@@ -124,14 +124,14 @@ namespace Vehicle_Share.Service.CarService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code = ResponseCode.NoAuth };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
 
             if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
 
 
-            var LecFront = await ProcessImageFile("Car", model.LicenseImageFront,userData.Name);
+            var LecFront = await ProcessImageFile("Car", model.LicenseImageFront, userData.Name);
             var LecBack = await ProcessImageFile("Car", model.LicenseImageBack, userData.Name);
             var carImg = await ProcessImageFile("Car", model.Image, userData.Name);
 
@@ -151,7 +151,7 @@ namespace Vehicle_Share.Service.CarService
                 Image = carImg,
 
                 UserDataId = userData.Id,
-                CreatedOn= DateTime.UtcNow
+                CreatedOn = DateTime.UtcNow
 
             };
             await _car.AddAsync(car);
@@ -169,7 +169,7 @@ namespace Vehicle_Share.Service.CarService
                 }
             };
             return result;
-          //  return new ResponseModel { Id = car.Id, message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
+            //  return new ResponseModel { Id = car.Id, message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
         }
         public async Task<ResponseModel> UpdateAsync(string id, UpdateCarModel model)
         {
@@ -189,7 +189,7 @@ namespace Vehicle_Share.Service.CarService
             }
 
             var car = await _car.GetByIdAsync(id);
-            if (car is null) return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar] , code = ResponseCode.NoCar };
+            if (car is null) return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar], code = ResponseCode.NoCar };
 
             var user = await _userdata.GetByIdAsync(car.UserDataId);
             // userData.Name = model.Name ?? userData.Name;
@@ -232,7 +232,7 @@ namespace Vehicle_Share.Service.CarService
             bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
             var car = await _car.FindAsync(e => e.Id == id);
             if (car is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar] , code = ResponseCode.NoCar };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar], code = ResponseCode.NoCar };
 
             UserData userData = null;
             if (!isAdmin)
@@ -241,7 +241,7 @@ namespace Vehicle_Share.Service.CarService
                 if (userData is null)
                     return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
             }
-            
+
             var trips = await _trip.GetAllAsync(e => e.CarId == id);
             var unfinishedTrips = trips.Where(t => !t.IsFinished).ToList();
 
@@ -258,7 +258,7 @@ namespace Vehicle_Share.Service.CarService
 
             await _car.DeleteAsync(car);
 
-            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Deleted] ,IsSuccess=true};
+            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Deleted], IsSuccess = true };
         }
 
 
@@ -274,7 +274,7 @@ namespace Vehicle_Share.Service.CarService
             bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
 
             if (!isAdmin)
-                    return new ResponseModel { message ="this route for admin" };
+                return new ResponseModel { message = "this route for admin" };
 
             var car = await _car.FindAsync(e => e.UserDataId == id);
 
@@ -317,11 +317,11 @@ namespace Vehicle_Share.Service.CarService
                 return new ResponseModel { message = "this route for admin" };
 
             var car = await _car.GetByIdAsync(id);
-            if (car is null)return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar], code = ResponseCode.NoCar };
+            if (car is null) return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar], code = ResponseCode.NoCar };
 
             car.Status = model.Status;
 
-            if(model.Status == Core.Helper.StatusContainer.Status.Refused)
+            if (model.Status == Core.Helper.StatusContainer.Status.Refused)
             {
                 car.Message = model.Message;
             }
@@ -354,7 +354,31 @@ namespace Vehicle_Share.Service.CarService
         }
         #endregion
 
+        public async Task<ResponseModel> seedAsync(SeedCarModel model)
+        {
+            Car car = new Car
+            {
+                Id = Guid.NewGuid().ToString(),
+                Type = model.Type,
+                ModelYear = model.ModelYear,
+                Brand = model.Brand,
+                Plate = model.Plate,
+                Seats = model.Seats,
 
+                LicenseImageFront = model.LicenseImageFront,
+                LicenseImagBack = model.LicenseImageBack,
+                LicenseExpiration = model.LicenseExpiration,
+
+                Image = model.Image,
+
+                UserDataId = model.userId,
+                CreatedOn = DateTime.UtcNow
+
+            };
+            await _car.AddAsync(car);
+             return new ResponseModel {  message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
+
+        }
     }
 }
 

@@ -147,6 +147,7 @@ namespace Vehicle_Share.EF.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Seats = table.Column<short>(type: "smallint", nullable: false),
+                    Type = table.Column<bool>(type: "bit", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserDataId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     TripId = table.Column<string>(type: "nvarchar(450)", nullable: true)

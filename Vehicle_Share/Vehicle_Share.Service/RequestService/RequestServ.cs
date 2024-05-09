@@ -62,6 +62,9 @@ namespace Vehicle_Share.Service.RequestService
             result.IsSuccess = true;
             return result;
         }
+        
+
+        
         public async Task<ResponseModel> GetAllMyRequestAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
@@ -70,7 +73,7 @@ namespace Vehicle_Share.Service.RequestService
 
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
 
             var allRequests = await _request.GetAllAsync();
             var userRequests = allRequests.Where(t => t.UserDataId == userData.Id).ToList();
@@ -92,6 +95,148 @@ namespace Vehicle_Share.Service.RequestService
             result.IsSuccess = true;
             return result;
         }
+
+        #region Get requests 
+      
+        public async Task<ResponseModel> GetSendRequestDriverAsync() 
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+
+            var allRequests = await _request.GetAllAsync(t => t.UserDataId == userData.Id && t.Type == true);
+            var result = new ResponseDataModel<List<GetReqModel>>();
+            result.data = new List<GetReqModel>();
+            foreach (var request in allRequests)
+            {
+                result.data?.Add(new GetReqModel
+                {
+                    Id = request.Id,
+                    Status = request.Status.ToString(),
+                    CreatedOn = request.CreatedOn,
+                    TripId = request.TripId,
+                    UserDataId = request.UserDataId
+                }
+
+                );
+            };
+            result.IsSuccess = true;
+            return result;
+        }
+        public async Task<ResponseModel> GetReceiveRequestDriverAsync() 
+        {
+
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var trips = await _trip.GetAllAsync(t=>t.UserDataId==userData.Id);
+
+            var result = new ResponseDataModel<List<GetReqModel>>();
+            result.data = new List<GetReqModel>();
+
+            foreach (var trip in trips)
+            {
+                var tripRequests = await _request.GetAllAsync(r => r.TripId == trip.Id && r.Type == true);
+                if (tripRequests != null && tripRequests.Any())
+                {
+                    foreach (var request in tripRequests)
+                    {
+                        result.data.Add(new GetReqModel
+                        {
+                            Id = request.Id,
+                            Status = request.Status.ToString(),
+                            CreatedOn = request.CreatedOn,
+                            TripId = request.TripId,
+                            UserDataId = request.UserDataId
+                        });
+                    }
+                }
+            }
+
+            result.IsSuccess = true;
+            return result;
+        }
+
+        public async Task<ResponseModel> GetSendRequestPassengerAsync()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+
+            var allRequests = await _request.GetAllAsync(t => t.UserDataId == userData.Id && t.Type == false);
+            var result = new ResponseDataModel<List<GetReqModel>>();
+            result.data = new List<GetReqModel>();
+            foreach (var request in allRequests)
+            {
+                result.data?.Add(new GetReqModel
+                {
+                    Id = request.Id,
+                    Status = request.Status.ToString(),
+                    CreatedOn = request.CreatedOn,
+                    TripId = request.TripId,
+                    UserDataId = request.UserDataId
+                }
+
+                );
+            };
+            result.IsSuccess = true;
+            return result;
+        }
+        public async Task<ResponseModel> GetReceiveRequestPassengerAsync()
+        {
+
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var trips = await _trip.GetAllAsync(t => t.UserDataId == userData.Id);
+
+            var result = new ResponseDataModel<List<GetReqModel>>();
+            result.data = new List<GetReqModel>();
+
+            foreach (var trip in trips)
+            {
+                var tripRequests = await _request.GetAllAsync(r => r.TripId == trip.Id && r.Type == false);
+                if (tripRequests != null && tripRequests.Any())
+                {
+                    foreach (var request in tripRequests)
+                    {
+                        result.data.Add(new GetReqModel
+                        {
+                            Id = request.Id,
+                            Status = request.Status.ToString(),
+                            CreatedOn = request.CreatedOn,
+                            TripId = request.TripId,
+                            UserDataId = request.UserDataId
+                        });
+                    }
+                }
+            }
+
+            result.IsSuccess = true;
+            return result;
+        }
+       
+        
+        #endregion
+
         public async Task<ResponseModel> SendReqestAsync(ReqModel model)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
@@ -128,6 +273,7 @@ namespace Vehicle_Share.Service.RequestService
             }
             request.Id = Guid.NewGuid().ToString();
             request.Status = Status.Pending;
+            request.Type = model.Type;
             request.TripId = model.TripId;
             request.UserDataId = userData.Id;
             request.CreatedOn = DateTime.UtcNow;
@@ -140,10 +286,6 @@ namespace Vehicle_Share.Service.RequestService
             };
             return result;
         }
-
-    
-        
-        
         public async Task<ResponseModel> AcceptRequestAsync(string requestId)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");

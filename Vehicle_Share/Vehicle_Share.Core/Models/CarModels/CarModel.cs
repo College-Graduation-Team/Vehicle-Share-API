@@ -25,4 +25,27 @@ namespace Vehicle_Share.Core.Models.CarModels
         [Required]
         public DateTime LicenseExpiration { get; set; }
     }
+    public class SeedCarModel
+    {
+        [Required]
+        public string? Type { get; set; }
+        [Required]
+        public int ModelYear { get; set; }
+        [Required]
+        public string? Brand { get; set; }
+        [Required]
+        public string? Plate { get; set; }
+        [Required]
+        public short Seats { get; set; }
+        [Required]
+        public string? LicenseImageFront { get; set; }
+        [Required]
+        public string? LicenseImageBack { get; set; }
+        [Required]
+        public string? Image { get; set; }
+        public string? userId { get; set; }
+        [Required]
+        public DateTime LicenseExpiration { get; set; }
+    }
 }
+

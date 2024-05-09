@@ -269,6 +269,9 @@ namespace Vehicle_Share.EF.Migrations
                     b.Property<string>("TripId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("Type")
+                        .HasColumnType("bit");
+
                     b.Property<string>("UserDataId")
                         .HasColumnType("nvarchar(450)");
 

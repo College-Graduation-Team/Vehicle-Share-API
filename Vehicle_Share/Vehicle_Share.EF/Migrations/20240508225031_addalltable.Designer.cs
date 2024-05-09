@@ -12,7 +12,7 @@ using Vehicle_Share.EF.Data;
 namespace Vehicle_Share.EF.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240504210716_addalltable")]
+    [Migration("20240508225031_addalltable")]
     partial class addalltable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -270,6 +270,9 @@ namespace Vehicle_Share.EF.Migrations
 
                     b.Property<string>("TripId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Type")
+                        .HasColumnType("bit");
 
                     b.Property<string>("UserDataId")
                         .HasColumnType("nvarchar(450)");

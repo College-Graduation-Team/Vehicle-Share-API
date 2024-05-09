@@ -19,17 +19,25 @@ namespace Vehicle_Share.API.Controllers
             _service = service;
         }
 
+
+
+        #region Get requests 
+
+
         [HttpGet("{id?}")]
         public async Task<IActionResult> GetAllTripRequestedAsync([FromRoute] string? id)
         {
-            if (id == null) {
+            if (id == null)
+            {
                 var result = await _service.GetAllMyRequestAsync();
                 if (result is ResponseDataModel<List<GetReqModel>> res)
                     return Ok(new { res.data });
 
                 return BadRequest(new { result.code, result.message });
 
-            } else {
+            }
+            else
+            {
                 var result = await _service.GetAllTripRequestedAsync(id);
                 if (result is ResponseDataModel<List<GetReqModel>> res)
                     return Ok(new { res.data });
@@ -37,6 +45,49 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(new { result.code, result.message });
             }
         }
+
+        [HttpGet("Send/driver")]
+        public async Task<IActionResult> GetSendRequestDriverAsync()
+        {
+              var result = await _service.GetSendRequestDriverAsync();
+                if (result is ResponseDataModel<List<GetReqModel>> res)
+                    return Ok(new { res.data });
+
+                return BadRequest(new { result.code, result.message });
+        }
+        [HttpGet("Receive/driver")]
+        public async Task<IActionResult> GetReceiveRequestDriverAsync()
+        {
+            var result = await _service.GetReceiveRequestDriverAsync();
+            if (result is ResponseDataModel<List<GetReqModel>> res)
+                return Ok(new { res.data });
+
+            return BadRequest(new { result.code, result.message });
+        }
+
+        [HttpGet("Send/passenger")]
+        public async Task<IActionResult> GetSendRequestPassengerAsync()
+        {
+            var result = await _service.GetSendRequestPassengerAsync();
+            if (result is ResponseDataModel<List<GetReqModel>> res)
+                return Ok(new { res.data });
+
+            return BadRequest(new { result.code, result.message });
+        }
+        [HttpGet("Receive/passenger")]
+        public async Task<IActionResult> GetReceiveRequestPassengerAsync()
+        {
+            var result = await _service.GetReceiveRequestPassengerAsync();
+            if (result is ResponseDataModel<List<GetReqModel>> res)
+                return Ok(new { res.data });
+
+            return BadRequest(new { result.code, result.message });
+        }
+
+
+        #endregion
+
+
 
         [HttpPost]
         public async Task<IActionResult> SendReqestAsync([FromBody] ReqModel model)

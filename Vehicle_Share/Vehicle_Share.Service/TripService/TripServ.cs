@@ -102,6 +102,7 @@ namespace Vehicle_Share.Service.TripService
             result.IsSuccess = true;
             return result;
         }
+      
         public async Task<ResponseModel> GetAllForUserAsPassengerAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");

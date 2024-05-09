@@ -53,7 +53,7 @@ namespace Vehicle_Share.Service.AuthService
                 UserName = model.UserName,
                 PhoneNumber = model.Phone,
                 CreatedOn = DateTime.UtcNow,
-             //   PhoneNumberConfirmed = true
+                PhoneNumberConfirmed = true
 
             };
 
@@ -72,7 +72,7 @@ namespace Vehicle_Share.Service.AuthService
 
             var otp = GenerateRandomCode();
 
-            await SendOTP.Send(user.PhoneNumber, otp);
+          //  await SendOTP.Send(user.PhoneNumber, otp);
 
             user.ResetCode = otp;
             user.ResetCodeGeneateAt = DateTime.UtcNow;
