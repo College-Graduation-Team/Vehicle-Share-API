@@ -52,7 +52,7 @@ namespace Vehicle_Share.Service.TripService
                 double distanceFromStart = CalculateDistance(FromLatitude, FromLongitude, trip.FromLatitude, trip.FromLongitude);
                 double distanceToDestination = CalculateDistance(ToLatitude, ToLongitude, trip.ToLatitude, trip.ToLongitude);
                 return (distanceFromStart <= maxDistance || distanceToDestination <= maxDistance)
-                && trip.CarId is not null && !trip.IsFinished && trip.AvailableSeats.Value > 0;
+                && trip.CarId is not null && !trip.IsFinished  && trip.AvailableSeats.HasValue && trip.AvailableSeats.Value > 0;
             }
             ).ToList();
             var result = new ResponseDataModel<List<GetTripDriverModel>>();
@@ -103,7 +103,7 @@ namespace Vehicle_Share.Service.TripService
                 double distanceFromStart = CalculateDistance(FromLatitude, FromLongitude, trip.FromLatitude, trip.FromLongitude);
                 double distanceToDestination = CalculateDistance(ToLatitude, ToLongitude, trip.ToLatitude, trip.ToLongitude);
                 return (distanceFromStart <= maxDistance || distanceToDestination <= maxDistance)
-                && trip.CarId is null && !trip.IsFinished && trip.AvailableSeats.Value > 0;
+                && trip.CarId is null && !trip.IsFinished ;
             }
             ).ToList();
             var result = new ResponseDataModel<List<GetTripPassengerModel>>();
