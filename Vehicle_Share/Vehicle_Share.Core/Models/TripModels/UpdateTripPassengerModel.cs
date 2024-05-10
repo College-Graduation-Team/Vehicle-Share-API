@@ -11,9 +11,9 @@ namespace Vehicle_Share.Core.Models.TripModels
         public double? ToLongitude { get; set; }
 
 
-        public DateTime Date { get; set; }
-        public float RecommendedPrice { get; set; }
-        public short RequestedSeats { get; set; } //passenger
+        public string? Date { get; set; }
+        public float? RecommendedPrice { get; set; }
+        public short? RequestedSeats { get; set; } //passenger
 
     }
 }

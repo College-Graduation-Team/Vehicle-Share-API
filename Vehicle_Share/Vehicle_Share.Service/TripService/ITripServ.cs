@@ -5,8 +5,8 @@ namespace Vehicle_Share.Service.TripService
 {
     public interface ITripServ
     {
-        Task<ResponseModel> SearchDriverTripAsync(double FromLatitude, double FromLongitude, double ToLatitude, double ToLongitude);
-        Task<ResponseModel> SearchPassengerTripAsync(double FromLatitude, double FromLongitude, double ToLatitude, double ToLongitude);
+        Task<ResponseModel> SearchDriverTripAsync(double? FromLatitude, double? FromLongitude, double? ToLatitude, double? ToLongitude);
+        Task<ResponseModel> SearchPassengerTripAsync(double? FromLatitude, double? FromLongitude, double? ToLatitude, double? ToLongitude);
         Task<ResponseModel> GetByIdAsync(string id);
         Task<ResponseModel> GetAllForUserAsDriverAsync();
         Task<ResponseModel> GetAllForUserAsPassengerAsync();

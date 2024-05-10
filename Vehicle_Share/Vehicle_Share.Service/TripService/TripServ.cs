@@ -30,7 +30,7 @@ namespace Vehicle_Share.Service.TripService
             _lic = lic;
         }
      
-        public async Task<ResponseModel> SearchDriverTripAsync(double FromLatitude, double FromLongitude, double ToLatitude, double ToLongitude)
+        public async Task<ResponseModel> SearchDriverTripAsync(double? FromLatitude, double? FromLongitude, double? ToLatitude, double? ToLongitude)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
@@ -49,9 +49,12 @@ namespace Vehicle_Share.Service.TripService
             // Filter trips within the fixed maximum distance from either the 'from' or 'to' location
             var nearbyTrips = allTrips.Where(trip =>
             {
-                double distanceFromStart = CalculateDistance(FromLatitude, FromLongitude, trip.FromLatitude, trip.FromLongitude);
-                double distanceToDestination = CalculateDistance(ToLatitude, ToLongitude, trip.ToLatitude, trip.ToLongitude);
-                return (distanceFromStart <= maxDistance || distanceToDestination <= maxDistance)
+                bool fromMatch = FromLatitude.HasValue && FromLongitude.HasValue &&
+                           CalculateDistance(FromLatitude.Value, FromLongitude.Value, trip.FromLatitude, trip.FromLongitude) <= maxDistance;
+                bool toMatch = ToLatitude.HasValue && ToLongitude.HasValue &&
+                               CalculateDistance(ToLatitude.Value, ToLongitude.Value, trip.ToLatitude, trip.ToLongitude) <= maxDistance;
+
+                return (fromMatch || toMatch)
                 && trip.CarId is not null && !trip.IsFinished  && trip.AvailableSeats.HasValue && trip.AvailableSeats.Value > 0;
             }
             ).ToList();
@@ -81,7 +84,7 @@ namespace Vehicle_Share.Service.TripService
             result.IsSuccess = true;
             return result;
         }
-        public async Task<ResponseModel> SearchPassengerTripAsync(double FromLatitude, double FromLongitude, double ToLatitude, double ToLongitude)
+        public async Task<ResponseModel> SearchPassengerTripAsync(double? FromLatitude, double? FromLongitude, double? ToLatitude, double? ToLongitude)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
@@ -100,10 +103,13 @@ namespace Vehicle_Share.Service.TripService
             // Filter trips within the fixed maximum distance from either the 'from' or 'to' location
             var nearbyTrips = allTrips.Where(trip =>
             {
-                double distanceFromStart = CalculateDistance(FromLatitude, FromLongitude, trip.FromLatitude, trip.FromLongitude);
-                double distanceToDestination = CalculateDistance(ToLatitude, ToLongitude, trip.ToLatitude, trip.ToLongitude);
-                return (distanceFromStart <= maxDistance || distanceToDestination <= maxDistance)
-                && trip.CarId is null && !trip.IsFinished ;
+                bool fromMatch = FromLatitude.HasValue && FromLongitude.HasValue &&
+                          CalculateDistance(FromLatitude.Value, FromLongitude.Value, trip.FromLatitude, trip.FromLongitude) <= maxDistance;
+                bool toMatch = ToLatitude.HasValue && ToLongitude.HasValue &&
+                               CalculateDistance(ToLatitude.Value, ToLongitude.Value, trip.ToLatitude, trip.ToLongitude) <= maxDistance;
+
+                return (fromMatch || toMatch)
+                        && trip.CarId is null && !trip.IsFinished ;
             }
             ).ToList();
             var result = new ResponseDataModel<List<GetTripPassengerModel>>();
@@ -429,8 +435,8 @@ namespace Vehicle_Share.Service.TripService
             trip.ToLatitude = model.ToLatitude ?? trip.ToLatitude;
             trip.ToLongitude = model.ToLongitude ?? trip.ToLongitude;
 
-            trip.Date = model.Date !=null ? model.Date : trip.Date;
-            trip.RecommendedPrice = model.RecommendedPrice > 0 ? model.RecommendedPrice : trip.RecommendedPrice;
+            trip.Date = model.Date != null ? DateTime.Parse(model.Date) : trip.Date;
+            trip.RecommendedPrice = model.RecommendedPrice > 0 ? (float)model.RecommendedPrice : trip.RecommendedPrice;
             trip.AvailableSeats = model.AvailableSeats > 0 ? model.AvailableSeats : trip.AvailableSeats;
             trip.CarId = model.CarId ?? trip.CarId;
 
@@ -455,8 +461,8 @@ namespace Vehicle_Share.Service.TripService
             trip.ToLatitude = model.ToLatitude ?? trip.ToLatitude;
             trip.ToLongitude = model.ToLongitude ?? trip.ToLongitude;
 
-            trip.Date = model.Date != null ? model.Date : trip.Date;
-            trip.RecommendedPrice = model.RecommendedPrice > 0 ? model.RecommendedPrice : trip.RecommendedPrice;
+            trip.Date = model.Date != null ? DateTime.Parse(model.Date) : trip.Date;
+            trip.RecommendedPrice = model.RecommendedPrice > 0 ? (float)model.RecommendedPrice : trip.RecommendedPrice;
             trip.RequestedSeats = model.RequestedSeats > 0 ? model.RequestedSeats : trip.RequestedSeats;
 
             /////////////////////////////////////////////////////////////
