@@ -4,11 +4,14 @@ namespace Vehicle_Share.Core.Models.TripModels
 {
     public class UpdateTripDriverModel
     {
-        
-        [MaxLength(50, ErrorMessage = "the length is 50 char ")]
-        public string? From { get; set; }
-        [MaxLength(50, ErrorMessage = "the length is 50 char ")]
-        public string? To { get; set; }
+
+        public double? FromLatitude { get; set; }
+        public double? FromLongitude { get; set; }
+                     
+        public double? ToLatitude { get; set; }
+        public double? ToLongitude { get; set; }
+
+
         public DateTime Date { get; set; }
         public float RecommendedPrice { get; set; }
         public short AvailableSeats { get; set; } //driver

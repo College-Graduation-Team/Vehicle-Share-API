@@ -28,6 +28,8 @@ namespace Vehicle_Share.API.Controllers
             _user = user;
             _car = car;
         }
+        #region Get Requests
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync([FromRoute] string id)
@@ -38,6 +40,7 @@ namespace Vehicle_Share.API.Controllers
 
             return BadRequest(new { result.code, result.message });
         }
+       
         [HttpGet("MyTripDriver")]
         public async Task<IActionResult> GetAllForUserAsDriverAsync()
         {
@@ -48,6 +51,7 @@ namespace Vehicle_Share.API.Controllers
 
             return BadRequest(new { result.code, result.message });
         }
+      
         [HttpGet("MyTripPassenger")]
         public async Task<IActionResult> GetAllForUserAsPassengerAsync()
         {
@@ -80,6 +84,30 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(new { result.code, result.message });
         }
 
+
+        [HttpGet("search/driver")]
+        public async Task<IActionResult> SearchDriverTripAsync(double FromLatitude, double FromLongitude, double ToLatitude, double ToLongitude)
+        {
+            var result = await _service.SearchDriverTripAsync( FromLatitude,  FromLongitude,  ToLatitude,  ToLongitude);
+            if (result is ResponseDataModel<List<GetTripDriverModel>> res)
+                return Ok(new { res.data });
+
+            return BadRequest(new { result.code, result.message });
+        }
+        [HttpGet("search/passenger")]
+        public async Task<IActionResult> SearchPassengerTripAsync(double FromLatitude, double FromLongitude, double ToLatitude, double ToLongitude)
+        {
+            var result = await _service.SearchPassengerTripAsync(FromLatitude, FromLongitude, ToLatitude, ToLongitude);
+            if (result is ResponseDataModel<List<GetTripPassengerModel>> res)
+                return Ok(new { res.data });
+
+            return BadRequest(new { result.code, result.message });
+        }
+
+        #endregion
+
+        #region Post Requsets
+
         [HttpPost("driver")] // driver add trip 
         public async Task<IActionResult> AddTripAsync([FromBody] TripDriverModel model)
         {
@@ -103,6 +131,10 @@ namespace Vehicle_Share.API.Controllers
 
             return BadRequest(new { result.code, result.message });
         }
+
+        #endregion
+
+        #region Put and Delete Requsets
 
         [HttpPut("driver/{id}")] //update for driver
         public async Task<IActionResult> UpdataTripAsync([FromRoute] string id, [FromForm] UpdateTripDriverModel model)
@@ -135,7 +167,10 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(result);
         }
 
+        #endregion
 
+        #region Seed fake data 
+       
         [HttpPost("generate-fake-trip-Driver")]
         [AllowAnonymous]
         public async Task<IActionResult> GenerateFakeTrips(int count)
@@ -157,8 +192,10 @@ namespace Vehicle_Share.API.Controllers
 
             // Generate fake trip data using Bogus
             var faker = new Faker<SeedTripDriverModel>()
-                .RuleFor(t => t.From, f => f.Address.City())
-                .RuleFor(t => t.To, f => f.Address.City())
+                .RuleFor(t => t.FromLatitude, f => f.Address.Latitude())
+                .RuleFor(t => t.FromLongitude, f => f.Address.Longitude())
+                .RuleFor(t => t.ToLatitude, f => f.Address.Latitude())
+                .RuleFor(t => t.ToLongitude, f => f.Address.Longitude())
                 .RuleFor(t => t.Date, f => f.Date.Future())
                 .RuleFor(t => t.RecommendedPrice, f => f.Random.Float(10, 1000))
                 .RuleFor(t => t.AvailableSeats, f => f.Random.Short(1, 3)) // Assuming driver can have 1-5 available seats
@@ -173,8 +210,10 @@ namespace Vehicle_Share.API.Controllers
                 Trip trip = new Trip
                 {
                     Id = Guid.NewGuid().ToString(),
-                    From = tripModel.From,
-                    To = tripModel.To,
+                    FromLatitude = tripModel.FromLatitude,
+                    FromLongitude = tripModel.FromLongitude,
+                    ToLatitude = tripModel.ToLatitude,
+                    ToLongitude = tripModel.ToLongitude,
                     Date = tripModel.Date,
                     RecommendedPrice = tripModel.RecommendedPrice,
                     AvailableSeats = tripModel.AvailableSeats,
@@ -209,12 +248,14 @@ namespace Vehicle_Share.API.Controllers
 
             // Generate fake trip data using Bogus
             var faker = new Faker<SeedTripPassengerModel>()
-                .RuleFor(t => t.From, f => f.Address.City())
-            .RuleFor(t => t.To, f => f.Address.City())
-            .RuleFor(t => t.Date, f => f.Date.Future())
-            .RuleFor(t => t.RecommendedPrice, f => f.Random.Float(10, 1000))
-            .RuleFor(t => t.RequestedSeats, f => f.Random.Short(1, 5)) // Assuming passenger can request 1-5 seats
-            .RuleFor(t => t.usrdataId, f => usercar[(f.UniqueIndex) % (nonAdminUsers.Count)].Id); // Pick a random user with license as passenger
+                .RuleFor(t => t.FromLatitude, f => f.Address.Latitude())
+                .RuleFor(t => t.FromLongitude, f => f.Address.Longitude())
+                .RuleFor(t => t.ToLatitude, f => f.Address.Latitude())
+                .RuleFor(t => t.ToLongitude, f => f.Address.Longitude())
+                .RuleFor(t => t.Date, f => f.Date.Future())
+                .RuleFor(t => t.RecommendedPrice, f => f.Random.Float(10, 1000))
+                .RuleFor(t => t.RequestedSeats, f => f.Random.Short(1, 5)) // Assuming passenger can request 1-5 seats
+                .RuleFor(t => t.usrdataId, f => usercar[(f.UniqueIndex) % (nonAdminUsers.Count)].Id); // Pick a random user with license as passenger
 
             var fakeTrips = faker.Generate(count);
 
@@ -224,8 +265,10 @@ namespace Vehicle_Share.API.Controllers
                 Trip trip = new Trip
                 {
                     Id = Guid.NewGuid().ToString(),
-                    From = tripModel.From,
-                    To = tripModel.To,
+                    FromLatitude = tripModel.FromLatitude,
+                    FromLongitude = tripModel.FromLongitude,
+                    ToLatitude = tripModel.ToLatitude,
+                    ToLongitude = tripModel.ToLongitude,
                     Date = tripModel.Date,
                     RecommendedPrice = tripModel.RecommendedPrice,
                     RequestedSeats = tripModel.RequestedSeats,
@@ -240,6 +283,7 @@ namespace Vehicle_Share.API.Controllers
             return Ok(fakeTrips);
         }
 
+        #endregion
 
     }
 

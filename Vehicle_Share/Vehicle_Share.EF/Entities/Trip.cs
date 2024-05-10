@@ -8,12 +8,15 @@ namespace Vehicle_Share.EF.Models
     {
         [Key]
         public string? Id { get; set; }
+        [Required]//latitude and longitude
+        public double FromLatitude { get; set; }
+        [Required]//latitude and longitude
+        public double FromLongitude { get; set; }
+
         [Required]
-        [MaxLength(50, ErrorMessage = "the length is 50 char ")]
-        public string? From { get; set; }
+        public double ToLatitude { get; set; }
         [Required]
-        [MaxLength(50, ErrorMessage = "the length is 50 char ")]
-        public string? To { get; set; }
+        public double ToLongitude { get; set; }
 
         [Required]
         public DateTime Date { get; set; }

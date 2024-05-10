@@ -44,6 +44,8 @@ namespace Vehicle_Share.Service.RequestService
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoTrip], code = ResponseCode.NoTrip };
 
             var userRequests = await _request.GetAllAsync(r => r.TripId == tripId);
+             
+      
 
             var result = new ResponseDataModel<List<GetReqModel>>();
             result.data = new List<GetReqModel>();

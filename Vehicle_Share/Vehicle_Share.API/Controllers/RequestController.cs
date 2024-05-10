@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vehicle_Share.Core.Models.RequestModels;
-using Vehicle_Share.Core.Models.TripModels;
 using Vehicle_Share.Core.Response;
 using Vehicle_Share.Service.RequestService;
 

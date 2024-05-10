@@ -4,12 +4,13 @@ namespace Vehicle_Share.Core.Models.TripModels
 {
     public class TripPassengerModel
     {
-        [Required]
-        [MaxLength(50, ErrorMessage = "the length is 50 char ")]
-        public string? From { get; set; }
-        [Required]
-        [MaxLength(50, ErrorMessage = "the length is 50 char ")]
-        public string? To { get; set; }
+        public double FromLatitude { get; set; }
+        public double FromLongitude { get; set; }
+
+        public double ToLatitude { get; set; }
+        public double ToLongitude { get; set; }
+
+
         [Required]
         public DateTime Date { get; set; }
         [Required]
@@ -18,12 +19,14 @@ namespace Vehicle_Share.Core.Models.TripModels
     }
     public class SeedTripPassengerModel
     {
-        [Required]
-        [MaxLength(50, ErrorMessage = "the length is 50 char ")]
-        public string? From { get; set; }
-        [Required]
-        [MaxLength(50, ErrorMessage = "the length is 50 char ")]
-        public string? To { get; set; }
+        public double FromLatitude { get; set; }
+        public double FromLongitude { get; set; }
+
+        public double ToLatitude { get; set; }
+        public double ToLongitude { get; set; }
+
+
+
         [Required]
         public DateTime Date { get; set; }
         [Required]

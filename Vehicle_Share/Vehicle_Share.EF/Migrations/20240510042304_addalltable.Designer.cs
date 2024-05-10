@@ -12,7 +12,7 @@ using Vehicle_Share.EF.Data;
 namespace Vehicle_Share.EF.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240508225031_addalltable")]
+    [Migration("20240510042304_addalltable")]
     partial class addalltable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -303,10 +303,11 @@ namespace Vehicle_Share.EF.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("From")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<double>("FromLatitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("FromLongitude")
+                        .HasColumnType("float");
 
                     b.Property<float>("RecommendedPrice")
                         .HasColumnType("real");
@@ -314,10 +315,11 @@ namespace Vehicle_Share.EF.Migrations
                     b.Property<short?>("RequestedSeats")
                         .HasColumnType("smallint");
 
-                    b.Property<string>("To")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<double>("ToLatitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("ToLongitude")
+                        .HasColumnType("float");
 
                     b.Property<string>("UserDataId")
                         .HasColumnType("nvarchar(450)");

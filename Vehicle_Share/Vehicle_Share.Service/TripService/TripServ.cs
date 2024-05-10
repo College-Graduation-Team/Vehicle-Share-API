@@ -29,6 +29,105 @@ namespace Vehicle_Share.Service.TripService
             _LocaLizer = locaLizer;
             _lic = lic;
         }
+     
+        public async Task<ResponseModel> SearchDriverTripAsync(double FromLatitude, double FromLongitude, double ToLatitude, double ToLongitude)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+
+
+            // Define the fixed maximum distance (in kilometers)
+            const double maxDistance = 20; // Adjust this value as needed
+            // Get all trips
+            var allTrips = await _trip.GetAllAsync();
+
+            // Filter trips within the fixed maximum distance from either the 'from' or 'to' location
+            var nearbyTrips = allTrips.Where(trip =>
+            {
+                double distanceFromStart = CalculateDistance(FromLatitude, FromLongitude, trip.FromLatitude, trip.FromLongitude);
+                double distanceToDestination = CalculateDistance(ToLatitude, ToLongitude, trip.ToLatitude, trip.ToLongitude);
+                return (distanceFromStart <= maxDistance || distanceToDestination <= maxDistance)
+                && trip.CarId is not null && !trip.IsFinished && trip.AvailableSeats.Value > 0;
+            }
+            ).ToList();
+            var result = new ResponseDataModel<List<GetTripDriverModel>>();
+            result.data = new List<GetTripDriverModel>();
+            foreach (var trip in nearbyTrips)
+            {
+                var car = await _car.FindAsync(e => e.Id == trip.CarId);
+
+                result.data?.Add(new GetTripDriverModel
+                {
+                    Id = trip.Id,
+                    FromLatitude = trip.FromLatitude,
+                    FromLongitude = trip.FromLongitude,
+                    ToLatitude = trip.ToLatitude,
+                    ToLongitude = trip.ToLongitude,
+                    Date = trip.Date,
+                    RecommendedPrice = trip.RecommendedPrice,
+                    AvailableSeats = trip.AvailableSeats.Value, // Access the Value property
+                    CreatedOn = trip.CreatedOn,
+                    CarId = trip.CarId, // Assuming CarID is a string property
+                    CarType = car.Type,
+                    CarBrand = car.Brand,
+                });
+
+            }
+            result.IsSuccess = true;
+            return result;
+        }
+        public async Task<ResponseModel> SearchPassengerTripAsync(double FromLatitude, double FromLongitude, double ToLatitude, double ToLongitude)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+
+
+            // Define the fixed maximum distance (in kilometers)
+            const double maxDistance = 20; // Adjust this value as needed
+            // Get all trips
+            var allTrips = await _trip.GetAllAsync();
+
+            // Filter trips within the fixed maximum distance from either the 'from' or 'to' location
+            var nearbyTrips = allTrips.Where(trip =>
+            {
+                double distanceFromStart = CalculateDistance(FromLatitude, FromLongitude, trip.FromLatitude, trip.FromLongitude);
+                double distanceToDestination = CalculateDistance(ToLatitude, ToLongitude, trip.ToLatitude, trip.ToLongitude);
+                return (distanceFromStart <= maxDistance || distanceToDestination <= maxDistance)
+                && trip.CarId is null && !trip.IsFinished && trip.AvailableSeats.Value > 0;
+            }
+            ).ToList();
+            var result = new ResponseDataModel<List<GetTripPassengerModel>>();
+            result.data = new List<GetTripPassengerModel>();
+            foreach (var trip in nearbyTrips)
+            {
+                result.data?.Add(new GetTripPassengerModel
+                {
+                    Id = trip.Id,
+                    FromLatitude = trip.FromLatitude,
+                    FromLongitude = trip.FromLongitude,
+                    ToLatitude = trip.ToLatitude,
+                    ToLongitude = trip.ToLongitude,
+                    Date = trip.Date,
+                    RecommendedPrice = trip.RecommendedPrice,
+                    RequestedSeats = trip.RequestedSeats.Value,
+                    CreatedOn = trip.CreatedOn,
+                    IsFinished = trip.IsFinished
+                });
+
+            }
+            result.IsSuccess = true;
+            return result;
+        }
 
         public async Task<ResponseModel> GetByIdAsync(string id)
         {
@@ -50,8 +149,10 @@ namespace Vehicle_Share.Service.TripService
                 data = new GetTripModel
                 {
                     Id = trip.Id,
-                    From = trip.From,
-                    To = trip.To,
+                    FromLatitude = trip.FromLatitude,
+                    FromLongitude = trip.FromLongitude,
+                    ToLatitude = trip.ToLatitude,
+                    ToLongitude = trip.ToLongitude,
                     Date = trip.Date,
                     RecommendedPrice = trip.RecommendedPrice,
                     AvailableSeats = trip.AvailableSeats,
@@ -87,8 +188,10 @@ namespace Vehicle_Share.Service.TripService
                 result.data?.Add(new GetTripModel
                 {
                     Id = trip.Id,
-                    From = trip.From,
-                    To = trip.To,
+                    FromLatitude = trip.FromLatitude,
+                    FromLongitude = trip.FromLongitude,
+                    ToLatitude = trip.ToLatitude,
+                    ToLongitude = trip.ToLongitude,
                     Date = trip.Date,
                     RecommendedPrice = trip.RecommendedPrice,
                     AvailableSeats = trip.AvailableSeats,    //driver
@@ -122,8 +225,10 @@ namespace Vehicle_Share.Service.TripService
                 result.data?.Add(new GetTripModel
                 {
                     Id = trip.Id,
-                    From = trip.From,
-                    To = trip.To,
+                    FromLatitude = trip.FromLatitude,
+                    FromLongitude = trip.FromLongitude,
+                    ToLatitude = trip.ToLatitude,
+                    ToLongitude = trip.ToLongitude,
                     Date = trip.Date,
                     RecommendedPrice = trip.RecommendedPrice,
                     AvailableSeats = trip.AvailableSeats,    //driver
@@ -163,8 +268,10 @@ namespace Vehicle_Share.Service.TripService
                     result.data?.Add(new GetTripDriverModel
                     {
                         Id = trip.Id,
-                        From = trip.From,
-                        To = trip.To,
+                        FromLatitude = trip.FromLatitude,
+                        FromLongitude = trip.FromLongitude,
+                        ToLatitude = trip.ToLatitude,
+                        ToLongitude = trip.ToLongitude,
                         Date = trip.Date,
                         RecommendedPrice = trip.RecommendedPrice,
                         AvailableSeats = trip.AvailableSeats.Value, // Access the Value property
@@ -199,8 +306,10 @@ namespace Vehicle_Share.Service.TripService
                     result.data?.Add(new GetTripPassengerModel
                     {
                         Id = trip.Id,
-                        From = trip.From,
-                        To = trip.To,
+                        FromLatitude = trip.FromLatitude,
+                        FromLongitude = trip.FromLongitude,
+                        ToLatitude = trip.ToLatitude,
+                        ToLongitude = trip.ToLongitude,
                         Date = trip.Date,
                         RecommendedPrice = trip.RecommendedPrice,
                         RequestedSeats = trip.RequestedSeats.Value,
@@ -235,8 +344,10 @@ namespace Vehicle_Share.Service.TripService
             Trip trip = new()
             {
                 Id = Guid.NewGuid().ToString(),
-                From = model.From,
-                To = model.To,
+                FromLatitude = model.FromLatitude,
+                FromLongitude = model.FromLongitude,
+                ToLatitude = model.ToLatitude,
+                ToLongitude = model.ToLongitude,
                 Date = model.Date,
                 AvailableSeats = model.AvailableSeats,
                 RecommendedPrice = model.RecommendedPrice,
@@ -272,8 +383,10 @@ namespace Vehicle_Share.Service.TripService
             Trip trip = new()
             {
                 Id = Guid.NewGuid().ToString(),
-                From = model.From,
-                To = model.To,
+                FromLatitude = model.FromLatitude,
+                FromLongitude = model.FromLongitude,
+                ToLatitude = model.ToLatitude,
+                ToLongitude = model.ToLongitude,
                 Date = model.Date,
                 RequestedSeats = model.RequestedSeats,
                 RecommendedPrice = model.RecommendedPrice,
@@ -311,8 +424,11 @@ namespace Vehicle_Share.Service.TripService
             if (trip == null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoTrip] , code = ResponseCode.NoTrip };
 
-            trip.From = model.From ??trip.From;
-            trip.To = model.To ?? trip.To;
+            trip.FromLatitude = model.FromLatitude ?? trip.FromLatitude;
+            trip.FromLongitude = model.FromLongitude ?? trip.FromLongitude;
+            trip.ToLatitude = model.ToLatitude ?? trip.ToLatitude;
+            trip.ToLongitude = model.ToLongitude ?? trip.ToLongitude;
+
             trip.Date = model.Date !=null ? model.Date : trip.Date;
             trip.RecommendedPrice = model.RecommendedPrice > 0 ? model.RecommendedPrice : trip.RecommendedPrice;
             trip.AvailableSeats = model.AvailableSeats > 0 ? model.AvailableSeats : trip.AvailableSeats;
@@ -334,8 +450,11 @@ namespace Vehicle_Share.Service.TripService
             if (trip == null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoTrip] , code = ResponseCode.NoTrip };
 
-            trip.From = model.From ?? trip.From;
-            trip.To = model.To ?? trip.To;
+            trip.FromLatitude = model.FromLatitude ?? trip.FromLatitude;
+            trip.FromLongitude = model.FromLongitude ?? trip.FromLongitude;
+            trip.ToLatitude = model.ToLatitude ?? trip.ToLatitude;
+            trip.ToLongitude = model.ToLongitude ?? trip.ToLongitude;
+
             trip.Date = model.Date != null ? model.Date : trip.Date;
             trip.RecommendedPrice = model.RecommendedPrice > 0 ? model.RecommendedPrice : trip.RecommendedPrice;
             trip.RequestedSeats = model.RequestedSeats > 0 ? model.RequestedSeats : trip.RequestedSeats;
@@ -354,5 +473,31 @@ namespace Vehicle_Share.Service.TripService
             return res;
         }
 
+        
+        private double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
+        {
+            // Radius of the Earth in kilometers
+            double earthRadius = 6371;
+
+            // Convert degrees to radians
+            lat1 = Math.PI * lat1 / 180.0;
+            lon1 = Math.PI * lon1 / 180.0;
+            lat2 = Math.PI * lat2 / 180.0;
+            lon2 = Math.PI * lon2 / 180.0;
+
+            // Calculate differences
+            double dLat = lat2 - lat1;
+            double dLon = lon2 - lon1;
+
+            // Calculate distance using Haversine formula
+            double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                       Math.Cos(lat1) * Math.Cos(lat2) *
+                       Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            double distance = earthRadius * c;
+
+            return distance;
+        }
+   
     }
 }

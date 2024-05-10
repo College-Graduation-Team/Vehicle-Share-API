@@ -113,8 +113,10 @@ namespace Vehicle_Share.EF.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    From = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    To = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    FromLatitude = table.Column<double>(type: "float", nullable: false),
+                    FromLongitude = table.Column<double>(type: "float", nullable: false),
+                    ToLatitude = table.Column<double>(type: "float", nullable: false),
+                    ToLongitude = table.Column<double>(type: "float", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RecommendedPrice = table.Column<float>(type: "real", nullable: false),
                     AvailableSeats = table.Column<short>(type: "smallint", nullable: true),
