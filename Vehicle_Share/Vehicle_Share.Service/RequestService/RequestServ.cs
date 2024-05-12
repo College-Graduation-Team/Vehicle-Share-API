@@ -29,6 +29,40 @@ namespace Vehicle_Share.Service.RequestService
             _httpContextAccessor = httpContextAccessor;
             _LocaLizer = locaLizer;
         }
+
+        public async Task<ResponseModel> GetRequestByIdAsync(string requestId)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+
+            var request = await _request.GetByIdAsync(requestId);
+            if (request is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoRequest], code = ResponseCode.NoTrip };
+
+
+            var user = await _userdata.FindAsync(u => u.Id == request.UserDataId);
+
+            var result = new ResponseDataModel<GetReqModel>();
+          
+                result.data = new GetReqModel
+                {
+                    Id = request.Id,
+                    Status = request.Status.ToString(),
+                    CreatedOn = request.CreatedOn,
+                    TripId = request.TripId,
+                    UserDataName = user.Name,
+                    UserDataImage = user.ProfileImage
+                };
+            
+            result.IsSuccess = true;
+            return result;
+        }
+
         public async Task<ResponseModel> GetAllTripRequestedAsync(string tripId)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");

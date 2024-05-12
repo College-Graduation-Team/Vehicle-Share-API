@@ -455,6 +455,8 @@ namespace Vehicle_Share.Service.TripService
             trip.AvailableSeats = model.AvailableSeats > 0 ? model.AvailableSeats : trip.AvailableSeats;
             trip.CarId = model.CarId ?? trip.CarId;
 
+            await _trip.UpdateAsync(trip);
+
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
         }
 
@@ -481,6 +483,7 @@ namespace Vehicle_Share.Service.TripService
             trip.RequestedSeats = model.RequestedSeats > 0 ? model.RequestedSeats : trip.RequestedSeats;
 
             /////////////////////////////////////////////////////////////
+            await _trip.UpdateAsync(trip);
 
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
         }

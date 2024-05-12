@@ -5,7 +5,12 @@ namespace Vehicle_Share.Service.RequestService
 {
     public interface IRequestServ
     {
+        Task<ResponseModel> GetRequestByIdAsync(string requestId);
+
         Task<ResponseModel> GetAllMyRequestAsync();
+        Task<ResponseModel> GetAllTripRequestedAsync(string tripId);
+
+
         Task<ResponseModel> GetReceiveRequestDriverAsync();
         Task<ResponseModel> GetSendRequestDriverAsync();
 
@@ -13,7 +18,6 @@ namespace Vehicle_Share.Service.RequestService
         Task<ResponseModel> GetSendRequestPassengerAsync();
 
 
-        Task<ResponseModel> GetAllTripRequestedAsync(string tripId);
         Task<ResponseModel> SendReqestAsync(ReqModel model);
         Task<ResponseModel> DenyRequestAsync(string requestId);
         Task<ResponseModel> AcceptRequestAsync(string requestId);

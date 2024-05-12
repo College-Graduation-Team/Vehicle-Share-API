@@ -23,8 +23,20 @@ namespace Vehicle_Share.API.Controllers
         #region Get requests 
 
 
-        [HttpGet("{id?}")]
-        public async Task<IActionResult> GetAllTripRequestedAsync([FromRoute] string? id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetRequestByIdAsync([FromRoute] string id)
+        {
+          
+                var result = await _service.GetRequestByIdAsync(id);
+                if (result is ResponseDataModel<GetReqModel> res)
+                    return Ok(new { res.data });
+
+                return BadRequest(new { result.code, result.message });
+
+           
+        }
+        /*[HttpGet("{id}")]
+        public async Task<IActionResult> GetAllTripRequestedAsync([FromRoute] string id)
         {
             if (id == null)
             {
@@ -43,8 +55,9 @@ namespace Vehicle_Share.API.Controllers
 
                 return BadRequest(new { result.code, result.message });
             }
-        }
+        }*/
 
+       
         [HttpGet("Send/driver")]
         public async Task<IActionResult> GetSendRequestDriverAsync()
         {
