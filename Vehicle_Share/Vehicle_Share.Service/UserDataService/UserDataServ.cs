@@ -14,17 +14,21 @@ namespace Vehicle_Share.Service.UserDataService
 {
     public class UserDataServ : IUserDataServ
     {
+        private readonly IBaseRepo<User> _user;
         private readonly IBaseRepo<UserData> _userData;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStringLocalizer<SharedResources> _LocaLizer;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public UserDataServ(IBaseRepo<UserData> userData, IHttpContextAccessor httpContextAccessor, IStringLocalizer<SharedResources> locaLizer, IWebHostEnvironment webHostEnvironment)
+        public UserDataServ(IBaseRepo<UserData> userData, IHttpContextAccessor httpContextAccessor, IStringLocalizer<SharedResources> locaLizer, IWebHostEnvironment webHostEnvironment, IBaseRepo<User> user)
         {
             _userData = userData;
             _httpContextAccessor = httpContextAccessor;
             _LocaLizer = locaLizer;
             _webHostEnvironment = webHostEnvironment;
+            _user = user;
         }
+
+       
         public async Task<ResponseModel> GetUserDataAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
@@ -38,14 +42,7 @@ namespace Vehicle_Share.Service.UserDataService
 
             var userData = await _userData.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] ,code=ResponseCode.NoUserData};
-
-            /*
-              // ===== DateTime is non-nullable struct can never be null =====
-              // if (userData.Birthdate == null) 
-              //     userData.Birthdate = DateTime.UtcNow;//DateTime.Parse ("2013-10-01 13:45:01");
-              //  var age = CalculateAge(userData.Birthdate, DateTime.UtcNow);
-                */
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
 
             var result = new ResponseDataModel<GetUserModel>()
             {
@@ -241,7 +238,65 @@ namespace Vehicle_Share.Service.UserDataService
 
         #region For Admin
 
-        public async Task<ResponseModel> GetAllAsync()
+        public async Task<ResponseModel> GetAllUserAsync()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+            if (!isAdmin)
+                return new ResponseModel { message = " this rout for admin . " };
+
+            var users = await _user.GetAllAsync(u => u.UserName != "Admin");
+
+            var result = new ResponseDataModel<List<GetAllUsersModel>>();
+            result.data = new List<GetAllUsersModel>();
+            foreach (var user in users)
+            {
+                result.data?.Add(new GetAllUsersModel
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Phone = user.PhoneNumber
+                }
+                    );
+            }
+            result.IsSuccess = true;
+            return result;
+        }
+        public async Task<ResponseModel> GetUserByIdAsyc(string id)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+
+            if (!isAdmin)
+                return new ResponseModel { message = "this route for admin" };
+
+            var user = await _user.GetByIdAsync(id);
+            if (user is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUser], code = ResponseCode.NoUserData };
+
+            var result = new ResponseDataModel<GetAllUsersModel>()
+            {
+                data = new GetAllUsersModel
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Phone = user.PhoneNumber
+                },
+                IsSuccess = true
+            };
+
+            return result;
+        }
+
+        public async Task<ResponseModel> GetUserDataAllAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)

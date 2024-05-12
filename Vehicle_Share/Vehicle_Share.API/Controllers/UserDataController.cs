@@ -65,14 +65,37 @@ namespace Vehicle_Share.API.Controllers
 
         #region  Admin
 
+        [HttpGet("Admin/user/{id?}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetUserAsync([FromRoute] string? id)
+        {
+            if (id is null)
+            {
+                var result = await _service.GetAllUserAsync();
+                if (result is ResponseDataModel<List<GetAllUsersModel>> res)
+                    return Ok(new { res.data });
 
-        [HttpGet("Admin/{id?}")]
+                return BadRequest(new { result.code, result.message });
+            }
+            else
+            {
+                var result = await _service.GetUserByIdAsyc(id);
+                if (result is ResponseDataModel<GetAllUsersModel> res)
+                    return Ok(new { res.data });
+
+                return BadRequest(new { result.code, result.message });
+            }
+
+        }
+
+
+        [HttpGet("Admin/userdata/{id?}")]
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> GetUserDataAsync([FromRoute] string? id)
         {
             if (id is null)
             {
-                var result = await _service.GetAllAsync();
+                var result = await _service.GetUserDataAllAsync();
                 if (result is ResponseDataModel<List<GetUserDataModel>> res)
                     return Ok(new { res.data });
 
@@ -89,6 +112,7 @@ namespace Vehicle_Share.API.Controllers
 
         }
 
+       
         [HttpPut("Admin/UpdateDate/{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateAsync([FromRoute] string id, [FromForm] UserDataModel model)

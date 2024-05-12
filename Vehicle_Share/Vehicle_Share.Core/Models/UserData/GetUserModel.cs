@@ -12,8 +12,6 @@ namespace Vehicle_Share.Core.Models.UserData
         public bool? Gender { get; set; }
         public string? Nationality { get; set; }
         public string? Address { get; set; }
-       /* public string? NationalCardImageFront { get; set; }
-        public string? NationalCardImageBack { get; set; }*/
         public string? ProfileImage { get; set; }
 
         public Status Status { get; set; }

@@ -6,15 +6,22 @@ namespace Vehicle_Share.Service.UserDataService
 {
     public interface IUserDataServ
     {
+       
+
         Task<ResponseModel> GetUserDataAsync();
         Task<ResponseModel> AddAndUpdateAsync(UserDataModel model);
         Task<ResponseModel> AddAndUpdateNationalImageAsync(NationalImageModel model);
 
-        Task<ResponseModel> GetAllAsync();
+        #region Admin
+
+        Task<ResponseModel> GetAllUserAsync();
+        Task<ResponseModel> GetUserByIdAsyc(string id);
+        Task<ResponseModel> GetUserDataAllAsync();
         Task<ResponseModel> GetUserDataByIdAsyc(string id);
         Task<ResponseModel> UpdateAsync(string id, UserDataModel model);
         Task<ResponseModel> UpdateStatusRequestAsync(string id, UpdateStatusRequestModel model);
 
+        #endregion
         Task<ResponseModel> seedAsync(SeedModel model);
         //  Task<ResponseModel> UpdateAsync(UserDataModel model);
         //  Task<int> DeleteAsync(string id);
