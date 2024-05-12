@@ -1,6 +1,6 @@
 ﻿namespace Vehicle_Share.Core.Models.TripModels
 {
-    public class GetTripDriverModel
+    public class GetTripByIdModel
     {
         public string? Id { get; set; }
 
@@ -10,18 +10,19 @@
         public double ToLatitude { get; set; }
         public double ToLongitude { get; set; }
 
+
         public DateTime Date { get; set; }
         public float RecommendedPrice { get; set; }
-        public short AvailableSeats { get; set; } //driver
+        public short? AvailableSeats { get; set; }    //driver
         public DateTime CreatedOn { get; set; }
 
-        public string? CarId { get; set; } //driver
-        public string? CarType { get; set; } //driver
-        public string? CarBrand { get; set; } //driver
+        public short? RequestedSeats { get; set; }    //passenger
+        public bool IsFinished { get; set; }
+        public string? CarId { get; set; }
+
 
         public string? UserDataName { get; set; }
         public string? UserDataImage { get; set; }
-
 
     }
 }

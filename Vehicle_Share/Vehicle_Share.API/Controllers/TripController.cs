@@ -35,7 +35,7 @@ namespace Vehicle_Share.API.Controllers
         public async Task<IActionResult> GetAsync([FromRoute] string id)
         {
             var result = await _service.GetByIdAsync(id);
-            if (result is ResponseDataModel<GetTripModel> res)
+            if (result is ResponseDataModel<GetTripByIdModel> res)
                 return Ok(new { res.data });
 
             return BadRequest(new { result.code, result.message });

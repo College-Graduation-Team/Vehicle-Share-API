@@ -16,5 +16,8 @@
 
         public short RequestedSeats { get; set; } //passenger
         public bool IsFinished { get; set; }
+
+        public string? UserDataName { get; set; }
+        public string? UserDataImage { get; set; }
     }
 }

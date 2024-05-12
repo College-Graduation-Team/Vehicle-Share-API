@@ -51,22 +51,21 @@ namespace Vehicle_Share.Service.RequestService
             result.data = new List<GetReqModel>();
             foreach (var request in userRequests)
             {
+                var user = await _userdata.FindAsync(u => u.Id == request.UserDataId);
                 result.data?.Add(new GetReqModel
                 {
                     Id = request.Id,
                     Status = request.Status.ToString(),
                     CreatedOn = request.CreatedOn,
                     TripId = request.TripId,
-                    UserDataId = request.UserDataId
+                    UserDataName = user.Name,
+                    UserDataImage = user.ProfileImage
                 });
             }
 
             result.IsSuccess = true;
             return result;
         }
-        
-
-        
         public async Task<ResponseModel> GetAllMyRequestAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
@@ -83,13 +82,15 @@ namespace Vehicle_Share.Service.RequestService
             result.data = new List<GetReqModel>();
             foreach (var request in userRequests)
             {
+                var user = await _userdata.FindAsync(u => u.Id == request.UserDataId);
                 result.data?.Add(new GetReqModel
                 {
                     Id = request.Id,
                     Status = request.Status.ToString(),
                     CreatedOn = request.CreatedOn,
                     TripId = request.TripId,
-                    UserDataId = request.UserDataId
+                    UserDataName = user.Name,
+                    UserDataImage = user.ProfileImage
                 }
 
                 );
@@ -115,13 +116,15 @@ namespace Vehicle_Share.Service.RequestService
             result.data = new List<GetReqModel>();
             foreach (var request in allRequests)
             {
+                var user =await _userdata.FindAsync(u=>u.Id==request.UserDataId);
                 result.data?.Add(new GetReqModel
                 {
                     Id = request.Id,
                     Status = request.Status.ToString(),
                     CreatedOn = request.CreatedOn,
                     TripId = request.TripId,
-                    UserDataId = request.UserDataId
+                    UserDataName = user.Name,
+                    UserDataImage=user.ProfileImage
                 }
 
                 );
@@ -152,13 +155,15 @@ namespace Vehicle_Share.Service.RequestService
                 {
                     foreach (var request in tripRequests)
                     {
+                        var user = await _userdata.FindAsync(u => u.Id == request.UserDataId);
                         result.data.Add(new GetReqModel
                         {
                             Id = request.Id,
                             Status = request.Status.ToString(),
                             CreatedOn = request.CreatedOn,
                             TripId = request.TripId,
-                            UserDataId = request.UserDataId
+                            UserDataName = user.Name,
+                            UserDataImage = user.ProfileImage
                         });
                     }
                 }
@@ -183,13 +188,15 @@ namespace Vehicle_Share.Service.RequestService
             result.data = new List<GetReqModel>();
             foreach (var request in allRequests)
             {
+                var user = await _userdata.FindAsync(u => u.Id == request.UserDataId);
                 result.data?.Add(new GetReqModel
                 {
                     Id = request.Id,
                     Status = request.Status.ToString(),
                     CreatedOn = request.CreatedOn,
                     TripId = request.TripId,
-                    UserDataId = request.UserDataId
+                    UserDataName = user.Name,
+                    UserDataImage = user.ProfileImage
                 }
 
                 );
@@ -220,13 +227,15 @@ namespace Vehicle_Share.Service.RequestService
                 {
                     foreach (var request in tripRequests)
                     {
+                        var user = await _userdata.FindAsync(u => u.Id == request.UserDataId);
                         result.data.Add(new GetReqModel
                         {
                             Id = request.Id,
                             Status = request.Status.ToString(),
                             CreatedOn = request.CreatedOn,
                             TripId = request.TripId,
-                            UserDataId = request.UserDataId
+                            UserDataName = user.Name,
+                            UserDataImage = user.ProfileImage
                         });
                     }
                 }

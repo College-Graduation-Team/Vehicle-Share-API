@@ -42,7 +42,7 @@ namespace Vehicle_Share.Service.TripService
 
 
             // Define the fixed maximum distance (in kilometers)
-            const double maxDistance = 20; // Adjust this value as needed
+            const double maxDistance = 50; // Adjust this value as needed
             // Get all trips
             var allTrips = await _trip.GetAllAsync();
 
@@ -96,7 +96,7 @@ namespace Vehicle_Share.Service.TripService
 
 
             // Define the fixed maximum distance (in kilometers)
-            const double maxDistance = 20; // Adjust this value as needed
+            const double maxDistance = 50; // Adjust this value as needed
             // Get all trips
             var allTrips = await _trip.GetAllAsync();
 
@@ -150,9 +150,11 @@ namespace Vehicle_Share.Service.TripService
             if (trip is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoTrip], code = ResponseCode.NoTrip };
 
-            var result = new ResponseDataModel<GetTripModel>
+            var user = await _userdata.FindAsync(u => u.Id == trip.UserDataId);
+
+            var result = new ResponseDataModel<GetTripByIdModel>
             {
-                data = new GetTripModel
+                data = new GetTripByIdModel
                 {
                     Id = trip.Id,
                     FromLatitude = trip.FromLatitude,
@@ -165,9 +167,11 @@ namespace Vehicle_Share.Service.TripService
                     RequestedSeats = trip.RequestedSeats,
                     CreatedOn=trip.CreatedOn,
                     IsFinished = trip.IsFinished,
-                    UserDataId = trip.UserDataId,
-                    CarId = trip.CarId
-                    
+                    CarId = trip.CarId,
+
+                    UserDataName = user.Name,
+                    UserDataImage = user.ProfileImage
+
                 },
                 IsSuccess = true
             };
@@ -270,22 +274,27 @@ namespace Vehicle_Share.Service.TripService
             foreach (var trip in userTrips)
             {
                 var car = await _car.FindAsync(e => e.Id == trip.CarId);
-                
-                    result.data?.Add(new GetTripDriverModel
-                    {
-                        Id = trip.Id,
-                        FromLatitude = trip.FromLatitude,
-                        FromLongitude = trip.FromLongitude,
-                        ToLatitude = trip.ToLatitude,
-                        ToLongitude = trip.ToLongitude,
-                        Date = trip.Date,
-                        RecommendedPrice = trip.RecommendedPrice,
-                        AvailableSeats = trip.AvailableSeats.Value, // Access the Value property
-                        CreatedOn=trip.CreatedOn,
-                        CarId = trip.CarId, // Assuming CarID is a string property
-                        CarType = car.Type,
-                        CarBrand = car.Brand,
-                    });
+                var user = await _userdata.FindAsync(u => u.Id == trip.UserDataId);
+                result.data?.Add(new GetTripDriverModel
+                {
+                    Id = trip.Id,
+                    FromLatitude = trip.FromLatitude,
+                    FromLongitude = trip.FromLongitude,
+                    ToLatitude = trip.ToLatitude,
+                    ToLongitude = trip.ToLongitude,
+
+                    Date = trip.Date,
+                    RecommendedPrice = trip.RecommendedPrice,
+                    AvailableSeats = trip.AvailableSeats.Value, // Access the Value property
+                    CreatedOn = trip.CreatedOn,  
+
+                    CarId = trip.CarId, // Assuming CarID is a string property
+                    CarType = car.Type,
+                    CarBrand = car.Brand,
+                    
+                    UserDataName = user.Name,
+                    UserDataImage = user.ProfileImage
+                });
                 
             }
             result.IsSuccess = true;
@@ -309,19 +318,25 @@ namespace Vehicle_Share.Service.TripService
             result.data = new List<GetTripPassengerModel>();
             foreach (var trip in userTrips)
             {
-                    result.data?.Add(new GetTripPassengerModel
-                    {
-                        Id = trip.Id,
-                        FromLatitude = trip.FromLatitude,
-                        FromLongitude = trip.FromLongitude,
-                        ToLatitude = trip.ToLatitude,
-                        ToLongitude = trip.ToLongitude,
-                        Date = trip.Date,
-                        RecommendedPrice = trip.RecommendedPrice,
-                        RequestedSeats = trip.RequestedSeats.Value,
-                        CreatedOn=trip.CreatedOn,
-                        IsFinished = trip.IsFinished
-                    });
+                var user = await _userdata.FindAsync(u => u.Id == trip.UserDataId);
+                result.data?.Add(new GetTripPassengerModel
+                {
+                    Id = trip.Id,
+
+                    FromLatitude = trip.FromLatitude,
+                    FromLongitude = trip.FromLongitude,
+                    ToLatitude = trip.ToLatitude,
+                    ToLongitude = trip.ToLongitude,
+
+                    Date = trip.Date,
+                    RecommendedPrice = trip.RecommendedPrice,
+                    RequestedSeats = trip.RequestedSeats.Value,
+                    CreatedOn = trip.CreatedOn,
+                    IsFinished = trip.IsFinished,
+
+                    UserDataName = user.Name,
+                    UserDataImage = user.ProfileImage
+                });
 
             }
             result.IsSuccess = true;
