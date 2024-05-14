@@ -137,7 +137,7 @@ namespace Vehicle_Share.API.Controllers
         #region Put and Delete Requsets
 
         [HttpPut("driver/{id}")] //update for driver
-        public async Task<IActionResult> UpdataTripAsync([FromRoute] string id, [FromForm] UpdateTripDriverModel model)
+        public async Task<IActionResult> UpdataTripAsync([FromRoute] string id, [FromBody] UpdateTripDriverModel model)
         {
 
             var result = await _service.UpdateAsync(id, model);
@@ -148,7 +148,7 @@ namespace Vehicle_Share.API.Controllers
         }
 
         [HttpPut("passenger/{id}")]//update for Passenger
-        public async Task<IActionResult> UpdataTripAsync([FromRoute] string id, [FromForm] UpdateTripPassengerModel model)
+        public async Task<IActionResult> UpdataTripAsync([FromRoute] string id, [FromBody] UpdateTripPassengerModel model)
         {
             var result = await _service.UpdateAsync(id, model);
             if (result.IsSuccess)
