@@ -8,8 +8,8 @@ namespace Vehicle_Share.Service.TripService
         Task<ResponseModel> SearchDriverTripAsync(double? FromLatitude, double? FromLongitude, double? ToLatitude, double? ToLongitude);
         Task<ResponseModel> SearchPassengerTripAsync(double? FromLatitude, double? FromLongitude, double? ToLatitude, double? ToLongitude);
         Task<ResponseModel> GetByIdAsync(string id);
-        Task<ResponseModel> GetAllForUserAsDriverAsync();
-        Task<ResponseModel> GetAllForUserAsPassengerAsync();
+        Task<ResponseModel> GetAllForUserAsDriverAsync(bool IsFinished);
+        Task<ResponseModel> GetAllForUserAsPassengerAsync(bool IsFinished);
         Task<ResponseModel> GetAllDriverTripAsync();
         Task<ResponseModel> GetAllPassengerTripAsync();
         Task<ResponseModel> AddAsync(TripDriverModel model);

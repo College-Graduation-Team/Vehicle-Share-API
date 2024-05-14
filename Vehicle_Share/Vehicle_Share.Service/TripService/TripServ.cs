@@ -179,7 +179,7 @@ namespace Vehicle_Share.Service.TripService
             return result;
         }
 
-        public async Task<ResponseModel> GetAllForUserAsDriverAsync()
+        public async Task<ResponseModel> GetAllForUserAsDriverAsync(bool IsFinished)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
@@ -190,7 +190,7 @@ namespace Vehicle_Share.Service.TripService
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
 
             var allTrips = await _trip.GetAllAsync();
-            var userTrips = allTrips.Where(t => t.CarId is not null && t.UserDataId == userData.Id).ToList();
+            var userTrips = allTrips.Where(t => t.CarId is not null && t.UserDataId == userData.Id && t.IsFinished == IsFinished).ToList();
             var result = new ResponseDataModel<List<GetTripModel>>();
             result.data = new List<GetTripModel>();
             foreach (var trip in userTrips)
@@ -216,7 +216,7 @@ namespace Vehicle_Share.Service.TripService
             return result;
         }
       
-        public async Task<ResponseModel> GetAllForUserAsPassengerAsync()
+        public async Task<ResponseModel> GetAllForUserAsPassengerAsync(bool IsFinished)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
@@ -227,7 +227,7 @@ namespace Vehicle_Share.Service.TripService
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
 
             var allTrips = await _trip.GetAllAsync();
-            var userTrips = allTrips.Where(t => t.CarId is null && t.UserDataId == userData.Id).ToList();
+            var userTrips = allTrips.Where(t => t.CarId is null && t.UserDataId == userData.Id && t.IsFinished == IsFinished).ToList();
             var result = new ResponseDataModel<List<GetTripModel>>();
             result.data = new List<GetTripModel>();
             foreach (var trip in userTrips)

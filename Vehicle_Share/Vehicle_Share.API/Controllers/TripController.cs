@@ -42,9 +42,9 @@ namespace Vehicle_Share.API.Controllers
         }
        
         [HttpGet("MyTripDriver")]
-        public async Task<IActionResult> GetAllForUserAsDriverAsync()
+        public async Task<IActionResult> GetAllForUserAsDriverAsync(bool IsFinished)
         {
-            var result = await _service.GetAllForUserAsDriverAsync();
+            var result = await _service.GetAllForUserAsDriverAsync(IsFinished);
 
             if (result is ResponseDataModel<List<GetTripModel>> res)
                 return Ok(new { res.data });
@@ -53,9 +53,9 @@ namespace Vehicle_Share.API.Controllers
         }
       
         [HttpGet("MyTripPassenger")]
-        public async Task<IActionResult> GetAllForUserAsPassengerAsync()
+        public async Task<IActionResult> GetAllForUserAsPassengerAsync(bool IsFinished)
         {
-            var result = await _service.GetAllForUserAsPassengerAsync();
+            var result = await _service.GetAllForUserAsPassengerAsync(IsFinished);
 
             if (result is ResponseDataModel<List<GetTripModel>> res)
                 return Ok(new { res.data });
