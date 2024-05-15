@@ -302,6 +302,10 @@ namespace Vehicle_Share.Service.RequestService
             {
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoSendRequest] };
             }
+            var req = await _request.FindAsync(r=>r.TripId==trip.Id);
+            if(req is not null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.SendNotRequest] };
+
             Request request = new();
             if (model.Type is true) //driver
                 request.Seats = 0;

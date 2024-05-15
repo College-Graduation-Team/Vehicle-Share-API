@@ -249,4 +249,7 @@
   <data name="NoUser" xml:space="preserve">
     <value>User not found </value>
   </data>
+  <data name="SendNotRequest" xml:space="preserve">
+    <value>You can't send again  .</value>
+  </data>
 </root>

@@ -55,9 +55,10 @@ namespace Vehicle_Share.Service.TripService
                                CalculateDistance(model.ToLatitude.Value, model.ToLongitude.Value, trip.ToLatitude, trip.ToLongitude) <= maxDistance;
 
                 return (fromMatch || toMatch)
-                && (!model.StartDate.HasValue || trip.Date >= model.StartDate )
+                && (!model.StartDate.HasValue || trip.Date >= model.StartDate)
                 && trip.CarId is not null
                 && !trip.IsFinished && trip.AvailableSeats.HasValue
+                && trip.UserDataId != userData.Id
                 && trip.AvailableSeats.Value > 0;
             }
             ).ToList();
@@ -113,7 +114,8 @@ namespace Vehicle_Share.Service.TripService
 
                 return (fromMatch || toMatch)
                         && trip.CarId is null && !trip.IsFinished
-                        && (!model.StartDate.HasValue || trip.Date >= model.StartDate);
+                        && (!model.StartDate.HasValue || trip.Date >= model.StartDate)
+                        && trip.UserDataId != userData.Id;
             }
             ).ToList();
             var result = new ResponseDataModel<List<GetTripPassengerModel>>();

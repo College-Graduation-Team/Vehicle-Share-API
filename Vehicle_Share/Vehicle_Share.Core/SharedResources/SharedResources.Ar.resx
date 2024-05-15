@@ -246,4 +246,7 @@
   <data name="ExistsPhone" xml:space="preserve">
     <value>هذا الــرقــــم مســتــخــدم بالـــفــعــل</value>
   </data>
+  <data name="SendNotRequest" xml:space="preserve">
+    <value>لا يمكن الارسال مره اخري </value>
+  </data>
 </root>

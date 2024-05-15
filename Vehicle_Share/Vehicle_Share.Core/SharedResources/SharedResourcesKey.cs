@@ -43,8 +43,9 @@
         public const string ResetPassword = "ResetPassword";
         public const string NoDelete = "NoDelete";
         public const string Logout = "Logout"; 
-        public const string NoUser = "NoUser";
+        public const string NoUser = "NoUser"; 
         public const string ExistsPhone = "ExistsPhone";
+        public const string SendNotRequest = "SendNotRequest";
 
 
 
