@@ -30,7 +30,7 @@ namespace Vehicle_Share.Service.TripService
             _lic = lic;
         }
      
-        public async Task<ResponseModel> SearchDriverTripAsync(double? FromLatitude, double? FromLongitude, double? ToLatitude, double? ToLongitude)
+        public async Task<ResponseModel> SearchDriverTripAsync(SearchModel model)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
@@ -49,13 +49,16 @@ namespace Vehicle_Share.Service.TripService
             // Filter trips within the fixed maximum distance from either the 'from' or 'to' location
             var nearbyTrips = allTrips.Where(trip =>
             {
-                bool fromMatch = FromLatitude.HasValue && FromLongitude.HasValue &&
-                           CalculateDistance(FromLatitude.Value, FromLongitude.Value, trip.FromLatitude, trip.FromLongitude) <= maxDistance;
-                bool toMatch = ToLatitude.HasValue && ToLongitude.HasValue &&
-                               CalculateDistance(ToLatitude.Value, ToLongitude.Value, trip.ToLatitude, trip.ToLongitude) <= maxDistance;
+                bool fromMatch = model.FromLatitude.HasValue && model.FromLongitude.HasValue &&
+                           CalculateDistance(model.FromLatitude.Value, model.FromLongitude.Value, trip.FromLatitude, trip.FromLongitude) <= maxDistance;
+                bool toMatch = model.ToLatitude.HasValue && model.FromLongitude.HasValue &&
+                               CalculateDistance(model.ToLatitude.Value, model.ToLongitude.Value, trip.ToLatitude, trip.ToLongitude) <= maxDistance;
 
                 return (fromMatch || toMatch)
-                && trip.CarId is not null && !trip.IsFinished  && trip.AvailableSeats.HasValue && trip.AvailableSeats.Value > 0;
+                && (!model.StartDate.HasValue || trip.Date >= model.StartDate )
+                && trip.CarId is not null
+                && !trip.IsFinished && trip.AvailableSeats.HasValue
+                && trip.AvailableSeats.Value > 0;
             }
             ).ToList();
             var result = new ResponseDataModel<List<GetTripDriverModel>>();
@@ -84,7 +87,7 @@ namespace Vehicle_Share.Service.TripService
             result.IsSuccess = true;
             return result;
         }
-        public async Task<ResponseModel> SearchPassengerTripAsync(double? FromLatitude, double? FromLongitude, double? ToLatitude, double? ToLongitude)
+        public async Task<ResponseModel> SearchPassengerTripAsync(SearchModel model)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
@@ -103,13 +106,14 @@ namespace Vehicle_Share.Service.TripService
             // Filter trips within the fixed maximum distance from either the 'from' or 'to' location
             var nearbyTrips = allTrips.Where(trip =>
             {
-                bool fromMatch = FromLatitude.HasValue && FromLongitude.HasValue &&
-                          CalculateDistance(FromLatitude.Value, FromLongitude.Value, trip.FromLatitude, trip.FromLongitude) <= maxDistance;
-                bool toMatch = ToLatitude.HasValue && ToLongitude.HasValue &&
-                               CalculateDistance(ToLatitude.Value, ToLongitude.Value, trip.ToLatitude, trip.ToLongitude) <= maxDistance;
+                bool fromMatch = model.FromLatitude.HasValue && model.FromLongitude.HasValue &&
+                           CalculateDistance(model.FromLatitude.Value, model.FromLongitude.Value, trip.FromLatitude, trip.FromLongitude) <= maxDistance;
+                bool toMatch = model.ToLatitude.HasValue && model.FromLongitude.HasValue &&
+                               CalculateDistance(model.ToLatitude.Value, model.ToLongitude.Value, trip.ToLatitude, trip.ToLongitude) <= maxDistance;
 
                 return (fromMatch || toMatch)
-                        && trip.CarId is null && !trip.IsFinished ;
+                        && trip.CarId is null && !trip.IsFinished
+                        && (!model.StartDate.HasValue || trip.Date >= model.StartDate);
             }
             ).ToList();
             var result = new ResponseDataModel<List<GetTripPassengerModel>>();

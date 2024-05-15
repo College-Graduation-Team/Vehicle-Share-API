@@ -47,7 +47,7 @@ namespace Vehicle_Share.API.Controllers
             var result = await _autherRepo.LoginAsync(model);
 
             if (result is ResponseDataModel<AuthModel> res)
-                return Ok(new { res.data.Token, res.data.TokenExpiration, res.data.RefreshToken, res.data.RefreshTokenExpiration });
+                return Ok(new { res.data.Token, res.data.TokenExpiration, res.data.RefreshToken, res.data.RefreshTokenExpiration ,res.data.HadUserData });
             return BadRequest(new { result.code, result.message });
         }
 

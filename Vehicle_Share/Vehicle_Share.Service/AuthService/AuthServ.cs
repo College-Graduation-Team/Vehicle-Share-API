@@ -17,12 +17,14 @@ using Vehicle_Share.EF.Helper;
 using Vehicle_Share.EF.Models;
 using Twilio.TwiML.Messaging;
 using Vehicle_Share.EF.ImpRepo.SendOTPImplement;
+using Vehicle_Share.Core.Repository.GenericRepo;
 namespace Vehicle_Share.Service.AuthService
 {
     public class AuthServ : IAuthServ
     {
 
         private readonly UserManager<User> _userManager;
+        private readonly IBaseRepo<UserData> _userData;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JWT _jwt;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -30,13 +32,14 @@ namespace Vehicle_Share.Service.AuthService
 
         public AuthServ(UserManager<User> userManager, IOptions<JWT> jwt,
             RoleManager<IdentityRole> roleManager,
-            IHttpContextAccessor httpContextAccessor, IStringLocalizer<SharedResources> locaLizer)
+            IHttpContextAccessor httpContextAccessor, IStringLocalizer<SharedResources> locaLizer, IBaseRepo<UserData> userData)
         {
             _userManager = userManager;
             _jwt = jwt.Value;
             _roleManager = roleManager;
             _httpContextAccessor = httpContextAccessor;
             _LocaLizer = locaLizer;
+            _userData = userData;
         }
 
 
@@ -121,6 +124,9 @@ namespace Vehicle_Share.Service.AuthService
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NotConfirmPhoneNumber], code=ResponseCode.NotConfirmPhoneNumber };
             }
 
+            var userdata = await _userData.FindAsync(u=>u.UserId==user.Id);
+            if (userdata is not null)
+                authModel.HadUserData = true;
             var jwtSecurityToken = await CreateToken(user);
 
 

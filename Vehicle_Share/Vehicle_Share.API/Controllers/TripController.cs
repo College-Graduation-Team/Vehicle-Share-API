@@ -86,18 +86,18 @@ namespace Vehicle_Share.API.Controllers
 
 
         [HttpGet("search/driver")]
-        public async Task<IActionResult> SearchDriverTripAsync(double? FromLatitude, double? FromLongitude, double? ToLatitude, double? ToLongitude)
+        public async Task<IActionResult> SearchDriverTripAsync([FromQuery] SearchModel model)
         {
-            var result = await _service.SearchDriverTripAsync( FromLatitude,  FromLongitude,  ToLatitude,  ToLongitude);
+            var result = await _service.SearchDriverTripAsync(model);
             if (result is ResponseDataModel<List<GetTripDriverModel>> res)
                 return Ok(new { res.data });
 
             return BadRequest(new { result.code, result.message });
         }
         [HttpGet("search/passenger")]
-        public async Task<IActionResult> SearchPassengerTripAsync(double? FromLatitude, double? FromLongitude, double? ToLatitude, double? ToLongitude)
+        public async Task<IActionResult> SearchPassengerTripAsync([FromQuery] SearchModel model)
         {
-            var result = await _service.SearchPassengerTripAsync(FromLatitude, FromLongitude, ToLatitude, ToLongitude);
+            var result = await _service.SearchPassengerTripAsync(model);
             if (result is ResponseDataModel<List<GetTripPassengerModel>> res)
                 return Ok(new { res.data });
 
