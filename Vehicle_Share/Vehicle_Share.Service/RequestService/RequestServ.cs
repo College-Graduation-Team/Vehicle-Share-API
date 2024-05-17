@@ -8,7 +8,6 @@ using Vehicle_Share.Core.Response;
 using static Vehicle_Share.Core.Helper.StatusContainer;
 using Microsoft.Extensions.Localization;
 using Vehicle_Share.Core.Resources;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Vehicle_Share.Service.RequestService
 {
@@ -316,7 +315,7 @@ namespace Vehicle_Share.Service.RequestService
                 request.Seats = model.Seats;
             }
 
-            if (request.UserDataId == userData.Id)
+            if (request.UserDataId == userData.Id && request.Status != Status.Refused)
             {
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.SendRequestBefore] };
             }

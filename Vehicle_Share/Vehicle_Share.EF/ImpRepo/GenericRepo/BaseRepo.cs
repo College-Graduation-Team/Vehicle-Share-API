@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+
+using System;
 using System.Linq.Expressions;
 using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.EF.Data;
@@ -122,6 +124,19 @@ namespace Vehicle_Share.EF.ImpRepo.GenericRepo
                 return await _context.Set<T>().ToListAsync();
             }
         }
+
+
+     /*        public IEnumerable<TResult> Select<TResult>(Func<T, TResult> selector, Func<T, bool> predicate = null)
+        {
+            var query = _dbSet.AsQueryable();
+            if (predicate != null)
+            {
+                query = query.Where(predicate).AsQueryable();
+            }
+            return query.Select(selector).ToList();
+        }
+*/    
+    
     }
 
 }
