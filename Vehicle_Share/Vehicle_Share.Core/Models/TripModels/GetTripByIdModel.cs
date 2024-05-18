@@ -21,8 +21,7 @@
         public string? CarId { get; set; }
 
 
-        public string? UserDataName { get; set; }
-        public string? UserDataImage { get; set; }
+        public string? UserDataId { get; set; }
 
     }
 }

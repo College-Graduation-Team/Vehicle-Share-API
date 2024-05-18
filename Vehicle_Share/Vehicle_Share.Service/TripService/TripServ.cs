@@ -175,8 +175,7 @@ namespace Vehicle_Share.Service.TripService
                     IsFinished = trip.IsFinished,
                     CarId = trip.CarId,
 
-                    UserDataName = user.Name,
-                    UserDataImage = user.ProfileImage
+                    UserDataId = user.Id,
 
                 },
                 IsSuccess = true
@@ -298,8 +297,7 @@ namespace Vehicle_Share.Service.TripService
                     CarType = car.Type,
                     CarBrand = car.Brand,
                     
-                    UserDataName = user.Name,
-                    UserDataImage = user.ProfileImage
+                    UserDataId = user.Id,
                 });
                 
             }
@@ -340,8 +338,7 @@ namespace Vehicle_Share.Service.TripService
                     CreatedOn = trip.CreatedOn,
                     IsFinished = trip.IsFinished,
 
-                    UserDataName = user.Name,
-                    UserDataImage = user.ProfileImage
+                    UserDataId = user.Id,
                 });
 
             }

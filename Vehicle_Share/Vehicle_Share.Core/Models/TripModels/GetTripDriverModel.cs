@@ -19,8 +19,7 @@
         public string? CarType { get; set; } //driver
         public string? CarBrand { get; set; } //driver
 
-        public string? UserDataName { get; set; }
-        public string? UserDataImage { get; set; }
+        public string? UserDataId { get; set; }
 
 
     }
