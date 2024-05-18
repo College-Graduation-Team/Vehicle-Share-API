@@ -344,34 +344,56 @@ namespace Vehicle_Share.Service.UserDataService
             var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
             bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
 
-            if (!isAdmin)
-                return new ResponseModel { message = "this route for admin" };
-
             var userData = await _userData.GetByIdAsync(id);
             if (userData is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUser], code = ResponseCode.NoUserData };
 
-            var result = new ResponseDataModel<GetUserDataModel>()
+            if (isAdmin)
             {
-                data = new GetUserDataModel
+                var result = new ResponseDataModel<GetUserDataModel>()
                 {
-                    Id = userData.Id,
-                    Name = userData.Name,
-                    NationalId = userData.NationalId,
-                    Birthdate = userData.Birthdate.ToString("yyyy-MM-dd"),
-                    Gender = userData.Gender,
-                    Nationality = userData.Nationality,
-                    Address = userData.Address,
-                    NationalCardImageFront = userData.NationalCardImageFront,
-                    NationalCardImageBack = userData.NationalCardImageBack,
-                    ProfileImage = userData.ProfileImage,
-                    Status = userData.Status,
-                    Message = userData.Message,
-                },
-                IsSuccess = true
-            };
+                    data = new GetUserDataModel
+                    {
+                        Id = userData.Id,
+                        Name = userData.Name,
+                        NationalId = userData.NationalId,
+                        Birthdate = userData.Birthdate.ToString("yyyy-MM-dd"),
+                        Gender = userData.Gender,
+                        Nationality = userData.Nationality,
+                        Address = userData.Address,
+                        NationalCardImageFront = userData.NationalCardImageFront,
+                        NationalCardImageBack = userData.NationalCardImageBack,
+                        ProfileImage = userData.ProfileImage,
+                        Status = userData.Status,
+                        Message = userData.Message,
+                    },
+                    IsSuccess = true
+                };
 
-            return result;
+                return result;
+            }
+            else
+            {
+                var result = new ResponseDataModel<GetUserModel>()
+                {
+                    data = new GetUserModel
+                    {
+                        Id = userData.Id,
+                        Name = userData.Name,
+                        NationalId = userData.NationalId,
+                        Birthdate = userData.Birthdate.ToString("yyyy-MM-dd"),
+                        Gender = userData.Gender,
+                        Nationality = userData.Nationality,
+                        Address = userData.Address,
+                        ProfileImage = userData.ProfileImage,
+                        Status = userData.Status,
+                        Message = userData.Message,
+                    },
+                    IsSuccess = true
+                };
+
+                return result;
+            }
         }
         public async Task<ResponseModel> UpdateAsync(string id, UserDataModel model)
         {

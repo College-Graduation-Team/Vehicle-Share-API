@@ -25,15 +25,25 @@ namespace Vehicle_Share.API.Controllers
             _user = user;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetMyUserDataAsync()
+        [HttpGet("{id?}")]
+        public async Task<IActionResult> GetMyUserDataAsync([FromRoute]string? id)
         {
+            if (id is null)
+            {
+                var result = await _service.GetUserDataAsync();
+                if (result is ResponseDataModel<GetUserModel> res)
+                    return Ok(new { res.data });
 
-            var result = await _service.GetUserDataAsync();
-            if (result is ResponseDataModel<GetUserModel> res)
-                return Ok(new { res.data });
+                return BadRequest(new { result.code, result.message });
+            }
+            else
+            {
+                var result = await _service.GetUserDataByIdAsyc(id);
+                if (result is ResponseDataModel<GetUserModel> res)
+                    return Ok(new { res.data });
 
-            return BadRequest(new { result.code, result.message });
+                return BadRequest(new { result.code, result.message });
+            }
         }
        
         [HttpPost]
@@ -135,7 +145,7 @@ namespace Vehicle_Share.API.Controllers
 
         #endregion
 
-        [HttpPost("generate-fake-userData")]
+       /* [HttpPost("generate-fake-userData")]
         [AllowAnonymous]
         public async Task<IActionResult> GenerateFakeUsers(int count)
         {
@@ -164,7 +174,7 @@ namespace Vehicle_Share.API.Controllers
 
             return Ok(fakeUsers);
         }
-
+*/
     
     }
 }
