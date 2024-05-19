@@ -7,6 +7,7 @@ using Vehicle_Share.Core.Response;
 using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Models;
 using Twilio.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Vehicle_Share.Service.TripService
 {
@@ -262,24 +263,24 @@ namespace Vehicle_Share.Service.TripService
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] , code = ResponseCode.NoAuth };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
 
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
 
-            var allTrips = await _trip.GetAllAsync();
+            var allTrips = await _trip.GetAllAsync(
+                     include: q => q.Include(trip => trip.Car)
+                 );
 
-
-
-            var userTrips = allTrips.Where(t => t.CarId is not null && t.IsFinished is false && t.AvailableSeats.Value > 0 && t.UserDataId != userData.Id).ToList();
+            var userTrips = allTrips
+                .Where(t => t.CarId != null && !t.IsFinished && t.AvailableSeats.Value > 0 && t.UserDataId != userData.Id)
+                .ToList();
 
             var result = new ResponseDataModel<List<GetTripDriverModel>>();
-            result.data =new List<GetTripDriverModel>();
+            result.data = new List<GetTripDriverModel>();
             foreach (var trip in userTrips)
             {
-                var car = await _car.FindAsync(e => e.Id == trip.CarId);
-                var user = await _userdata.FindAsync(u => u.Id == trip.UserDataId);
                 result.data?.Add(new GetTripDriverModel
                 {
                     Id = trip.Id,
@@ -291,15 +292,15 @@ namespace Vehicle_Share.Service.TripService
                     Date = trip.Date,
                     RecommendedPrice = trip.RecommendedPrice,
                     AvailableSeats = trip.AvailableSeats.Value, // Access the Value property
-                    CreatedOn = trip.CreatedOn,  
+                    CreatedOn = trip.CreatedOn,
 
                     CarId = trip.CarId, // Assuming CarID is a string property
-                    CarType = car.Type,
-                    CarBrand = car.Brand,
-                    
-                    UserDataId = user.Id,
+                    CarType = trip.Car?.Type,
+                    CarBrand = trip.Car?.Brand,
+
+                    UserDataId = trip.UserDataId,
                 });
-                
+
             }
             result.IsSuccess = true;
             return result;
@@ -322,7 +323,6 @@ namespace Vehicle_Share.Service.TripService
             result.data = new List<GetTripPassengerModel>();
             foreach (var trip in userTrips)
             {
-                var user = await _userdata.FindAsync(u => u.Id == trip.UserDataId);
                 result.data?.Add(new GetTripPassengerModel
                 {
                     Id = trip.Id,
@@ -338,7 +338,7 @@ namespace Vehicle_Share.Service.TripService
                     CreatedOn = trip.CreatedOn,
                     IsFinished = trip.IsFinished,
 
-                    UserDataId = user.Id,
+                    UserDataId = trip.UserDataId,
                 });
 
             }
@@ -356,8 +356,9 @@ namespace Vehicle_Share.Service.TripService
             if (userData is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
 
+            
 
-            var car = await _car.FindAsync(e => e.Id == model.CarId);
+                var car = await _car.FindAsync(e => e.Id == model.CarId);
             if (string.IsNullOrEmpty(model.CarId) || car is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar], code = ResponseCode.NoCar };
 

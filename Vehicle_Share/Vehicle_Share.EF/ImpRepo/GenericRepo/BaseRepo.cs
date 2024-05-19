@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 using System;
 using System.Linq.Expressions;
@@ -90,53 +91,40 @@ namespace Vehicle_Share.EF.ImpRepo.GenericRepo
 
             return await _dbSet.FirstOrDefaultAsync(match);
         }
-        public async Task<T> FindAsync(Expression<Func<T, bool>> match, params Expression<Func<T, object>>[] includeProperties)
-        {
-            IQueryable<T> query = _dbSet;
 
-            // Include related entities specified by the caller
-            foreach (var includeProperty in includeProperties)
+
+        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
+        {
+            IQueryable<T> query = _context.Set<T>();
+
+            // Apply includes if provided
+            if (include != null)
             {
-                query = query.Include(includeProperty);
+                query = include(query);
             }
 
-            // Apply filter
-            query = query.Where(match);
-
-            // Eagerly load related entities
-            foreach (var includeProperty in includeProperties)
-            {
-                query = query.Include(includeProperty);
-            }
-
-            return await query.FirstOrDefaultAsync();
-        }
-
-
-        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null)
-        {
+            // Apply predicate if provided
             if (predicate != null)
             {
-                return await _context.Set<T>().Where(predicate).ToListAsync();
+                query = query.Where(predicate);
             }
-            else
-            {
-                return await _context.Set<T>().ToListAsync();
-            }
+
+            return await query.ToListAsync();
         }
 
 
-     /*        public IEnumerable<TResult> Select<TResult>(Func<T, TResult> selector, Func<T, bool> predicate = null)
-        {
-            var query = _dbSet.AsQueryable();
-            if (predicate != null)
-            {
-                query = query.Where(predicate).AsQueryable();
-            }
-            return query.Select(selector).ToList();
-        }
-*/    
-    
+
+        /*        public IEnumerable<TResult> Select<TResult>(Func<T, TResult> selector, Func<T, bool> predicate = null)
+           {
+               var query = _dbSet.AsQueryable();
+               if (predicate != null)
+               {
+                   query = query.Where(predicate).AsQueryable();
+               }
+               return query.Select(selector).ToList();
+           }
+   */
+
     }
 
 }

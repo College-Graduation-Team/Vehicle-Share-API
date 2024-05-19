@@ -54,8 +54,7 @@ namespace Vehicle_Share.Service.RequestService
                     Status = request.Status.ToString(),
                     CreatedOn = request.CreatedOn,
                     TripId = request.TripId,
-                    UserDataName = user.Name,
-                    UserDataImage = user.ProfileImage
+                    UserDataId = user.Id,
                 };
             
             result.IsSuccess = true;
@@ -91,8 +90,7 @@ namespace Vehicle_Share.Service.RequestService
                     Status = request.Status.ToString(),
                     CreatedOn = request.CreatedOn,
                     TripId = request.TripId,
-                    UserDataName = user.Name,
-                    UserDataImage = user.ProfileImage
+                    UserDataId = user.Id,
                 });
             }
 
@@ -122,8 +120,7 @@ namespace Vehicle_Share.Service.RequestService
                     Status = request.Status.ToString(),
                     CreatedOn = request.CreatedOn,
                     TripId = request.TripId,
-                    UserDataName = user.Name,
-                    UserDataImage = user.ProfileImage
+                    UserDataId = user.Id,
                 }
 
                 );
@@ -156,8 +153,7 @@ namespace Vehicle_Share.Service.RequestService
                     Status = request.Status.ToString(),
                     CreatedOn = request.CreatedOn,
                     TripId = request.TripId,
-                    UserDataName = user.Name,
-                    UserDataImage=user.ProfileImage
+                    UserDataId = user.Id,
                 }
 
                 );
@@ -195,8 +191,7 @@ namespace Vehicle_Share.Service.RequestService
                             Status = request.Status.ToString(),
                             CreatedOn = request.CreatedOn,
                             TripId = request.TripId,
-                            UserDataName = user.Name,
-                            UserDataImage = user.ProfileImage
+                            UserDataId = user.Id,
                         });
                     }
                 }
@@ -228,8 +223,7 @@ namespace Vehicle_Share.Service.RequestService
                     Status = request.Status.ToString(),
                     CreatedOn = request.CreatedOn,
                     TripId = request.TripId,
-                    UserDataName = user.Name,
-                    UserDataImage = user.ProfileImage
+                    UserDataId = user.Id
                 }
 
                 );
@@ -267,8 +261,7 @@ namespace Vehicle_Share.Service.RequestService
                             Status = request.Status.ToString(),
                             CreatedOn = request.CreatedOn,
                             TripId = request.TripId,
-                            UserDataName = user.Name,
-                            UserDataImage = user.ProfileImage
+                            UserDataId = user.Id
                         });
                     }
                 }

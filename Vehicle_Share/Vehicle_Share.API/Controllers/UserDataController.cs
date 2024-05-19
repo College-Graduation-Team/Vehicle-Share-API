@@ -145,7 +145,7 @@ namespace Vehicle_Share.API.Controllers
 
         #endregion
 
-       /* [HttpPost("generate-fake-userData")]
+        [HttpPost("generate-fake-userData")]
         [AllowAnonymous]
         public async Task<IActionResult> GenerateFakeUsers(int count)
         {
@@ -174,8 +174,8 @@ namespace Vehicle_Share.API.Controllers
 
             return Ok(fakeUsers);
         }
-*/
-    
+
+
     }
 }
 
