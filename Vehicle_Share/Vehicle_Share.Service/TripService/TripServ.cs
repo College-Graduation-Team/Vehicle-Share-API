@@ -57,6 +57,7 @@ namespace Vehicle_Share.Service.TripService
 
                 return (fromMatch || toMatch)
                 && (!model.StartDate.HasValue || trip.Date >= model.StartDate)
+                && (!model.EndDate.HasValue || trip.Date <= model.EndDate)
                 && trip.CarId is not null
                 && !trip.IsFinished && trip.AvailableSeats.HasValue
                 && trip.UserDataId != userData.Id
@@ -116,6 +117,7 @@ namespace Vehicle_Share.Service.TripService
                 return (fromMatch || toMatch)
                         && trip.CarId is null && !trip.IsFinished
                         && (!model.StartDate.HasValue || trip.Date >= model.StartDate)
+                        && (!model.EndDate.HasValue || trip.Date <= model.EndDate)
                         && trip.UserDataId != userData.Id;
             }
             ).ToList();
@@ -317,7 +319,7 @@ namespace Vehicle_Share.Service.TripService
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
 
             var allTrips = await _trip.GetAllAsync();
-
+            
             var userTrips = allTrips.Where(t => t.CarId is null && t.IsFinished is false && t.UserDataId != userData.Id).ToList();
             var result = new ResponseDataModel<List<GetTripPassengerModel>>();
             result.data = new List<GetTripPassengerModel>();

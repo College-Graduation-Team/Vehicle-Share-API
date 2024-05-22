@@ -9,7 +9,6 @@ using Vehicle_Share.Core.Response;
 using Microsoft.Extensions.Localization;
 using Vehicle_Share.Core.Resources;
 using Vehicle_Share.Core.Models.GeneralModels;
-using Vehicle_Share.Core.Models.UserData;
 
 namespace Vehicle_Share.Service.LicenseService
 {

@@ -170,7 +170,7 @@ namespace Vehicle_Share.Service.RequestService
 
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
 
             var trips = await _trip.GetAllAsync(t=>t.UserDataId==userData.Id);
 
@@ -240,7 +240,7 @@ namespace Vehicle_Share.Service.RequestService
 
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
 
             var trips = await _trip.GetAllAsync(t => t.UserDataId == userData.Id);
 
