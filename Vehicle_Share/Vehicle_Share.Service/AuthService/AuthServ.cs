@@ -56,7 +56,7 @@ namespace Vehicle_Share.Service.AuthService
                 UserName = model.UserName,
                 PhoneNumber = model.Phone,
                 CreatedOn = DateTime.UtcNow,
-               PhoneNumberConfirmed = true
+               //PhoneNumberConfirmed = true
 
             };
 
@@ -75,7 +75,7 @@ namespace Vehicle_Share.Service.AuthService
 
             var otp = GenerateRandomCode();
 
-        //    await SendOTP.Send(user.PhoneNumber, otp);
+            await SendOTP.Send(user.PhoneNumber, otp);
 
             user.ResetCode = otp;
             user.ResetCodeGeneateAt = DateTime.UtcNow;
@@ -126,7 +126,7 @@ namespace Vehicle_Share.Service.AuthService
 
             var userdata = await _userData.FindAsync(u=>u.UserId==user.Id);
             if (userdata is not null)
-                authModel.HadUserData = true;
+                authModel.HasUserData = true;
             var jwtSecurityToken = await CreateToken(user);
 
 
@@ -222,6 +222,11 @@ namespace Vehicle_Share.Service.AuthService
 
             // Update the user in the database
             await _userManager.UpdateAsync(user);
+
+            // Cheack if user has userdata 
+            var userdata = await _userData.FindAsync(u => u.UserId == user.Id);
+            if (userdata is not null)
+                authModel.HasUserData = true;
 
             // Create a new JWT token
             var jwtToken = await CreateToken(user);

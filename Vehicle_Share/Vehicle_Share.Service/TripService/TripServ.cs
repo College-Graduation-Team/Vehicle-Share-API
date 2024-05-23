@@ -8,6 +8,7 @@ using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Models;
 using Twilio.Http;
 using Microsoft.EntityFrameworkCore;
+using Vehicle_Share.Core.Models.CarModels;
 
 namespace Vehicle_Share.Service.TripService
 {
@@ -150,9 +151,16 @@ namespace Vehicle_Share.Service.TripService
             if (userId is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth] ,code=ResponseCode.NoAuth };
 
-            var userData = await _userdata.FindAsync(e => e.UserId == userId);
-            if (userData is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+
+            UserData userData = null;
+            if (!isAdmin)
+            {
+                userData = await _userdata.FindAsync(e => e.UserId == userId);
+                if (userData is null)
+                    return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+            }
 
             var trip = await _trip.GetByIdAsync(id);
 
@@ -503,7 +511,99 @@ namespace Vehicle_Share.Service.TripService
             return res;
         }
 
-        
+
+        #region Dashboard
+        public async Task<ResponseModel> GetTripByUserDataIdAsync(string id)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+
+            if (!isAdmin)
+                return new ResponseModel { message = "this route for admin" };
+
+            var trip = await _trip.FindAsync(e => e.UserDataId == id);
+
+            if (trip is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoTrip], code = ResponseCode.NoTrip };
+
+            var user = await _userdata.FindAsync(u => u.Id == trip.UserDataId);
+
+            var result = new ResponseDataModel<GetTripByIdModel>
+            {
+                data = new GetTripByIdModel
+                {
+                    Id = trip.Id,
+                    FromLatitude = trip.FromLatitude,
+                    FromLongitude = trip.FromLongitude,
+                    ToLatitude = trip.ToLatitude,
+                    ToLongitude = trip.ToLongitude,
+                    Date = trip.Date,
+                    RecommendedPrice = trip.RecommendedPrice,
+                    AvailableSeats = trip.AvailableSeats,
+                    RequestedSeats = trip.RequestedSeats,
+                    CreatedOn = trip.CreatedOn,
+                    IsFinished = trip.IsFinished,
+                    CarId = trip.CarId,
+
+                    UserDataId = user.Id,
+
+                },
+                IsSuccess = true
+            };
+
+            return result;
+        }
+
+        public async Task<ResponseModel> GetAllTripAsync()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+
+            if (!isAdmin)
+                return new ResponseModel { message = "this route for admin" };
+
+            var allTrips = await _trip.GetAllAsync();
+
+
+            var result = new ResponseDataModel<List<GetTripByIdModel>>();
+            result.data = new List<GetTripByIdModel>();
+            foreach (var trip in allTrips)
+            {
+                result.data?.Add(new GetTripByIdModel
+                {
+                    Id = trip.Id,
+                    FromLatitude = trip.FromLatitude,
+                    FromLongitude = trip.FromLongitude,
+                    ToLatitude = trip.ToLatitude,
+                    ToLongitude = trip.ToLongitude,
+
+                    Date = trip.Date,
+                    RecommendedPrice = trip.RecommendedPrice,
+                    AvailableSeats = trip.AvailableSeats.Value, // Access the Value property
+                    CreatedOn = trip.CreatedOn,
+
+                    CarId = trip.CarId, // Assuming CarID is a string property
+                   
+
+                    UserDataId = trip.UserDataId,
+                });
+
+            }
+            result.IsSuccess = true;
+            return result;
+        }
+
+        #endregion
+
+
         private double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
         {
             // Radius of the Earth in kilometers

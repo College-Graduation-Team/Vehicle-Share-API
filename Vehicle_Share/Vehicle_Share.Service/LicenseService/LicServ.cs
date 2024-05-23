@@ -225,9 +225,9 @@ namespace Vehicle_Share.Service.LicenseService
             if (!isAdmin)
                 return new ResponseModel { message = "this route for admin" };
 
-            var Lic = await _Lic.GetByIdAsync(id);
+            var Lic = await _Lic.FindAsync(e => e.UserDataId == id);
             if (Lic is null)
-                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoLicense], code = ResponseCode.NoLicense };
 
             var result = new ResponseDataModel<GetLicModel>()
             {

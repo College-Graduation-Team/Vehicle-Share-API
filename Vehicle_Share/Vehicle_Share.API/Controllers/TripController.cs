@@ -1,8 +1,11 @@
 ﻿using Bogus;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+
 using Vehicle_Share.Core.Models.CarModels;
 using Vehicle_Share.Core.Models.TripModels;
+using Vehicle_Share.Core.Models.UserData;
 using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Response;
 using Vehicle_Share.EF.Models;
@@ -285,6 +288,45 @@ namespace Vehicle_Share.API.Controllers
 
         #endregion
 
+        #region Dashboard
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("Admin/TripBy/{id}")]
+        public async Task<IActionResult> GetUserDataAsync([FromRoute] string id)
+        {
+            var result = await _service.GetTripByUserDataIdAsync(id);
+            if (result is ResponseDataModel<List<GetTripByIdModel>> res)
+                return Ok(new { res.data }); 
+
+            return BadRequest(new { result.code, result.message });
+        }
+
+
+        [HttpGet("Admin/{id?}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetTripAsync([FromRoute] string? id)
+        {
+            if (id is null)
+            {
+                var result = await _service.GetAllTripAsync();
+                if (result is ResponseDataModel<List<GetTripByIdModel>> res)
+                    return Ok(new { res.data });
+
+                return BadRequest(new { result.code, result.message });
+            }
+            else
+            {
+                var result = await _service.GetByIdAsync(id);
+                if (result is ResponseDataModel<List<GetTripByIdModel>> res)
+                    return Ok(new { res.data });
+
+                return BadRequest(new { result.code, result.message });
+            }
+
+        }
+
+
+        #endregion
     }
 
 

@@ -17,12 +17,11 @@ namespace Vehicle_Share.API.Controllers
     public class UserDataController : ControllerBase
     {
         private readonly IUserDataServ _service;
-        private readonly IBaseRepo<User> _user;
-
-        public UserDataController(IUserDataServ service, IBaseRepo<User> user)
+/*        private readonly IBaseRepo<User> _user;
+*/
+        public UserDataController(IUserDataServ service)
         {
             _service = service;
-            _user = user;
         }
 
         [HttpGet("{id?}")]
@@ -75,29 +74,7 @@ namespace Vehicle_Share.API.Controllers
 
         #region  Admin
 
-        [HttpGet("Admin/user/{id?}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetUserAsync([FromRoute] string? id)
-        {
-            if (id is null)
-            {
-                var result = await _service.GetAllUserAsync();
-                if (result is ResponseDataModel<List<GetAllUsersModel>> res)
-                    return Ok(new { res.data });
-
-                return BadRequest(new { result.code, result.message });
-            }
-            else
-            {
-                var result = await _service.GetUserByIdAsyc(id);
-                if (result is ResponseDataModel<GetAllUsersModel> res)
-                    return Ok(new { res.data });
-
-                return BadRequest(new { result.code, result.message });
-            }
-
-        }
-
+     
 
         [HttpGet("Admin/userdata/{id?}")]
         [Authorize(Roles ="Admin")]
@@ -122,8 +99,18 @@ namespace Vehicle_Share.API.Controllers
 
         }
 
-       
-        [HttpPut("Admin/UpdateDate/{id}")]
+        [HttpGet("Admin/userdataByUser/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetUserDataByUserIdAsync([FromRoute] string id)
+        {
+            var result = await _service.GetUserDataByUserIdAsync(id);
+            if (result is ResponseDataModel<GetUserDataModel> res)
+                return Ok(new { res.data });
+
+            return BadRequest(new { result.code, result.message });
+
+        }
+            [HttpPut("Admin/UpdateDate/{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateAsync([FromRoute] string id, [FromForm] UserDataModel model)
         {
@@ -144,7 +131,7 @@ namespace Vehicle_Share.API.Controllers
         }
 
         #endregion
-
+/*
         [HttpPost("generate-fake-userData")]
         [AllowAnonymous]
         public async Task<IActionResult> GenerateFakeUsers(int count)
@@ -173,7 +160,7 @@ namespace Vehicle_Share.API.Controllers
             }
 
             return Ok(fakeUsers);
-        }
+        }*/
 
 
     }

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Vehicle_Share.Core.Models.AuthModels;
 using Vehicle_Share.Core.Response;
-using Vehicle_Share.EF.Models;
 using Vehicle_Share.Service.IAuthService;
 
 namespace Vehicle_Share.API.Controllers
@@ -47,7 +46,7 @@ namespace Vehicle_Share.API.Controllers
             var result = await _autherRepo.LoginAsync(model);
 
             if (result is ResponseDataModel<AuthModel> res)
-                return Ok(new { res.data.Token, res.data.TokenExpiration, res.data.RefreshToken, res.data.RefreshTokenExpiration ,res.data.HadUserData });
+                return Ok(new { res.data.Token, res.data.TokenExpiration, res.data.RefreshToken, res.data.RefreshTokenExpiration ,res.data.HasUserData });
             return BadRequest(new { result.code, result.message });
         }
 
@@ -58,7 +57,7 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _autherRepo.RefreshTokenAsync(model);
             if (result is ResponseDataModel<AuthModel> res)
-                return Ok(new { res.data.Token, res.data.TokenExpiration, res.data.RefreshToken, res.data.RefreshTokenExpiration });
+                return Ok(new { res.data.Token, res.data.TokenExpiration, res.data.RefreshToken, res.data.RefreshTokenExpiration, res.data.HasUserData });
             return BadRequest(new { result.code, result.message });
         }
 

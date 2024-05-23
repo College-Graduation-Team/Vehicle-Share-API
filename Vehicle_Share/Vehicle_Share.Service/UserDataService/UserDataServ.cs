@@ -259,7 +259,7 @@ namespace Vehicle_Share.Service.UserDataService
                 {
                     Id = user.Id,
                     UserName = user.UserName,
-                    Phone = user.PhoneNumber
+                    Phone = user.PhoneNumber,
                 }
                     );
             }
@@ -289,6 +289,44 @@ namespace Vehicle_Share.Service.UserDataService
                     Id = user.Id,
                     UserName = user.UserName,
                     Phone = user.PhoneNumber
+                },
+                IsSuccess = true
+            };
+
+            return result;
+        }
+        public async Task<ResponseModel> GetUserDataByUserIdAsync(string id) 
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+
+            if (!isAdmin)
+                return new ResponseModel { message = "this route for admin" };
+
+            var userData = await _userData.FindAsync(i => i.UserId == id);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUser], code = ResponseCode.NoUserData };
+
+            var result = new ResponseDataModel<GetUserDataModel>()
+            {
+                data = new GetUserDataModel
+                {
+                    Id = userData.Id,
+                    Name = userData.Name,
+                    NationalId = userData.NationalId,
+                    Birthdate = userData.Birthdate.ToString("yyyy-MM-dd"),
+                    Gender = userData.Gender,
+                    Nationality = userData.Nationality,
+                    Address = userData.Address,
+                    NationalCardImageFront = userData.NationalCardImageFront,
+                    NationalCardImageBack = userData.NationalCardImageBack,
+                    ProfileImage = userData.ProfileImage,
+                    Status = userData.Status,
+                    Message = userData.Message,
                 },
                 IsSuccess = true
             };

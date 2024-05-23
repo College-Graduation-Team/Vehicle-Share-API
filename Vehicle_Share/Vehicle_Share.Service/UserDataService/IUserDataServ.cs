@@ -16,6 +16,7 @@ namespace Vehicle_Share.Service.UserDataService
 
         Task<ResponseModel> GetAllUserAsync();
         Task<ResponseModel> GetUserByIdAsyc(string id);
+        Task<ResponseModel> GetUserDataByUserIdAsync(string id);
         Task<ResponseModel> GetUserDataAllAsync();
         Task<ResponseModel> GetUserDataByIdAsyc(string id);
         Task<ResponseModel> UpdateAsync(string id, UserDataModel model);

@@ -18,6 +18,12 @@ namespace Vehicle_Share.Service.TripService
         Task<ResponseModel> UpdateAsync(string id, UpdateTripPassengerModel model);
         Task<int> DeleteAsync(string id);
 
+        #region Dashboard
+        Task<ResponseModel> GetTripByUserDataIdAsync(string id);
+        Task<ResponseModel> GetAllTripAsync();
+
+        #endregion
+
         /* 
         Task<GenResponseModel<GetCarModel>> GetAllAsync();
         Task<ResponseModel> AddAsync(CarModel model);
