@@ -18,13 +18,11 @@ namespace Vehicle_Share.API.Controllers
     {
 
         private readonly ILicServ _service;
-        private readonly IBaseRepo<UserData> _user;
 
 
-        public LicenseController(ILicServ service, IBaseRepo<UserData> user)
+        public LicenseController(ILicServ service)
         {
             _service = service;
-            _user = user;
         }
 
         [HttpGet]  //get from user and userdata 
@@ -111,30 +109,7 @@ namespace Vehicle_Share.API.Controllers
 
         #endregion
 
-        [HttpPost("generate-fake-License")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GenerateFakeUsers(int count)
-        {
-            var users = await _user.GetAllAsync();
-            var nonAdminUsers = users.Where(u => u.Name != "Admin").ToList();
-            var faker = new Faker<LicSeedModel>()
-                .RuleFor(u => u.ImageFront, f => $"https://localhost:44305/License/{users[(f.UniqueIndex) % (nonAdminUsers.Count)].Name}/11f83072-cc95-4633-9654-0e3b5baa97c4.98.jpeg") // You may customize this rule as needed
-                .RuleFor(u => u.ImageBack, f => $"https://localhost:44305/License//{users[(f.UniqueIndex) % (nonAdminUsers.Count)].Name}/11f83072-cc95-4633-9654-0e3b5baa97c4.99.jpeg")  // You may customize this rule as needed
-                .RuleFor(u => u.Expiration,  f => f.Date.Past())          // You may customize this rule as needed                                                                                                                        //.RuleFor(u => u.userId, f => f.PickRandom(users).Id); // Get a random user ID
-                .RuleFor(u => u.UserDataId, f => users[(f.UniqueIndex) % (nonAdminUsers.Count)].Id);
-            // You may customize this rule as needed
-
-            var fakeUsers = faker.Generate(count);
-
-            // Save fake users to the database or use them as needed
-            foreach (var user in fakeUsers)
-            {
-                await _service.seedAsync(user);
-            }
-
-            return Ok(fakeUsers);
-        }
-
+       
 
 
     }

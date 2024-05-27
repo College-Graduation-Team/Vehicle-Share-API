@@ -7,8 +7,6 @@ using Vehicle_Share.Core.Response;
 using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Models;
 using Vehicle_Share.Core.Models.GeneralModels;
-using System.IO;
-using Microsoft.AspNetCore.Hosting;
 
 namespace Vehicle_Share.Service.UserDataService
 {
@@ -18,13 +16,11 @@ namespace Vehicle_Share.Service.UserDataService
         private readonly IBaseRepo<UserData> _userData;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStringLocalizer<SharedResources> _LocaLizer;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        public UserDataServ(IBaseRepo<UserData> userData, IHttpContextAccessor httpContextAccessor, IStringLocalizer<SharedResources> locaLizer, IWebHostEnvironment webHostEnvironment, IBaseRepo<User> user)
+        public UserDataServ(IBaseRepo<UserData> userData, IHttpContextAccessor httpContextAccessor, IStringLocalizer<SharedResources> locaLizer, IBaseRepo<User> user)
         {
             _userData = userData;
             _httpContextAccessor = httpContextAccessor;
             _LocaLizer = locaLizer;
-            _webHostEnvironment = webHostEnvironment;
             _user = user;
         }
 
@@ -209,34 +205,10 @@ namespace Vehicle_Share.Service.UserDataService
                 return result;
             
         }
-        public async Task<ResponseModel> seedAsync(SeedModel model)
-        {
-           
-            UserData user = new()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = model.Name,
-                NationalId = model.NationalId.GetValueOrDefault(),
-                Address = model.Address,
-                Nationality = model.Nationality,
-                NationalCardImageFront = model.NationalCardImageFront,
-                NationalCardImageBack =model.NationalCardImageBack,
-                ProfileImage = model.ProfileImage,
-                UserId =model.userId,
-                CreatedOn = DateTime.UtcNow,
-                Birthdate= (DateTime)model.Birthdate,
-                Gender=(bool)model.Gender
 
-            };
-            var path = _webHostEnvironment.WebRootPath + "/" + "User" + "/" + model.Name + "/";
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-            
-                await _userData.AddAsync(user);
-            return new ResponseModel {message="ssssssss" ,IsSuccess=true};
-        }
+        #region For dashboard 
 
-        #region For Admin
+        #region Get data of User not userdata  
 
         public async Task<ResponseModel> GetAllUserAsync()
         {
@@ -295,7 +267,7 @@ namespace Vehicle_Share.Service.UserDataService
 
             return result;
         }
-        public async Task<ResponseModel> GetUserDataByUserIdAsync(string id) 
+        public async Task<ResponseModel> GetUserDataByUserIdAsync(string id)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
@@ -333,6 +305,10 @@ namespace Vehicle_Share.Service.UserDataService
 
             return result;
         }
+        
+        
+        #endregion
+
 
         public async Task<ResponseModel> GetUserDataAllAsync()
         {

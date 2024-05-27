@@ -161,23 +161,6 @@ namespace Vehicle_Share.Service.LicenseService
             : new ResponseModel { message = _LocaLizer[SharedResourcesKey.Error] };
         }
 
-        public async Task<ResponseModel> seedAsync(LicSeedModel model)
-        {
-
-            License license = new License
-            {
-                Id = Guid.NewGuid().ToString(),
-                ImageFront = model.ImageFront,
-                ImageBack = model.ImageBack,
-                Expiration = model.Expiration,
-                UserDataId = model.UserDataId,
-                CreatedOn = DateTime.UtcNow
-            };
-
-            await _Lic.AddAsync(license);
-            return new ResponseModel { message = "ssssssss", IsSuccess = true };
-        }
-
 
         #region For Admin
         public async Task<ResponseModel> GetAllAsync()

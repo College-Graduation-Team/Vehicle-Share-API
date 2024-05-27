@@ -19,17 +19,11 @@ namespace Vehicle_Share.API.Controllers
     public class TripController : ControllerBase
     {
         private readonly ITripServ _service;
-        private readonly IBaseRepo<Trip> _trip;
-        private readonly IBaseRepo<UserData> _user;
-        private readonly IBaseRepo<Car> _car;
 
-
-        public TripController(ITripServ service, IBaseRepo<Trip> trip, IBaseRepo<UserData> user, IBaseRepo<Car> car)
+        public TripController(ITripServ service)
         {
             _service = service;
-            _trip = trip;
-            _user = user;
-            _car = car;
+          
         }
        
         
@@ -174,121 +168,7 @@ namespace Vehicle_Share.API.Controllers
 
         #endregion
 
-        #region Seed fake data 
        
-        [HttpPost("generate-fake-trip-Driver")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GenerateFakeTrips(int count)
-        {
-            var usercar = new List<UserData>();
-            var cars = new List<Car>();
-            var users = await _user.GetAllAsync();
-            //    var lic = await _Lic.GetAllAsync();
-            foreach (var use in users)
-            {
-                var car = await _car.FindAsync(e => e.UserDataId == use.Id);
-                if (car is null) continue;
-
-                var x = await _user.GetByIdAsync(car.UserDataId);
-                usercar.Add(use);
-                cars.Add(car);
-            }
-            var nonAdminUsers = usercar.Where(u => u.Name != "Admin").ToList();
-
-            // Generate fake trip data using Bogus
-            var faker = new Faker<SeedTripDriverModel>()
-                .RuleFor(t => t.FromLatitude, f => f.Address.Latitude())
-                .RuleFor(t => t.FromLongitude, f => f.Address.Longitude())
-                .RuleFor(t => t.ToLatitude, f => f.Address.Latitude())
-                .RuleFor(t => t.ToLongitude, f => f.Address.Longitude())
-                .RuleFor(t => t.Date, f => f.Date.Future())
-                .RuleFor(t => t.RecommendedPrice, f => f.Random.Float(10, 1000))
-                .RuleFor(t => t.AvailableSeats, f => f.Random.Short(1, 3)) // Assuming driver can have 1-5 available seats
-                .RuleFor(t => t.CarId, f => cars[(f.UniqueIndex) % (nonAdminUsers.Count)].Id) // Assuming you generate a random car ID
-                .RuleFor(t => t.userdataId, f => usercar[(f.UniqueIndex) % (nonAdminUsers.Count)].Id); // Pick a random user with license
-
-            var fakeTrips = faker.Generate(count);
-
-            // Seed fake trips into the database
-            foreach (var tripModel in fakeTrips)
-            {
-                Trip trip = new Trip
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    FromLatitude = tripModel.FromLatitude,
-                    FromLongitude = tripModel.FromLongitude,
-                    ToLatitude = tripModel.ToLatitude,
-                    ToLongitude = tripModel.ToLongitude,
-                    Date = tripModel.Date,
-                    RecommendedPrice = tripModel.RecommendedPrice,
-                    AvailableSeats = tripModel.AvailableSeats,
-                    CarId = tripModel.CarId,
-                    UserDataId = tripModel.userdataId,
-                    CreatedOn = DateTime.UtcNow
-                };
-
-                await _trip.AddAsync(trip);
-            }
-
-
-            return Ok(fakeTrips);
-        }
-
-        [HttpPost("generate-fake-trip-Passenger")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GenerateFakePassenger(int count)
-        {
-            var usercar = new List<UserData>();
-            var users = await _user.GetAllAsync();
-            //    var lic = await _Lic.GetAllAsync();
-            foreach (var use in users)
-            {
-                var car = await _car.FindAsync(e => e.UserDataId == use.Id);
-                if (car is null) continue;
-
-                var x = await _user.GetByIdAsync(car.UserDataId);
-                usercar.Add(use);
-            }
-            var nonAdminUsers = usercar.Where(u => u.Name != "Admin").ToList();
-
-            // Generate fake trip data using Bogus
-            var faker = new Faker<SeedTripPassengerModel>()
-                .RuleFor(t => t.FromLatitude, f => f.Address.Latitude())
-                .RuleFor(t => t.FromLongitude, f => f.Address.Longitude())
-                .RuleFor(t => t.ToLatitude, f => f.Address.Latitude())
-                .RuleFor(t => t.ToLongitude, f => f.Address.Longitude())
-                .RuleFor(t => t.Date, f => f.Date.Future())
-                .RuleFor(t => t.RecommendedPrice, f => f.Random.Float(10, 1000))
-                .RuleFor(t => t.RequestedSeats, f => f.Random.Short(1, 5)) // Assuming passenger can request 1-5 seats
-                .RuleFor(t => t.usrdataId, f => usercar[(f.UniqueIndex) % (nonAdminUsers.Count)].Id); // Pick a random user with license as passenger
-
-            var fakeTrips = faker.Generate(count);
-
-            // Seed fake trips into the database
-            foreach (var tripModel in fakeTrips)
-            {
-                Trip trip = new Trip
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    FromLatitude = tripModel.FromLatitude,
-                    FromLongitude = tripModel.FromLongitude,
-                    ToLatitude = tripModel.ToLatitude,
-                    ToLongitude = tripModel.ToLongitude,
-                    Date = tripModel.Date,
-                    RecommendedPrice = tripModel.RecommendedPrice,
-                    RequestedSeats = tripModel.RequestedSeats,
-                    UserDataId = tripModel.usrdataId,
-                    CreatedOn = DateTime.UtcNow
-                };
-
-                await _trip.AddAsync(trip);
-            }
-
-
-            return Ok(fakeTrips);
-        }
-
-        #endregion
 
         #region Dashboard
 

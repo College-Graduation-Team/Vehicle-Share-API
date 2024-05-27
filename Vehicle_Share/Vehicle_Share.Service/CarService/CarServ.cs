@@ -354,31 +354,7 @@ namespace Vehicle_Share.Service.CarService
         }
         #endregion
 
-        public async Task<ResponseModel> seedAsync(SeedCarModel model)
-        {
-            Car car = new Car
-            {
-                Id = Guid.NewGuid().ToString(),
-                Type = model.Type,
-                ModelYear = model.ModelYear,
-                Brand = model.Brand,
-                Plate = model.Plate,
-                Seats = model.Seats,
-
-                LicenseImageFront = model.LicenseImageFront,
-                LicenseImagBack = model.LicenseImageBack,
-                LicenseExpiration = model.LicenseExpiration,
-
-                Image = model.Image,
-
-                UserDataId = model.userId,
-                CreatedOn = DateTime.UtcNow
-
-            };
-            await _car.AddAsync(car);
-             return new ResponseModel {  message = _LocaLizer[SharedResourcesKey.Created], IsSuccess = true };
-
-        }
+       
     }
 }
 

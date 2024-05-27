@@ -17,8 +17,7 @@ namespace Vehicle_Share.API.Controllers
     public class UserDataController : ControllerBase
     {
         private readonly IUserDataServ _service;
-/*        private readonly IBaseRepo<User> _user;
-*/
+
         public UserDataController(IUserDataServ service)
         {
             _service = service;
@@ -131,36 +130,6 @@ namespace Vehicle_Share.API.Controllers
         }
 
         #endregion
-/*
-        [HttpPost("generate-fake-userData")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GenerateFakeUsers(int count)
-        {
-            var users = await _user.GetAllAsync();
-            var nonAdminUsers = users.Where(u => u.UserName != "Admin").ToList();
-            var faker = new Faker<SeedModel>()
-                .RuleFor(u => u.Name, f => f.Internet.UserName())
-                .RuleFor(u => u.NationalId, f => f.Random.Long(10000000000000, 99999999999999))
-                .RuleFor(u => u.Birthdate, f => f.Date.Past())
-                .RuleFor(u => u.Gender, f => f.PickRandom(true, false))
-                .RuleFor(u => u.Nationality, f => f.Address.Country())
-                .RuleFor(u => u.Address, f => f.Address.FullAddress())
-                .RuleFor(u => u.NationalCardImageFront, (f, u) => $"https://localhost:44305/User/{u.Name}/1435eb1a-5588-446b-9197-586390e5168c.3.jpeg") // You may customize this rule as needed
-                .RuleFor(u => u.NationalCardImageBack, (f, u) => $"https://localhost:44305/User/{u.Name}/4f516309-72b5-44db-97b0-7b01c8aec159.4.jpeg")  // You may customize this rule as needed
-                .RuleFor(u => u.ProfileImage, (f, u) => $"https://localhost:44305/User/{u.Name}/11f83072-cc95-4633-9654-0e3b5baa97c4.10.jpeg")          // You may customize this rule as needed                                                                                                                        //.RuleFor(u => u.userId, f => f.PickRandom(users).Id); // Get a random user ID
-                .RuleFor(u => u.userId, f => users[(f.UniqueIndex) % (nonAdminUsers.Count)].Id);
-            // You may customize this rule as needed
-
-            var fakeUsers = faker.Generate(count);
-
-            // Save fake users to the database or use them as needed
-            foreach (var user in fakeUsers)
-            {
-                await _service.seedAsync(user);
-            }
-
-            return Ok(fakeUsers);
-        }*/
 
 
     }

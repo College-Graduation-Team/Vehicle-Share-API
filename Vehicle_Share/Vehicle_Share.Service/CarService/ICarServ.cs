@@ -14,6 +14,5 @@ namespace Vehicle_Share.Service.CarService
         Task<ResponseModel> UpdateStatusRequestAsync(string id, UpdateStatusRequestModel model);
         Task<ResponseModel> DeleteAsync(string id);
 
-        Task<ResponseModel> seedAsync(SeedCarModel model);
     }
 }

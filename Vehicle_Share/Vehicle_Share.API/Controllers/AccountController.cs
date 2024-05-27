@@ -107,26 +107,6 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(new { result.message });
         }
 
-        [HttpPost("generate-fake-users")]
-        [IgnoreAntiforgeryToken]
-        public async Task<IActionResult> GenerateFakeUsers(int count)
-        {
-            var faker = new Faker<RegisterModel>()
-                .RuleFor(u => u.UserName, f => f.Internet.UserName())
-                .RuleFor(u => u.Phone, f => f.Random.Replace("+2012345678##"))
-                .RuleFor(u => u.Password, f => "@Abdo123")
-                .RuleFor(u => u.ConfirmPassword, f => "@Abdo123");
-
-            var fakeUsers = faker.Generate(count);
-
-            // Save fake users to the database or use them as needed
-            foreach (var user in fakeUsers)
-            {
-                await _autherRepo.RegisterAsync(user);
-            }
-
-            return Ok(fakeUsers);
-        }
-
+       
     }
 }

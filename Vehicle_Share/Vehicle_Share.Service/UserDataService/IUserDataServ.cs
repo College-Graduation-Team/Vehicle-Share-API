@@ -23,7 +23,6 @@ namespace Vehicle_Share.Service.UserDataService
         Task<ResponseModel> UpdateStatusRequestAsync(string id, UpdateStatusRequestModel model);
 
         #endregion
-        Task<ResponseModel> seedAsync(SeedModel model);
         //  Task<ResponseModel> UpdateAsync(UserDataModel model);
         //  Task<int> DeleteAsync(string id);
 
