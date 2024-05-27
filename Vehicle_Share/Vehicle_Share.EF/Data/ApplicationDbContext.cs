@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+
 using Vehicle_Share.EF.Models;
 
 namespace Vehicle_Share.EF.Data

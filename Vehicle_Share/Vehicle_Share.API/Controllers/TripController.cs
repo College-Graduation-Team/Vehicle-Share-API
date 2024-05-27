@@ -31,6 +31,8 @@ namespace Vehicle_Share.API.Controllers
             _user = user;
             _car = car;
         }
+       
+        
         #region Get Requests
 
 
@@ -291,11 +293,11 @@ namespace Vehicle_Share.API.Controllers
         #region Dashboard
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("Admin/TripBy/{id}")]
-        public async Task<IActionResult> GetUserDataAsync([FromRoute] string id)
+        [HttpGet("Admin/TripById/{id}")]
+        public async Task<IActionResult> GetTripByUserDataIdAsync([FromRoute] string id)
         {
             var result = await _service.GetTripByUserDataIdAsync(id);
-            if (result is ResponseDataModel<List<GetTripByIdModel>> res)
+            if (result is ResponseDataModel<GetTripByIdModel> res)
                 return Ok(new { res.data }); 
 
             return BadRequest(new { result.code, result.message });
@@ -309,7 +311,7 @@ namespace Vehicle_Share.API.Controllers
             if (id is null)
             {
                 var result = await _service.GetAllTripAsync();
-                if (result is ResponseDataModel<List<GetTripByIdModel>> res)
+                if (result is ResponseDataModel<List<GetTripModel>> res)
                     return Ok(new { res.data });
 
                 return BadRequest(new { result.code, result.message });
@@ -317,7 +319,7 @@ namespace Vehicle_Share.API.Controllers
             else
             {
                 var result = await _service.GetByIdAsync(id);
-                if (result is ResponseDataModel<List<GetTripByIdModel>> res)
+                if (result is ResponseDataModel<GetTripByIdModel> res)
                     return Ok(new { res.data });
 
                 return BadRequest(new { result.code, result.message });

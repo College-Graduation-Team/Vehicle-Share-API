@@ -214,7 +214,7 @@ namespace Vehicle_Share.EF.Migrations
 
                     b.HasIndex("UserDataId");
 
-                    b.ToTable("Car");
+                    b.ToTable("Car", (string)null);
                 });
 
             modelBuilder.Entity("Vehicle_Share.EF.Models.License", b =>
@@ -249,7 +249,7 @@ namespace Vehicle_Share.EF.Migrations
 
                     b.HasIndex("UserDataId");
 
-                    b.ToTable("License");
+                    b.ToTable("License", (string)null);
                 });
 
             modelBuilder.Entity("Vehicle_Share.EF.Models.Request", b =>
@@ -281,7 +281,7 @@ namespace Vehicle_Share.EF.Migrations
 
                     b.HasIndex("UserDataId");
 
-                    b.ToTable("Request");
+                    b.ToTable("Request", (string)null);
                 });
 
             modelBuilder.Entity("Vehicle_Share.EF.Models.Trip", b =>
@@ -328,7 +328,7 @@ namespace Vehicle_Share.EF.Migrations
 
                     b.HasIndex("UserDataId");
 
-                    b.ToTable("Trip");
+                    b.ToTable("Trip", (string)null);
                 });
 
             modelBuilder.Entity("Vehicle_Share.EF.Models.User", b =>
@@ -462,7 +462,7 @@ namespace Vehicle_Share.EF.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("UserData");
+                    b.ToTable("UserData", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -572,7 +572,7 @@ namespace Vehicle_Share.EF.Migrations
 
             modelBuilder.Entity("Vehicle_Share.EF.Models.User", b =>
                 {
-                    b.OwnsMany("Vehicle_Share.EF.Models.RefreshToken", "RefreshTokens", b1 =>
+                    b.OwnsMany("Vehicle_Share.EF.Models.User.RefreshTokens#Vehicle_Share.EF.Models.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<string>("UserId")
                                 .HasColumnType("nvarchar(450)");
@@ -597,7 +597,7 @@ namespace Vehicle_Share.EF.Migrations
 
                             b1.HasKey("UserId", "Id");
 
-                            b1.ToTable("RefreshToken");
+                            b1.ToTable("RefreshToken", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");

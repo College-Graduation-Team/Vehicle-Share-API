@@ -12,6 +12,7 @@ namespace Vehicle_Share.Core.Models.AuthModels
         [Phone(ErrorMessage = "PhoneInvalid")]
         public string? Phone { get; set; }
 
+
         [DataType(DataType.Password, ErrorMessage = "PasswordRequired")]
         public string? Password { get; set; }
 

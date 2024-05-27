@@ -572,31 +572,27 @@ namespace Vehicle_Share.Service.TripService
 
             var allTrips = await _trip.GetAllAsync();
 
-
-            var result = new ResponseDataModel<List<GetTripByIdModel>>();
-            result.data = new List<GetTripByIdModel>();
+            var result = new ResponseDataModel<List<GetTripModel>>();
+            result.data = new List<GetTripModel>();
             foreach (var trip in allTrips)
             {
-                result.data?.Add(new GetTripByIdModel
+                result.data?.Add(new GetTripModel
                 {
                     Id = trip.Id,
                     FromLatitude = trip.FromLatitude,
                     FromLongitude = trip.FromLongitude,
                     ToLatitude = trip.ToLatitude,
                     ToLongitude = trip.ToLongitude,
-
                     Date = trip.Date,
                     RecommendedPrice = trip.RecommendedPrice,
-                    AvailableSeats = trip.AvailableSeats.Value, // Access the Value property
-                    CreatedOn = trip.CreatedOn,
-
-                    CarId = trip.CarId, // Assuming CarID is a string property
-                   
-
+                    AvailableSeats = trip.AvailableSeats,    //driver
+                    RequestedSeats = trip.RequestedSeats,  //passenger
+                    IsFinished = trip.IsFinished,
                     UserDataId = trip.UserDataId,
+                    CarId = trip.CarId,
                 });
-
             }
+
             result.IsSuccess = true;
             return result;
         }

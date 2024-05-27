@@ -1,5 +1,7 @@
 ﻿using Bogus;
+
 using Microsoft.AspNetCore.Mvc;
+
 using Vehicle_Share.Core.Models.AuthModels;
 using Vehicle_Share.Core.Response;
 using Vehicle_Share.Service.IAuthService;
@@ -24,7 +26,7 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _autherRepo.RegisterAsync(model);
             if (!result.IsSuccess)
-                return BadRequest(new {result.code, result.message });
+                return BadRequest(new { result.code, result.message });
 
             return Ok(new { result.message });
         }
@@ -46,7 +48,7 @@ namespace Vehicle_Share.API.Controllers
             var result = await _autherRepo.LoginAsync(model);
 
             if (result is ResponseDataModel<AuthModel> res)
-                return Ok(new { res.data.Token, res.data.TokenExpiration, res.data.RefreshToken, res.data.RefreshTokenExpiration ,res.data.HasUserData });
+                return Ok(new { res.data.Token, res.data.TokenExpiration, res.data.RefreshToken, res.data.RefreshTokenExpiration, res.data.HasUserData });
             return BadRequest(new { result.code, result.message });
         }
 
@@ -69,7 +71,7 @@ namespace Vehicle_Share.API.Controllers
             var result = await _autherRepo.SendCodeAsync(model);
             if (!result.IsSuccess)
                 return BadRequest(new { result.message });
-            return Ok(new {result.message});
+            return Ok(new { result.message });
         }
 
         [HttpPost("reset-password")] // for reset password 
@@ -79,7 +81,7 @@ namespace Vehicle_Share.API.Controllers
                 return BadRequest(ModelState);
             var result = await _autherRepo.ResetPasswordAsync(model);
             if (!result.IsSuccess)
-                return BadRequest(new { result.message ,result.code });
+                return BadRequest(new { result.message, result.code });
             return Ok(new { result.message });
 
         }
@@ -87,10 +89,10 @@ namespace Vehicle_Share.API.Controllers
         [HttpDelete] // for reset password 
         public async Task<IActionResult> DeleteAccountAsync()
         {
-           
+
             var result = await _autherRepo.DeleteAccountAsync();
             if (!result.IsSuccess)
-                return BadRequest(new { result.message});
+                return BadRequest(new { result.message });
             return Ok(new { result.message });
 
         }
@@ -101,7 +103,7 @@ namespace Vehicle_Share.API.Controllers
 
             var result = await _autherRepo.LogoutAsync();
             if (result.IsSuccess)
-                return Ok(new {result.message});
+                return Ok(new { result.message });
             return BadRequest(new { result.message });
         }
 
@@ -125,6 +127,6 @@ namespace Vehicle_Share.API.Controllers
 
             return Ok(fakeUsers);
         }
-  
+
     }
 }
