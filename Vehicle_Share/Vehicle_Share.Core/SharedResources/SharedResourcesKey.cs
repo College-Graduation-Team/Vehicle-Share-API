@@ -46,6 +46,7 @@
         public const string NoUser = "NoUser"; 
         public const string ExistsPhone = "ExistsPhone";
         public const string SendNotRequest = "SendNotRequest";
+        public const string TripFinished = "TripFinished";
 
 
 

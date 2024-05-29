@@ -502,6 +502,30 @@ namespace Vehicle_Share.Service.TripService
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Updated], IsSuccess = true };
         }
 
+        public async Task<ResponseModel> TripFinishedAsync(string id)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+
+            var trip = await _trip.GetByIdAsync(id);
+            if (trip == null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoTrip], code = ResponseCode.NoTrip };
+            // if trip not started can do this    
+            //
+
+            trip.IsFinished = true;
+
+            await _trip.UpdateAsync(trip);
+
+            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.TripFinished], IsSuccess = true };
+
+        }
+        
         public async Task<int> DeleteAsync(string id)
         {
             if (id is null)

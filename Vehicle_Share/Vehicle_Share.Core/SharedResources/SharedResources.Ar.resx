@@ -249,4 +249,7 @@
   <data name="SendNotRequest" xml:space="preserve">
     <value>لا يمكن الارسال مره اخري </value>
   </data>
+  <data name="TripFinished" xml:space="preserve">
+    <value>تــم انــهــاء الــرحــلــه بــنــــجـــاح</value>
+  </data>
 </root>

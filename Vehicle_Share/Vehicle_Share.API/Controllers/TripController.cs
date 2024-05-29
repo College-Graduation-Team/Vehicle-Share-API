@@ -156,6 +156,18 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(new { result.code, result.message });
         }
 
+        [HttpPut("finih/{id}")] //update for driver
+        public async Task<IActionResult> TripFinished([FromRoute] string id)
+        {
+
+            var result = await _service.TripFinishedAsync(id);
+            if (result.IsSuccess)
+                return Ok(new { result.message });
+
+            return BadRequest(new { result.code, result.message });
+        }
+
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTripAsync([FromRoute] string id)
         {

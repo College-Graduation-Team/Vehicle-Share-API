@@ -29,7 +29,9 @@ namespace Vehicle_Share.EF.Models
         public short? RequestedSeats { get; set; }    //passenger
 
 
-        public bool IsFinished => DateTime.UtcNow >= Date;
+        public bool IsStarted => DateTime.UtcNow >= Date;
+
+        public bool IsFinished { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
