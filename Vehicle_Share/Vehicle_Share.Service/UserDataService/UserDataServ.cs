@@ -226,10 +226,11 @@ namespace Vehicle_Share.Service.UserDataService
 
             userData.FcmToken = token;
             await _userData.AddAsync(userData);
+
             return new ResponseModel { message="Added FCM tokrn successfully" , IsSuccess=true };
         }
 
-        public async Task<ResponseModel> AddRateAsync(int  rate)
+        public async Task<ResponseModel> AddRateAsync(string id ,int  rate)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
 
@@ -243,12 +244,13 @@ namespace Vehicle_Share.Service.UserDataService
                 return new ResponseModel { message = "Admin can't add user data" };
 
 
-            var userData = await _userData.FindAsync(e => e.UserId == userId);
+            var userData = await _userData.GetByIdAsync(id);
             if (userData is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
 
             userData.Rating = userData.Rating == 0 ? rate : ((userData.Rating + rate) / 2);
             userData.RatingCounter += 1;
+
             await _userData.AddAsync(userData);
 
             return new ResponseModel { message = "Added rate successfully", IsSuccess = true };

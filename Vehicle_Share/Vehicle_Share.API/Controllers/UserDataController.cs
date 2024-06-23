@@ -82,11 +82,11 @@ namespace Vehicle_Share.API.Controllers
 
         }
 
-        [HttpPost("Rate")]
-        public async Task<IActionResult> AddRateokenAsync([FromBody] int rate)
+        [HttpPost("Rate/{id}")]
+        public async Task<IActionResult> AddRateokenAsync([FromRoute] string id, [FromBody] int rate)
         {
 
-            var result = await _service.AddRateAsync(rate);
+            var result = await _service.AddRateAsync(id, rate);
             if (result.IsSuccess)
                 return Ok(new { result.message });
 

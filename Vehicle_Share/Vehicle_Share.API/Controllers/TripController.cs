@@ -84,8 +84,8 @@ namespace Vehicle_Share.API.Controllers
         }
 
 
-        [HttpGet("UserdataIds-In-Trip")]
-        public async Task<IActionResult> GetAllUserDataIdsInTripAsync([FromBody]string tripId)
+        [HttpGet("userdata-ids/{tripId}")]
+        public async Task<IActionResult> GetAllUserDataIdsInTripAsync([FromRoute]string tripId)
         {
             var result = await _service.GetAllUserDataIdsInTripAsync(tripId);
 
