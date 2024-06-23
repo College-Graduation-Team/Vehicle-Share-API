@@ -21,6 +21,7 @@ using Vehicle_Share.Service.RequestService;
 using Vehicle_Share.Service.TripService;
 using Vehicle_Share.Service.UserDataService;
 using Vehicle_Share.Service.IAuthService;
+using Chat;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,7 +40,7 @@ builder.Services.Configure<JWT>(builder.Configuration.GetSection(nameof(JWT)));
 
 // add connection to db and inject identity .
 builder.Services.AddDbContext<ApplicationDbContext>(
-    //  option => option.UseSqlServer("Data Source=.;Initial Catalog=VehicleSharingg;Integrated Security=True"));
+      //option => option.UseSqlServer("Data Source=.;Initial Catalog=VehicleSharingg;Integrated Security=True"));
       option => option.UseSqlServer("Server=db5051.public.databaseasp.net; Database=db5051; User Id=db5051; Password=6Km-#q7LY%t2; Encrypt=False; MultipleActiveResultSets=True;"));
       //option => option.UseSqlServer("Server=localhost;Database=VehicleSharing;User Id=sa;Password=Hemakress-123"));
      //Server=db4761.databaseasp.net; Database=db4761; User Id=db4761; Password=********; Encrypt=False; MultipleActiveResultSets=True;
@@ -64,13 +65,26 @@ builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddHttpContextAccessor();
 
 
+
+
 // add core .
-builder.Services.AddCors(options =>
+/*builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});*/
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder
+            .WithOrigins("http://127.0.0.1:5500") // Replace with the URL of your frontend
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials());
 });
 
-
+// signalR
+builder.Services.AddSignalR();
 
 
 // Adding Jwt Bearer
@@ -182,13 +196,19 @@ app.UseRequestLocalization(options.Value);
 
 #endregion
 
-app.UseCors(policyName: "CorsPolicy");
+
+
+//app.UseCors(policyName: "CorsPolicy");
 
 app.UseStaticFiles(); // to upload image in wwwroot 
 
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseCors("AllowSpecificOrigin");
+
+app.MapHub<ChatHub>("/chat");
 
 app.MapControllers();
 

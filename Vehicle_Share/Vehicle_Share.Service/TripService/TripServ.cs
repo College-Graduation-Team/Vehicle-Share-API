@@ -6,9 +6,7 @@ using Vehicle_Share.Core.Repository.GenericRepo;
 using Vehicle_Share.Core.Response;
 using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Models;
-using Twilio.Http;
 using Microsoft.EntityFrameworkCore;
-using Vehicle_Share.Core.Models.CarModels;
 
 namespace Vehicle_Share.Service.TripService
 {
@@ -18,11 +16,13 @@ namespace Vehicle_Share.Service.TripService
         private readonly IBaseRepo<UserData> _userdata;
         private readonly IBaseRepo<Car> _car;
         private readonly IBaseRepo<License> _lic;
+        private readonly IBaseRepo<Request> _request;
+
         private readonly IHttpContextAccessor _httpContextAccessor; 
         private readonly IStringLocalizer<SharedResources> _LocaLizer;
 
 
-        public TripServ(IBaseRepo<Trip> trip, IBaseRepo<UserData> userdata, IHttpContextAccessor httpContextAccessor, IBaseRepo<Car> car, IStringLocalizer<SharedResources> locaLizer = null, IBaseRepo<License> lic = null)
+        public TripServ(IBaseRepo<Trip> trip, IBaseRepo<UserData> userdata, IHttpContextAccessor httpContextAccessor, IBaseRepo<Car> car, IStringLocalizer<SharedResources> locaLizer = null, IBaseRepo<License> lic = null, IBaseRepo<EF.Models.Request> request = null)
         {
             _trip = trip;
             _userdata = userdata;
@@ -30,8 +30,9 @@ namespace Vehicle_Share.Service.TripService
             _car = car;
             _LocaLizer = locaLizer;
             _lic = lic;
+            _request = request;
         }
-     
+
         public async Task<ResponseModel> SearchDriverTripAsync(SearchModel model)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
@@ -85,12 +86,16 @@ namespace Vehicle_Share.Service.TripService
                     CarId = trip.CarId, // Assuming CarID is a string property
                     CarType = car.Type,
                     CarBrand = car.Brand,
+                    DailySchedule = trip.DailySchedule,
+                    Route = trip.Route,
+
                 });
 
             }
             result.IsSuccess = true;
             return result;
         }
+       
         public async Task<ResponseModel> SearchPassengerTripAsync(SearchModel model)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
@@ -137,13 +142,17 @@ namespace Vehicle_Share.Service.TripService
                     RecommendedPrice = trip.RecommendedPrice,
                     RequestedSeats = trip.RequestedSeats.Value,
                     CreatedOn = trip.CreatedOn,
-                    IsFinished = trip.IsFinished
+                    IsFinished = trip.IsFinished,
+                    DailySchedule = trip.DailySchedule,
+                    Route = trip.Route,
+
                 });
 
             }
             result.IsSuccess = true;
             return result;
         }
+        #region AllGet
 
         public async Task<ResponseModel> GetByIdAsync(string id)
         {
@@ -187,6 +196,9 @@ namespace Vehicle_Share.Service.TripService
                     CarId = trip.CarId,
 
                     UserDataId = user.Id,
+                    DailySchedule = trip.DailySchedule,
+                    Route = trip.Route,
+
 
                 },
                 IsSuccess = true
@@ -225,6 +237,9 @@ namespace Vehicle_Share.Service.TripService
                     IsFinished = trip.IsFinished,
                     UserDataId = trip.UserDataId,
                     CarId = trip.CarId,
+                    DailySchedule = trip.DailySchedule,
+                    Route = trip.Route,
+
                 });
             }
 
@@ -259,6 +274,9 @@ namespace Vehicle_Share.Service.TripService
                     RecommendedPrice = trip.RecommendedPrice,
                     AvailableSeats = trip.AvailableSeats,    //driver
                     RequestedSeats = trip.RequestedSeats,  //passenger
+                    DailySchedule = trip.DailySchedule,
+                    Route = trip.Route,
+
                     IsFinished = trip.IsFinished,
                     UserDataId = trip.UserDataId,
                     CarId = trip.CarId,
@@ -303,6 +321,8 @@ namespace Vehicle_Share.Service.TripService
                     RecommendedPrice = trip.RecommendedPrice,
                     AvailableSeats = trip.AvailableSeats.Value, // Access the Value property
                     CreatedOn = trip.CreatedOn,
+                    DailySchedule = trip.DailySchedule,
+                    Route = trip.Route,
 
                     CarId = trip.CarId, // Assuming CarID is a string property
                     CarType = trip.Car?.Type,
@@ -347,6 +367,8 @@ namespace Vehicle_Share.Service.TripService
                     RequestedSeats = trip.RequestedSeats.Value,
                     CreatedOn = trip.CreatedOn,
                     IsFinished = trip.IsFinished,
+                    DailySchedule = trip.DailySchedule,
+                    Route = trip.Route,
 
                     UserDataId = trip.UserDataId,
                 });
@@ -355,6 +377,37 @@ namespace Vehicle_Share.Service.TripService
             result.IsSuccess = true;
             return result;
         }
+
+        public async  Task<ResponseModel> GetAllUserDataIdsInTripAsync(string tripId)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var userData = await _userdata.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+           
+            var trip = await _trip.GetByIdAsync(tripId);
+            if (trip == null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoTrip], code = ResponseCode.NoTrip };
+          
+            var userTrips = await _request.GetAllAsync(r => r.TripId == trip.Id && r.Status==Core.Helper.StatusContainer.Status.Accepted);
+          
+            var result = new ResponseDataModel<List<IdResponseModel>>();
+            result.data = new List<IdResponseModel>();
+            foreach (var user in userTrips)
+            {
+                result.data?.Add(new IdResponseModel
+                {
+                    Id = user.UserDataId
+                });
+            }
+            result.data.Add(new IdResponseModel {Id= trip.UserDataId });
+            result.IsSuccess = true;
+            return result;
+        }
+        #endregion
 
         public async Task<ResponseModel> AddAsync(TripDriverModel model)
         {
@@ -386,8 +439,9 @@ namespace Vehicle_Share.Service.TripService
                 Date = model.Date,
                 AvailableSeats = model.AvailableSeats,
                 RecommendedPrice = model.RecommendedPrice,
-                CreatedOn= DateTime.UtcNow,
-
+                CreatedOn = DateTime.UtcNow,
+                DailySchedule = model.DailySchedule,
+                Route = model.Route,
                 // Relation
                 UserDataId = userData.Id,
                 CarId = model.CarId
@@ -425,6 +479,9 @@ namespace Vehicle_Share.Service.TripService
                 Date = model.Date,
                 RequestedSeats = model.RequestedSeats,
                 RecommendedPrice = model.RecommendedPrice,
+                DailySchedule = model.DailySchedule,
+                Route = model.Route,
+
 
                 // Relation
                 UserDataId = userData.Id
@@ -467,6 +524,8 @@ namespace Vehicle_Share.Service.TripService
             trip.Date = model.Date != null ? DateTime.Parse(model.Date) : trip.Date;
             trip.RecommendedPrice = model.RecommendedPrice > 0 ? (float)model.RecommendedPrice : trip.RecommendedPrice;
             trip.AvailableSeats = model.AvailableSeats > 0 ? model.AvailableSeats : trip.AvailableSeats;
+            trip.DailySchedule = model.DailySchedule > 0 ? model.DailySchedule : trip.DailySchedule;
+            trip.Route = model.Route > 0 ? model.Route : trip.Route;
             trip.CarId = model.CarId ?? trip.CarId;
 
             await _trip.UpdateAsync(trip);
@@ -495,6 +554,8 @@ namespace Vehicle_Share.Service.TripService
             trip.Date = model.Date != null ? DateTime.Parse(model.Date) : trip.Date;
             trip.RecommendedPrice = model.RecommendedPrice > 0 ? (float)model.RecommendedPrice : trip.RecommendedPrice;
             trip.RequestedSeats = model.RequestedSeats > 0 ? model.RequestedSeats : trip.RequestedSeats;
+            trip.DailySchedule = model.DailySchedule > 0 ? model.DailySchedule : trip.DailySchedule;
+            trip.Route = model.Route > 0 ? model.Route : trip.Route;
 
             /////////////////////////////////////////////////////////////
             await _trip.UpdateAsync(trip);

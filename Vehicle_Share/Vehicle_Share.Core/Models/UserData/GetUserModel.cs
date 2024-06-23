@@ -13,6 +13,7 @@ namespace Vehicle_Share.Core.Models.UserData
         public string? Nationality { get; set; }
         public string? Address { get; set; }
         public string? ProfileImage { get; set; }
+        public string? FcmToken { get; set; }
 
         public Status Status { get; set; }
         public string? Message { get; set; }

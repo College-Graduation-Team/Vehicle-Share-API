@@ -17,6 +17,10 @@ namespace Vehicle_Share.Core.Models.TripModels
         public short? AvailableSeats { get; set; } //driver
         public string? CarId { get; set; } //driver
 
+        public int DailySchedule { get; set; }
+        public int Route { get; set; }
+
+
 
     }
 }

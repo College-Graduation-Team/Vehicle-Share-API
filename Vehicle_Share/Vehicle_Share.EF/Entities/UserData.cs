@@ -52,6 +52,9 @@ namespace Vehicle_Share.EF.Models
         public string? ProfileImage { get; set; }
 
         public DateTime CreatedOn { get; set; }
+        public string? FcmToken { get; set; }
+        public double Rating { get; set; }
+        public int RatingCounter { get; set; }
 
         [Required]
         public Status Status { get; set; }

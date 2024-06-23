@@ -19,6 +19,8 @@
         public short? RequestedSeats { get; set; }    //passenger
         public bool IsFinished { get; set; }
         public string? CarId { get; set; }
+        public int DailySchedule { get; set; }
+        public int Route { get; set; }
 
 
         public string? UserDataId { get; set; }

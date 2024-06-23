@@ -70,10 +70,32 @@ namespace Vehicle_Share.API.Controllers
 
         }
 
+        [HttpPost("Token")]
+        public async Task<IActionResult> AddAndUpdateFCMTokenAsync([FromBody]string token)
+        {
+           
+            var result = await _service.AddAndUpdateFCMTokenAsync(token);
+            if (result.IsSuccess)
+                return Ok(new { result.message});
 
+            return BadRequest(new { result.message });
+
+        }
+
+        [HttpPost("Rate")]
+        public async Task<IActionResult> AddRateokenAsync([FromBody] int rate)
+        {
+
+            var result = await _service.AddRateAsync(rate);
+            if (result.IsSuccess)
+                return Ok(new { result.message });
+
+            return BadRequest(new { result.message });
+
+        }
         #region  Admin
 
-     
+
 
         [HttpGet("Admin/userdata/{id?}")]
         [Authorize(Roles ="Admin")]
@@ -121,7 +143,7 @@ namespace Vehicle_Share.API.Controllers
 
         [HttpPut("Admin/{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateStatusRequestAsync([FromRoute] string id, [FromForm] UpdateStatusRequestModel model)
+        public async Task<IActionResult> UpdateStatusRequestAsync([FromRoute] string id, [FromBody] UpdateStatusRequestModel model)
         {
             var result = await _service.UpdateStatusRequestAsync(id, model);
             if (result.IsSuccess)

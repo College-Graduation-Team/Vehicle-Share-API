@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Chat\Vehicle_Share.Chat.csproj" />
     <ProjectReference Include="..\Vehicle_Share.EF\Vehicle_Share.EF.csproj" />
     <ProjectReference Include="..\Vehicle_Share.Service\Vehicle_Share.Service.csproj" />
   </ItemGroup>

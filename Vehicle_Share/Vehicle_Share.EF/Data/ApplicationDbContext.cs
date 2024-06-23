@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
+using Vehicle_Share.EF.Entities;
 using Vehicle_Share.EF.Models;
 
 namespace Vehicle_Share.EF.Data
@@ -13,6 +14,11 @@ namespace Vehicle_Share.EF.Data
         public DbSet<Trip> Trip { get; set; }
         public DbSet<Request> Request { get; set; }
         public DbSet<License> License { get; set; }
+
+
+        public DbSet<UserConnection> UserConnections { get; set; }
+        public DbSet<GroupMessage> GroupMessages { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 

@@ -52,6 +52,7 @@ namespace Vehicle_Share.Service.UserDataService
                     Nationality = userData.Nationality,
                     Address = userData.Address,
                     ProfileImage = userData.ProfileImage,
+                    FcmToken=userData.FcmToken,
                     Status = userData.Status,
                     Message = userData.Message,
                 },
@@ -164,7 +165,7 @@ namespace Vehicle_Share.Service.UserDataService
 
             var userData = await _userData.FindAsync(e => e.UserId == userId);
             if (userData is null)
-                  return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoUserData };
+                  return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
 
 
             // Update images
@@ -205,6 +206,54 @@ namespace Vehicle_Share.Service.UserDataService
                 return result;
             
         }
+        public async Task<ResponseModel> AddAndUpdateFCMTokenAsync(string token)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+            
+            if (isAdmin)
+                return new ResponseModel { message = "Admin can't add user data" };
+
+
+            var userData = await _userData.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+
+            userData.FcmToken = token;
+            await _userData.AddAsync(userData);
+            return new ResponseModel { message="Added FCM tokrn successfully" , IsSuccess=true };
+        }
+
+        public async Task<ResponseModel> AddRateAsync(int  rate)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+
+            if (isAdmin)
+                return new ResponseModel { message = "Admin can't add user data" };
+
+
+            var userData = await _userData.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+
+            userData.Rating = userData.Rating == 0 ? rate : ((userData.Rating + rate) / 2);
+            userData.RatingCounter += 1;
+            await _userData.AddAsync(userData);
+
+            return new ResponseModel { message = "Added rate successfully", IsSuccess = true };
+        }
+
 
         #region For dashboard 
 
@@ -400,6 +449,7 @@ namespace Vehicle_Share.Service.UserDataService
                         Nationality = userData.Nationality,
                         Address = userData.Address,
                         ProfileImage = userData.ProfileImage,
+                        FcmToken = userData.FcmToken,
                         Status = userData.Status,
                         Message = userData.Message,
                     },

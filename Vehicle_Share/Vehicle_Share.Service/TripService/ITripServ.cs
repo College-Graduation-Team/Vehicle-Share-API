@@ -12,6 +12,7 @@ namespace Vehicle_Share.Service.TripService
         Task<ResponseModel> GetAllForUserAsPassengerAsync(bool IsFinished);
         Task<ResponseModel> GetAllDriverTripAsync();
         Task<ResponseModel> GetAllPassengerTripAsync();
+        Task<ResponseModel> GetAllUserDataIdsInTripAsync(string tripId);
 
         Task<ResponseModel> AddAsync(TripDriverModel model);
         Task<ResponseModel> AddAsync(TripPassengerModel model);

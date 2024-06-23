@@ -32,6 +32,8 @@ namespace Vehicle_Share.EF.Models
         public bool IsStarted => DateTime.UtcNow >= Date;
 
         public bool IsFinished { get; set; }
+        public int DailySchedule { get; set; }
+        public int Route { get; set; }
 
         public DateTime CreatedOn { get; set; }
 

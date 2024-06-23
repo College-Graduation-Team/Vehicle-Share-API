@@ -19,6 +19,8 @@ namespace Vehicle_Share.Core.Models.TripModels
         public float RecommendedPrice { get; set; }
         public short? AvailableSeats { get; set; }    //driver
         public DateTime CreatedOn { get; set; }
+        public int DailySchedule { get; set; }
+        public int Route { get; set; }
 
         public short? RequestedSeats { get; set; }    //passenger
         public bool IsFinished { get; set; }

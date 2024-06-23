@@ -12,6 +12,10 @@ namespace Vehicle_Share.Service.UserDataService
         Task<ResponseModel> AddAndUpdateAsync(UserDataModel model);
         Task<ResponseModel> AddAndUpdateNationalImageAsync(NationalImageModel model);
 
+        Task<ResponseModel> AddAndUpdateFCMTokenAsync(string token);
+        Task<ResponseModel> AddRateAsync(int rate);
+
+
         #region Admin
 
         Task<ResponseModel> GetAllUserAsync();

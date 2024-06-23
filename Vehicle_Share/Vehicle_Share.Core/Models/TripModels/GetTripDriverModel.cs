@@ -18,6 +18,8 @@
         public string? CarId { get; set; } //driver
         public string? CarType { get; set; } //driver
         public string? CarBrand { get; set; } //driver
+        public int DailySchedule { get; set; }
+        public int Route { get; set; }
 
         public string? UserDataId { get; set; }
 

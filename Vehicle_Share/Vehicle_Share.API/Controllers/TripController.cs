@@ -84,6 +84,18 @@ namespace Vehicle_Share.API.Controllers
         }
 
 
+        [HttpGet("UserdataIds-In-Trip")]
+        public async Task<IActionResult> GetAllUserDataIdsInTripAsync([FromBody]string tripId)
+        {
+            var result = await _service.GetAllUserDataIdsInTripAsync(tripId);
+
+            if (result is ResponseDataModel<List<IdResponseModel>> res)
+                return Ok(new { res.data });
+
+            return BadRequest(new { result.code, result.message });
+        }
+
+
         [HttpGet("search/driver")]
         public async Task<IActionResult> SearchDriverTripAsync([FromQuery] SearchModel model)
         {
@@ -156,7 +168,7 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(new { result.code, result.message });
         }
 
-        [HttpPut("finih/{id}")] //update for driver
+        [HttpPut("finish/{id}")] //update for driver
         public async Task<IActionResult> TripFinished([FromRoute] string id)
         {
 
