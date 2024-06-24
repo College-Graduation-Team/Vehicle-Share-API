@@ -17,6 +17,8 @@ namespace Vehicle_Share.Core.Models.UserData
         public string? ProfileImage { get; set; }
         public Status Status { get; set; }
         public string? Message { get; set; }
+        public double? Rating { get; set; }
+        public int? RatingCounter { get; set; }
 
 
     }

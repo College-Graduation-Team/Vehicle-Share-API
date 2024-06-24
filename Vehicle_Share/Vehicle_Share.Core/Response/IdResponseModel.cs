@@ -9,6 +9,5 @@ namespace Vehicle_Share.Core.Response
     public class IdResponseModel
     {
         public string Id { get; set; }
-     //   public string UserDataId { get; set; }
     }
 }
