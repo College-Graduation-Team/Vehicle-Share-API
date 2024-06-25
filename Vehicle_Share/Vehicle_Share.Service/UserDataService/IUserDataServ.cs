@@ -13,7 +13,7 @@ namespace Vehicle_Share.Service.UserDataService
         Task<ResponseModel> AddAndUpdateNationalImageAsync(NationalImageModel model);
 
         Task<ResponseModel> AddAndUpdateFCMTokenAsync(string token);
-        Task<ResponseModel> AddRateAsync(string id, int rate);
+        Task<ResponseModel> AddRateAsync(string id, float rate);
 
 
         #region Admin

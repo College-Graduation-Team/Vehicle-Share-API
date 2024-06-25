@@ -89,7 +89,7 @@ namespace Vehicle_Share.API.Controllers
         {
             var result = await _service.GetAllUserDataIdsInTripAsync(tripId);
 
-            if (result is ResponseDataModel<List<IdResponseModel>> res)
+            if (result is ResponseDataModel<UserIdsModel> res)
                 return Ok(new { res.data });
 
             return BadRequest(new { result.code, result.message });

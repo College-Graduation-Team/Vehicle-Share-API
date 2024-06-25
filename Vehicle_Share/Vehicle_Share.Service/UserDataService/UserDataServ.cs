@@ -55,6 +55,8 @@ namespace Vehicle_Share.Service.UserDataService
                     FcmToken=userData.FcmToken,
                     Status = userData.Status,
                     Message = userData.Message,
+                    Rating = userData.Rating,
+                    RatingCounter = userData.RatingCounter,
                 },
                 IsSuccess = true
             };
@@ -225,12 +227,12 @@ namespace Vehicle_Share.Service.UserDataService
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
 
             userData.FcmToken = token;
-            await _userData.AddAsync(userData);
+            await _userData.UpdateAsync(userData);
 
             return new ResponseModel { message="Added FCM tokrn successfully" , IsSuccess=true };
         }
 
-        public async Task<ResponseModel> AddRateAsync(string id ,int  rate)
+        public async Task<ResponseModel> AddRateAsync(string id, float rate)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
 
@@ -251,7 +253,7 @@ namespace Vehicle_Share.Service.UserDataService
             userData.Rating = userData.Rating == 0 ? rate : ((userData.Rating + rate) / 2);
             userData.RatingCounter += 1;
 
-            await _userData.AddAsync(userData);
+            await _userData.UpdateAsync(userData);
 
             return new ResponseModel { message = "Added rate successfully", IsSuccess = true };
         }
@@ -431,6 +433,8 @@ namespace Vehicle_Share.Service.UserDataService
                         ProfileImage = userData.ProfileImage,
                         Status = userData.Status,
                         Message = userData.Message,
+                        Rating = userData.Rating,
+                        RatingCounter = userData.RatingCounter
                     },
                     IsSuccess = true
                 };
@@ -454,6 +458,8 @@ namespace Vehicle_Share.Service.UserDataService
                         FcmToken = userData.FcmToken,
                         Status = userData.Status,
                         Message = userData.Message,
+                        Rating = userData.Rating,
+                        RatingCounter = userData.RatingCounter
                     },
                     IsSuccess = true
                 };

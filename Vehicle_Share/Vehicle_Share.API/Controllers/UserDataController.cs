@@ -70,11 +70,11 @@ namespace Vehicle_Share.API.Controllers
 
         }
 
-        [HttpPost("Token")]
-        public async Task<IActionResult> AddAndUpdateFCMTokenAsync([FromBody]string token)
+        [HttpPost("token")]
+        public async Task<IActionResult> AddAndUpdateFCMTokenAsync([FromBody] FcmTokenModel model)
         {
            
-            var result = await _service.AddAndUpdateFCMTokenAsync(token);
+            var result = await _service.AddAndUpdateFCMTokenAsync(model.token);
             if (result.IsSuccess)
                 return Ok(new { result.message});
 
@@ -82,11 +82,11 @@ namespace Vehicle_Share.API.Controllers
 
         }
 
-        [HttpPost("Rate/{id}")]
-        public async Task<IActionResult> AddRateokenAsync([FromRoute] string id, [FromBody] int rate)
+        [HttpPost("rate/{id}")]
+        public async Task<IActionResult> AddRateokenAsync([FromRoute] string id, [FromBody] RateModel model)
         {
 
-            var result = await _service.AddRateAsync(id, rate);
+            var result = await _service.AddRateAsync(id, model.rate);
             if (result.IsSuccess)
                 return Ok(new { result.message });
 
