@@ -28,7 +28,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -40,8 +39,8 @@ builder.Services.Configure<JWT>(builder.Configuration.GetSection(nameof(JWT)));
 
 // add connection to db and inject identity .
 builder.Services.AddDbContext<ApplicationDbContext>(
-      //option => option.UseSqlServer("Data Source=.;Initial Catalog=VehicleSharingg;Integrated Security=True"));
-      option => option.UseSqlServer("Server=db5051.public.databaseasp.net; Database=db5051; User Id=db5051; Password=6Km-#q7LY%t2; Encrypt=False; MultipleActiveResultSets=True;"));
+      option => option.UseSqlServer("Data Source=.;Initial Catalog=VehicleSharing;Integrated Security=True"));
+   //   option => option.UseSqlServer("Server=db5051.public.databaseasp.net; Database=db5051; User Id=db5051; Password=6Km-#q7LY%t2; Encrypt=False; MultipleActiveResultSets=True;"));
      // option => option.UseSqlServer("Server=localhost;Database=VehicleSharing;User Id=sa;Password=Hemakress-123"));
      //Server=db4761.databaseasp.net; Database=db4761; User Id=db4761; Password=********; Encrypt=False; MultipleActiveResultSets=True;
 
@@ -77,7 +76,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
         builder => builder
-            .WithOrigins("http://127.0.0.1:5500") // Replace with the URL of your frontend
+            .WithOrigins("http://127.0.0.1:5500")
+            .WithOrigins("http://localhost:3000")
+            // Replace with the URL of your frontend
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials());

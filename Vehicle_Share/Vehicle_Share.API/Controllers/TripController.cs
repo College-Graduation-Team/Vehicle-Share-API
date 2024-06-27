@@ -62,7 +62,7 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(new { result.code, result.message });
         }
 
-        [HttpGet("driver")]
+        [HttpGet("driver")] // all trip of other driver not include me
         public async Task<IActionResult> GetAllDriverTripAsync()
         {
             var result = await _service.GetAllDriverTripAsync();
@@ -72,7 +72,7 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(new { result.code, result.message });
         }
 
-        [HttpGet("passenger")]
+        [HttpGet("passenger")] // all trip of other passenger not include me
         public async Task<IActionResult> GetAllPassengerTripAsync()
         {
 

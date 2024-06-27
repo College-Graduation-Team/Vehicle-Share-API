@@ -357,9 +357,14 @@ namespace Vehicle_Share.Service.RequestService
                     trip.AvailableSeats = availbleseats;
                     await _trip.UpdateAsync(trip);
                 }
-                await _request.UpdateAsync(request);
+             
 
             }
+            else
+            {
+                request.Status = Status.Accepted;
+            }
+            await _request.UpdateAsync(request);
 
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Success], IsSuccess = true };
         }

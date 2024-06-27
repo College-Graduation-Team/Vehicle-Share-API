@@ -152,6 +152,7 @@ namespace Vehicle_Share.Service.TripService
             result.IsSuccess = true;
             return result;
         }
+      
         #region AllGet
 
         public async Task<ResponseModel> GetByIdAsync(string id)
@@ -218,11 +219,15 @@ namespace Vehicle_Share.Service.TripService
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
 
             var allTrips = await _trip.GetAllAsync();
+
             var userTrips = allTrips.Where(t => t.CarId is not null && t.UserDataId == userData.Id && t.IsFinished == IsFinished).ToList();
+           
+            
             var result = new ResponseDataModel<List<GetTripModel>>();
             result.data = new List<GetTripModel>();
             foreach (var trip in userTrips)
             {
+                
                 result.data?.Add(new GetTripModel
                 {
                     Id = trip.Id,
@@ -258,11 +263,13 @@ namespace Vehicle_Share.Service.TripService
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
 
             var allTrips = await _trip.GetAllAsync();
-            var userTrips = allTrips.Where(t => t.CarId is null && t.UserDataId == userData.Id && t.IsFinished == IsFinished).ToList();
+            var userTrips = allTrips.Where(t => t.CarId is null && t.UserDataId == userData.Id && t.IsFinished == IsFinished ).ToList();
             var result = new ResponseDataModel<List<GetTripModel>>();
             result.data = new List<GetTripModel>();
             foreach (var trip in userTrips)
             {
+                if (trip.DailySchedule > 0)
+                    continue;
                 result.data?.Add(new GetTripModel
                 {
                     Id = trip.Id,
@@ -398,6 +405,7 @@ namespace Vehicle_Share.Service.TripService
 
             foreach (var user in userTrips)
             {
+                
                 if (user.Type) result.data.driver = user.UserDataId;
                 else result.data.passengers.Add(user.UserDataId);
             }
