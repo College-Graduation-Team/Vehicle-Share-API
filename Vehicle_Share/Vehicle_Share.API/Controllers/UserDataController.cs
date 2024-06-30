@@ -47,11 +47,13 @@ namespace Vehicle_Share.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAndUpdateAsync([FromForm] UserDataModel model)
         {
+            model.Name = model.Name.Replace("\0", string.Empty);
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _service.AddAndUpdateAsync(model);
             if (result is ResponseDataModel<ProfileImageModel> res)
-                return Ok(new { res.message, res.data.Id });
+                return Ok(new { res.message, res.data.Id, res.data.ProfileImage });
 
             return BadRequest(new { result.message });
 
