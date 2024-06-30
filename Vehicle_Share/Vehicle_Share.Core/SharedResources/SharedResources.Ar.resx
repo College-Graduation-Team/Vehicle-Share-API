@@ -252,4 +252,13 @@
   <data name="TripFinished" xml:space="preserve">
     <value>تــم انــهــاء الــرحــلــه بــنــــجـــاح</value>
   </data>
+  <data name="CarInfoReviewed" xml:space="preserve">
+    <value>يتم مراجعة بيانات السيارة</value>
+  </data>
+  <data name="LicenseInfoReviewed" xml:space="preserve">
+    <value>يتم مراجعة بيانات رخصه القياده</value>
+  </data>
+  <data name="UserDataInfoReviewed" xml:space="preserve">
+    <value>يتم مراجعة البيانات الشخصيه </value>
+  </data>
 </root>

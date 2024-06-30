@@ -255,4 +255,13 @@
   <data name="TripFinished" xml:space="preserve">
     <value>trip Finished Successfully</value>
   </data>
+  <data name="CarInfoReviewed" xml:space="preserve">
+    <value>Vehicle data is reviewed .</value>
+  </data>
+  <data name="LicenseInfoReviewed" xml:space="preserve">
+    <value>Driver's license data is reviewed .</value>
+  </data>
+  <data name="UserDataInfoReviewed" xml:space="preserve">
+    <value>Personal data is reviewed .</value>
+  </data>
 </root>

@@ -47,6 +47,9 @@
         public const string ExistsPhone = "ExistsPhone";
         public const string SendNotRequest = "SendNotRequest";
         public const string TripFinished = "TripFinished";
+        public const string UserDataInfoReviewed = "UserDataInfoReviewed";
+        public const string CarInfoReviewed = "CarInfoReviewed";
+        public const string LicenseInfoReviewed = "LicenseInfoReviewed";
 
 
 
