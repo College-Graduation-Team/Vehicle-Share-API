@@ -220,7 +220,7 @@ namespace Vehicle_Share.Service.TripService
 
             var allTrips = await _trip.GetAllAsync();
 
-            var userTrips = allTrips.Where(t => t.CarId is not null && t.UserDataId == userData.Id && t.IsFinished == IsFinished).ToList();
+            var userTrips = allTrips.Where(t => t.CarId is not null && t.UserDataId == userData.Id && (IsFinished ? t.IsFinished && t.DailySchedule == 0 : !t.IsFinished || t.DailySchedule > 0)).ToList();
            
             
             var result = new ResponseDataModel<List<GetTripModel>>();
@@ -263,13 +263,11 @@ namespace Vehicle_Share.Service.TripService
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
 
             var allTrips = await _trip.GetAllAsync();
-            var userTrips = allTrips.Where(t => t.CarId is null && t.UserDataId == userData.Id && t.IsFinished == IsFinished ).ToList();
+            var userTrips = allTrips.Where(t => t.CarId is null && t.UserDataId == userData.Id && (IsFinished ? t.IsFinished && t.DailySchedule == 0 : !t.IsFinished || t.DailySchedule > 0)).ToList();
             var result = new ResponseDataModel<List<GetTripModel>>();
             result.data = new List<GetTripModel>();
             foreach (var trip in userTrips)
             {
-                if (trip.DailySchedule > 0)
-                    continue;
                 result.data?.Add(new GetTripModel
                 {
                     Id = trip.Id,
@@ -533,7 +531,7 @@ namespace Vehicle_Share.Service.TripService
             trip.Date = model.Date != null ? DateTime.Parse(model.Date) : trip.Date;
             trip.RecommendedPrice = model.RecommendedPrice > 0 ? (float)model.RecommendedPrice : trip.RecommendedPrice;
             trip.AvailableSeats = model.AvailableSeats > 0 ? model.AvailableSeats : trip.AvailableSeats;
-            trip.DailySchedule = model.DailySchedule > 0 ? model.DailySchedule : trip.DailySchedule;
+            trip.DailySchedule = model.DailySchedule;
             trip.Route = model.Route > 0 ? model.Route : trip.Route;
             trip.CarId = model.CarId ?? trip.CarId;
 
@@ -563,7 +561,7 @@ namespace Vehicle_Share.Service.TripService
             trip.Date = model.Date != null ? DateTime.Parse(model.Date) : trip.Date;
             trip.RecommendedPrice = model.RecommendedPrice > 0 ? (float)model.RecommendedPrice : trip.RecommendedPrice;
             trip.RequestedSeats = model.RequestedSeats > 0 ? model.RequestedSeats : trip.RequestedSeats;
-            trip.DailySchedule = model.DailySchedule > 0 ? model.DailySchedule : trip.DailySchedule;
+            trip.DailySchedule = model.DailySchedule;
             trip.Route = model.Route > 0 ? model.Route : trip.Route;
 
             /////////////////////////////////////////////////////////////
