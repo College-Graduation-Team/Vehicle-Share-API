@@ -18,25 +18,26 @@ namespace Vehicle_Share.API.Controllers
         {
             _context = context;
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMessage([FromRoute] string id)
         {
             var trip = await _context.Trip.FindAsync(id);
-            if (trip is null)
-                return BadRequest(" trip not found ");
-            var messages = _context.Message
-                 .Where(t => t.GroupName == trip.Id)
-                 .OrderBy(d => d.CreatedOn)
-                 .Select(m => new
-                 {
-                     m.GroupName,
-                     m.Content,
-                     m.Sender,
-                     m.CreatedOn
-                 
-                 }).ToList();
+            if (trip is null) return BadRequest(" trip not found ");
 
-            return Ok(messages);
+            var messages = _context.Message
+                .Where(t => t.GroupName == trip.Id)
+                .OrderBy(d => d.CreatedOn)
+                .Select(m => new
+                {
+                    m.GroupName,
+                    m.Content,
+                    m.Sender,
+                    m.CreatedOn
+                }).ToList();
+
+            return Ok(new { data = messages });
         }
+
     }
 }
