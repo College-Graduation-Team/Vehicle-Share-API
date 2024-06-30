@@ -7,6 +7,7 @@ using Vehicle_Share.Core.Response;
 using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Models;
 using Microsoft.EntityFrameworkCore;
+using static Vehicle_Share.Core.Helper.StatusContainer;
 
 namespace Vehicle_Share.Service.TripService
 {
@@ -241,6 +242,7 @@ namespace Vehicle_Share.Service.TripService
                     RequestedSeats = trip.RequestedSeats,  //passenger
                     IsFinished = trip.IsFinished,
                     UserDataId = trip.UserDataId,
+                    CreatedOn = trip.CreatedOn,
                     CarId = trip.CarId,
                     DailySchedule = trip.DailySchedule,
                     Route = trip.Route,
@@ -283,7 +285,7 @@ namespace Vehicle_Share.Service.TripService
                     RequestedSeats = trip.RequestedSeats,  //passenger
                     DailySchedule = trip.DailySchedule,
                     Route = trip.Route,
-
+                    CreatedOn=trip.CreatedOn,
                     IsFinished = trip.IsFinished,
                     UserDataId = trip.UserDataId,
                     CarId = trip.CarId,
@@ -416,6 +418,7 @@ namespace Vehicle_Share.Service.TripService
             result.IsSuccess = true;
             return result;
         }
+       
         #endregion
 
         public async Task<ResponseModel> AddAsync(TripDriverModel model)
@@ -427,16 +430,26 @@ namespace Vehicle_Share.Service.TripService
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
+            if (userData.Status == Status.Pending) 
+            return new ResponseModel { message = _LocaLizer[SharedResourcesKey.UserDataInfoReviewed] };
+            else if(userData.Status == Status.Refused)
+                return new ResponseModel { message =userData.Message };
 
-            
-
-                var car = await _car.FindAsync(e => e.Id == model.CarId);
+            var car = await _car.FindAsync(e => e.Id == model.CarId);
             if (string.IsNullOrEmpty(model.CarId) || car is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar], code = ResponseCode.NoCar };
+            if (car.Status == Status.Pending)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.CarInfoReviewed] };
+            else if (car.Status == Status.Refused)
+                return new ResponseModel { message = car.Message };
 
             var lic = await _lic.FindAsync(e=>e.UserDataId==userData.Id);
             if (lic is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoLicense], code = ResponseCode.NoLicense };
+            if (lic.Status == Status.Pending)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.LicenseInfoReviewed] };
+            else if (lic.Status == Status.Refused)
+                return new ResponseModel { message = lic.Message };
 
             Trip trip = new()
             {
@@ -476,8 +489,10 @@ namespace Vehicle_Share.Service.TripService
             var userData = await _userdata.FindAsync(e => e.UserId == userId);
             if (userData is null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData] , code = ResponseCode.NoUserData };
-
             
+            if (userData.Status == Status.Pending)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.UserDataInfoReviewed] };
+
             Trip trip = new()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -490,7 +505,7 @@ namespace Vehicle_Share.Service.TripService
                 RecommendedPrice = model.RecommendedPrice,
                 DailySchedule = model.DailySchedule,
                 Route = model.Route,
-
+                CreatedOn = DateTime.UtcNow,
 
                 // Relation
                 UserDataId = userData.Id
@@ -681,6 +696,7 @@ namespace Vehicle_Share.Service.TripService
                     RecommendedPrice = trip.RecommendedPrice,
                     AvailableSeats = trip.AvailableSeats,    //driver
                     RequestedSeats = trip.RequestedSeats,  //passenger
+                    CreatedOn = trip.CreatedOn,
                     IsFinished = trip.IsFinished,
                     UserDataId = trip.UserDataId,
                     CarId = trip.CarId,
