@@ -50,13 +50,18 @@ namespace Vehicle_Share.EF.ImpRepo.GenericRepo
 
         public async Task<string> UploadImageAsync(string Folder, IFormFile file, string SubFolder )
         {
+            SubFolder = SubFolder.Replace("\0", string.Empty);
             var path = _webHostEnvironment.WebRootPath + "/" + Folder + "/" + SubFolder + "/";
+            foreach (char c in SubFolder.ToCharArray()) { Console.WriteLine($"char: '{c}'"); }
+            
             // var extention = Path.GetExtension(file.FileName);
             var fileName = Guid.NewGuid().ToString() + "." + file.FileName;
             if (file.Length > 0)
             {
-                if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
+                if (!Directory.Exists(Path.Combine(_webHostEnvironment.WebRootPath, Folder, SubFolder))) {
+                    Console.WriteLine($"\n\n========Creating directory to Upload Image at: \"{Path.Combine(_webHostEnvironment.WebRootPath, Folder, SubFolder)}\"=======\n\n");
+                    Directory.CreateDirectory(Path.Combine(_webHostEnvironment.WebRootPath, Folder, SubFolder));
+                }
                 using (FileStream stream = File.Create(path + fileName))
                 {
                     await file.CopyToAsync(stream);
