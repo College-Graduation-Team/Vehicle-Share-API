@@ -294,7 +294,7 @@ namespace Vehicle_Share.Service.RequestService
             {
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoSendRequest] };
             }
-            var req = await _request.FindAsync(r=>r.TripId==trip.Id);
+            var req = await _request.FindAsync(r => r.TripId == trip.Id && r.UserDataId == userData.Id);
             if(req is not null)
                 return new ResponseModel { message = _LocaLizer[SharedResourcesKey.SendNotRequest] };
 
