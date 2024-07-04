@@ -261,4 +261,16 @@
   <data name="UserDataInfoReviewed" xml:space="preserve">
     <value>يتم مراجعة البيانات الشخصيه </value>
   </data>
+  <data name="UserDataProblem100" xml:space="preserve">
+    <value>الوجه الأمامى للبطاقة الشخصية به خطأ او غيـر واضح .</value>
+  </data>
+  <data name="UserDataProblem101" xml:space="preserve">
+    <value>الوجه الخلفي للبطاقة الشخصية به خطأ او غيـر واضح .</value>
+  </data>
+  <data name="UserDataProblem102" xml:space="preserve">
+    <value>الرقم القومي به خطأ .</value>
+  </data>
+  <data name="UserDataProblem103" xml:space="preserve">
+    <value>الصورة الشخصية بها خطأ او غيـر واضح .</value>
+  </data>
 </root>

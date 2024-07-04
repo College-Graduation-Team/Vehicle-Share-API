@@ -51,6 +51,21 @@
         public const string CarInfoReviewed = "CarInfoReviewed";
         public const string LicenseInfoReviewed = "LicenseInfoReviewed";
 
+        public const string UserDataProblem100 = "UserDataProblem100";
+        public const string UserDataProblem101 = "UserDataProblem101";
+        public const string UserDataProblem102 = "UserDataProblem102";
+        public const string UserDataProblem103 = "UserDataProblem103";
+
+        public const string LicenseProblem100 = "LicenseProblem100";
+        public const string LicenseProblem101 = "LicenseProblem101";
+        public const string LicenseProblem102 = "LicenseProblem102";
+        public const string LicenseProblem103 = "LicenseProblem103";
+
+        public const string CarProblem100 = "CarProblem100";
+        public const string CarProblem101 = "CarProblem101";
+        public const string CarProblem102 = "CarProblem102";
+        public const string CarProblem103 = "CarProblem103";
+
 
 
     }

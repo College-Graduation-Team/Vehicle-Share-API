@@ -550,6 +550,32 @@ namespace Vehicle_Share.Service.UserDataService
         }
         #endregion
 
+        private async Task<string> ErrorMaessage(UserData user)
+        {
+            var MSG = user.Message;
+            int code;
+            string message = "";
+            var values = MSG.Split(",");
+
+            foreach (var item in values)
+            {
+                code = int.Parse(item);
+                if (code == 100)
+                    message += _LocaLizer[SharedResourcesKey.UserDataProblem100];
+
+                else if (code == 101)
+                    message += _LocaLizer[SharedResourcesKey.UserDataProblem101];
+
+                else if (code == 102)
+                    message += _LocaLizer[SharedResourcesKey.UserDataProblem102];
+
+                else if (code == 103)
+                    message += _LocaLizer[SharedResourcesKey.UserDataProblem103];
+            }
+
+            return message;
+        }
+
         /* private static int CalculateAge(DateTime birthDate, DateTime now)
          {
              int age = now.Year - birthDate.Year;

@@ -17,8 +17,7 @@ namespace Vehicle_Share.EF.Data
         public DbSet<Message> Message { get; set; }
 
 
-        public DbSet<UserConnection> UserConnections { get; set; }
-        public DbSet<GroupMessage> GroupMessages { get; set; }
+
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

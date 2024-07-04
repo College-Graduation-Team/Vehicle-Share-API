@@ -264,4 +264,16 @@
   <data name="UserDataInfoReviewed" xml:space="preserve">
     <value>Personal data is reviewed .</value>
   </data>
+  <data name="UserDataProblem100" xml:space="preserve">
+    <value> The face of personal card is wrong or not clear . </value>
+  </data>
+  <data name="UserDataProblem101" xml:space="preserve">
+    <value> The back of personal card is wrong or not clear . </value>
+  </data>
+  <data name="UserDataProblem102" xml:space="preserve">
+    <value> The national number is wrong . </value>
+  </data>
+  <data name="UserDataProblem103" xml:space="preserve">
+    <value> The personal image is wrong or not clear  . </value>
+  </data>
 </root>
