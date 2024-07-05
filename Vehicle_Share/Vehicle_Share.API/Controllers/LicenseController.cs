@@ -26,7 +26,7 @@ namespace Vehicle_Share.API.Controllers
         }
 
         [HttpGet]  //get from user and userdata 
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetLicenseAsync()
         {
             var result = await _service.GetLicenseAsync();
             if (result is ResponseDataModel<GetLicModel> res)
@@ -59,6 +59,16 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(new { result.message });
         }
 
+
+        [HttpGet("status")]
+        public async Task<IActionResult> GetStatusAsync()
+        {
+            var result = await _service.GetStatusAsync();
+            if (result is ResponseDataModel<StatusResponseModel> res)
+                return Ok(new { res.data.Status, res.data.ErrorMessage });
+
+            return BadRequest(new { result.message, result.code });
+        }
 
         #region Admin
 

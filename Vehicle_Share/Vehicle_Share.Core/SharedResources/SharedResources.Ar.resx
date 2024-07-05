@@ -273,4 +273,25 @@
   <data name="UserDataProblem103" xml:space="preserve">
     <value>الصورة الشخصية بها خطأ او غيـر واضح .</value>
   </data>
+  <data name="CarProblem100" xml:space="preserve">
+    <value>الوجه الأمامى لرخصة السيارة به خطأ او غيـر واضح . </value>
+  </data>
+  <data name="CarProblem101" xml:space="preserve">
+    <value>الوجه الخلفي رخصة السيارة به خطأ او غيـر واضح . </value>
+  </data>
+  <data name="CarProblem102" xml:space="preserve">
+    <value>تاريخ انتهاء رخصة السيارة به خطأ . </value>
+  </data>
+  <data name="CarProblem103" xml:space="preserve">
+    <value>صورة السيارة بها خطأ  او غيـر واضح . </value>
+  </data>
+  <data name="LicenseProblem100" xml:space="preserve">
+    <value>الوجه الأمامى للرخصة الشخصية به خطأ او غيـر واضح . </value>
+  </data>
+  <data name="LicenseProblem101" xml:space="preserve">
+    <value>الوجه الخلفي للرخصة الشخصية به خطأ او غيـر واضح . </value>
+  </data>
+  <data name="LicenseProblem102" xml:space="preserve">
+    <value>تاريخ انتهاء الرخصة الشخصية به خطأ . </value>
+  </data>
 </root>

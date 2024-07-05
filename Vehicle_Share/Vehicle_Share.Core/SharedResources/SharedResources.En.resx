@@ -240,9 +240,6 @@
   <data name="Logout" xml:space="preserve">
     <value>Logout successfully</value>
   </data>
-  <data name="String1" xml:space="preserve">
-    <value>User not found</value>
-  </data>
   <data name="ExistsPhone" xml:space="preserve">
     <value>Phone number is already registered</value>
   </data>
@@ -256,10 +253,10 @@
     <value>trip Finished Successfully</value>
   </data>
   <data name="CarInfoReviewed" xml:space="preserve">
-    <value>Vehicle data is reviewed .</value>
+    <value>Vehicle data is being reviewed .</value>
   </data>
   <data name="LicenseInfoReviewed" xml:space="preserve">
-    <value>Driver's license data is reviewed .</value>
+    <value>Driver's license data is being reviewed .</value>
   </data>
   <data name="UserDataInfoReviewed" xml:space="preserve">
     <value>Personal data is reviewed .</value>
@@ -275,5 +272,26 @@
   </data>
   <data name="UserDataProblem103" xml:space="preserve">
     <value> The personal image is wrong or not clear  . </value>
+  </data>
+  <data name="CarProblem100" xml:space="preserve">
+    <value> The face of the Car License is wrong or not clear . </value>
+  </data>
+  <data name="CarProblem101" xml:space="preserve">
+    <value> The back of the Car License is wrong or not clear . </value>
+  </data>
+  <data name="CarProblem102" xml:space="preserve">
+    <value> The expiration date of Car License is wrong . </value>
+  </data>
+  <data name="CarProblem103" xml:space="preserve">
+    <value> The car picture is wrong or not clear . </value>
+  </data>
+  <data name="LicenseProblem100" xml:space="preserve">
+    <value> The face of the personal License is wrong or not clear . </value>
+  </data>
+  <data name="LicenseProblem101" xml:space="preserve">
+    <value> The back of the personal License is wrong or not clear . </value>
+  </data>
+  <data name="LicenseProblem102" xml:space="preserve">
+    <value> The expiration date of personal License is wrong . </value>
   </data>
 </root>

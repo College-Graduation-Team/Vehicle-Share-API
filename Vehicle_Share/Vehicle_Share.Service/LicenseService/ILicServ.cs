@@ -15,5 +15,7 @@ namespace Vehicle_Share.Service.LicenseService
         Task<ResponseModel> UpdateAsync(string id, LicModel model);
         Task<ResponseModel> UpdateStatusRequestAsync(string id, UpdateStatusRequestModel model);
 
+        Task<ResponseModel> GetStatusAsync();
+
     }
 }

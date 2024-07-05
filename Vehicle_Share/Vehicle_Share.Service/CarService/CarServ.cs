@@ -8,6 +8,7 @@ using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Models;
 using Vehicle_Share.Core.Models.GeneralModels;
 using Vehicle_Share.Core.Models.LicModels;
+using static Vehicle_Share.Core.Helper.StatusContainer;
 
 namespace Vehicle_Share.Service.CarService
 {
@@ -261,6 +262,42 @@ namespace Vehicle_Share.Service.CarService
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Deleted], IsSuccess = true };
         }
 
+        public async Task<ResponseModel> GetStatusAsync()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+
+            UserData userData = null;
+            if (!isAdmin)
+            {
+                userData = await _userdata.FindAsync(e => e.UserId == userId);
+                if (userData is null)
+                    return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+            }
+
+            var Cars = await _car.GetAllAsync(u => u.UserDataId == userData.Id);
+            if (Cars is null) return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar], code = ResponseCode.NoCar };
+
+            //  return new ResponseDataModel<StatusResponseModel> { data = new() { Status = (int)Lic.Status, ErrorMessage = ErrorMessage(Lic) } };
+            var result = new ResponseDataModel<List<StatusResponseModel>>();
+            result.data = new List<StatusResponseModel>();
+            foreach (var car in Cars)
+            {
+                result.data?.Add(new StatusResponseModel
+                {
+                    Id = car.Id,
+                    Status = (int)car.Status,
+                    ErrorMessage = ErrorMessage(car)
+                });
+            }
+            result.IsSuccess = true;
+            return result;
+        }
+
 
         #region Admin
 
@@ -331,6 +368,7 @@ namespace Vehicle_Share.Service.CarService
 
         }
 
+
         #endregion
 
         #region  ProcessImageFile
@@ -354,7 +392,43 @@ namespace Vehicle_Share.Service.CarService
         }
         #endregion
 
-       
+        private string ErrorMessage(Car car)
+        {
+            var MSG = car.Message;
+            int code;
+            string message = "";
+            if (car.Status == Status.Refused)
+            {
+                var values = MSG.Split(",");
+
+                foreach (var item in values)
+                {
+                    code = int.Parse(item);
+                    if (code == 100)
+                        message += _LocaLizer[SharedResourcesKey.CarProblem100] + " ";
+
+                    else if (code == 101)
+                        message += _LocaLizer[SharedResourcesKey.CarProblem101] + " ";
+
+                    else if (code == 102)
+                        message += _LocaLizer[SharedResourcesKey.CarProblem102] + " ";
+
+                    else if (code == 103)
+                        message += _LocaLizer[SharedResourcesKey.CarProblem103] + " ";
+                }
+            }
+            else
+            {
+                car.Message = null;
+                message = car.Message;
+                _car.UpdateAsync(car);
+            }
+
+            return message;
+        }
+
+
+
     }
 }
 

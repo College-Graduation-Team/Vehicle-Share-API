@@ -7,6 +7,7 @@ using Vehicle_Share.Core.Response;
 using Vehicle_Share.Core.Resources;
 using Vehicle_Share.EF.Models;
 using Vehicle_Share.Core.Models.GeneralModels;
+using static Vehicle_Share.Core.Helper.StatusContainer;
 
 namespace Vehicle_Share.Service.UserDataService
 {
@@ -256,6 +257,24 @@ namespace Vehicle_Share.Service.UserDataService
             await _userData.UpdateAsync(userData);
 
             return new ResponseModel { message = "Added rate successfully", IsSuccess = true };
+        }
+
+        public async Task<ResponseModel> GetStatusAsync()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
+            if (userId is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoAuth], code = ResponseCode.NoAuth };
+
+            var roleClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            bool isAdmin = roleClaim != null && roleClaim.Value == "Admin";
+            if (isAdmin)
+                return new ResponseModel { message = " Admin not have user data . " };
+
+            var userData = await _userData.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+
+            return new ResponseDataModel<StatusResponseModel> { data = new() { Status = (int)userData.Status, ErrorMessage = ErrorMessage(userData) } };
         }
 
 
@@ -550,29 +569,37 @@ namespace Vehicle_Share.Service.UserDataService
         }
         #endregion
 
-        private async Task<string> ErrorMaessage(UserData user)
+        private string ErrorMessage(UserData user)
         {
             var MSG = user.Message;
             int code;
             string message = "";
-            var values = MSG.Split(",");
-
-            foreach (var item in values)
+            if (user.Status == Status.Refused)
             {
-                code = int.Parse(item);
-                if (code == 100)
-                    message += _LocaLizer[SharedResourcesKey.UserDataProblem100];
+                var values = MSG.Split(",");
 
-                else if (code == 101)
-                    message += _LocaLizer[SharedResourcesKey.UserDataProblem101];
+                foreach (var item in values)
+                {
+                    code = int.Parse(item);
+                    if (code == 100)
+                        message += _LocaLizer[SharedResourcesKey.UserDataProblem100] + " ";
 
-                else if (code == 102)
-                    message += _LocaLizer[SharedResourcesKey.UserDataProblem102];
+                    else if (code == 101)
+                        message += _LocaLizer[SharedResourcesKey.UserDataProblem101] + " ";
 
-                else if (code == 103)
-                    message += _LocaLizer[SharedResourcesKey.UserDataProblem103];
+                    else if (code == 102)
+                        message += _LocaLizer[SharedResourcesKey.UserDataProblem102] + " ";
+
+                    else if (code == 103)
+                        message += _LocaLizer[SharedResourcesKey.UserDataProblem103] + " ";
+                }
             }
-
+            else
+            {
+                user.Message = null;
+                message = user.Message;
+                _userData.UpdateAsync(user);
+            }
             return message;
         }
 

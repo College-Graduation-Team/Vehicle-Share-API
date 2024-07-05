@@ -9,6 +9,7 @@ using Vehicle_Share.Core.Response;
 using Microsoft.Extensions.Localization;
 using Vehicle_Share.Core.Resources;
 using Vehicle_Share.Core.Models.GeneralModels;
+using static Vehicle_Share.Core.Helper.StatusContainer;
 
 namespace Vehicle_Share.Service.LicenseService
 {
@@ -160,7 +161,22 @@ namespace Vehicle_Share.Service.LicenseService
             return res > 0 ? new ResponseModel { message = _LocaLizer[SharedResourcesKey.Deleted] ,IsSuccess=true }
             : new ResponseModel { message = _LocaLizer[SharedResourcesKey.Error] };
         }
+        public async Task<ResponseModel> GetStatusAsync()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
 
+            var userData = await _user.FindAsync(e => e.UserId == userId);
+            if (userData is null)
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
+
+
+            var Lic = await _Lic.FindAsync(e => e.UserDataId == userData.Id);
+            if (Lic is null)
+            {
+                return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoLicense], code = ResponseCode.NoLicense };
+            }
+            return new ResponseDataModel<StatusResponseModel> { data = new() { Status = (int)Lic.Status, ErrorMessage =ErrorMessage(Lic) } };
+        }
 
         #region For Admin
         public async Task<ResponseModel> GetAllAsync()
@@ -307,5 +323,38 @@ namespace Vehicle_Share.Service.LicenseService
             await _Lic.RemoveImageAsync(relativeUrl);
         }
         #endregion
+
+        private  string ErrorMessage(License Lic)
+        {
+            var MSG = Lic.Message;
+            int code;
+            string message = "";
+            if (Lic.Status == Status.Refused)
+            {
+                var values = MSG.Split(",");
+
+                foreach (var item in values)
+                {
+                    code = int.Parse(item);
+                    if (code == 100)
+                        message += _LocaLizer[SharedResourcesKey.LicenseProblem100] + " ";
+
+                    else if (code == 101)
+                        message += _LocaLizer[SharedResourcesKey.LicenseProblem101] + " ";
+
+                    else if (code == 102)
+                        message += _LocaLizer[SharedResourcesKey.LicenseProblem102] + " ";
+                }
+            }
+            else
+            {
+                Lic.Message = null;
+                message = Lic.Message;
+                 _Lic.UpdateAsync(Lic);
+            } 
+                
+            return message;
+        }
+
     }
 }

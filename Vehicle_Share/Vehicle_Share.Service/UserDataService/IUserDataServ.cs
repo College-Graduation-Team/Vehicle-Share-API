@@ -14,6 +14,7 @@ namespace Vehicle_Share.Service.UserDataService
 
         Task<ResponseModel> AddAndUpdateFCMTokenAsync(string token);
         Task<ResponseModel> AddRateAsync(string id, float rate);
+        Task<ResponseModel> GetStatusAsync();
 
 
         #region Admin
