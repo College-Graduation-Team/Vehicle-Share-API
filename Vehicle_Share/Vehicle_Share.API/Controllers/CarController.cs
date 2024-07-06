@@ -62,11 +62,11 @@ namespace Vehicle_Share.API.Controllers
             return BadRequest(new { result.code, result.message });
         }
 
-        [HttpGet("status")]
-        public async Task<IActionResult> GetStatusAsync()
+        [HttpGet("status/{id}")]
+        public async Task<IActionResult> GetStatusAsync([FromRoute] string id)
         {
-            var result = await _service.GetStatusAsync();
-            if (result is ResponseDataModel<List<StatusResponseModel>> res)
+            var result = await _service.GetStatusAsync(id);
+            if (result is ResponseDataModel<StatusResponseModel> res)
                 return Ok(new { res.data });
 
             return BadRequest(new { result.message, result.code });

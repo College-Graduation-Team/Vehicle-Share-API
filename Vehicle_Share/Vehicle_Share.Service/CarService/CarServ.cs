@@ -262,7 +262,7 @@ namespace Vehicle_Share.Service.CarService
             return new ResponseModel { message = _LocaLizer[SharedResourcesKey.Deleted], IsSuccess = true };
         }
 
-        public async Task<ResponseModel> GetStatusAsync()
+        public async Task<ResponseModel> GetStatusAsync(string id)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("uid");
             if (userId is null)
@@ -279,21 +279,15 @@ namespace Vehicle_Share.Service.CarService
                     return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoUserData], code = ResponseCode.NoUserData };
             }
 
-            var Cars = await _car.GetAllAsync(u => u.UserDataId == userData.Id);
-            if (Cars is null) return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar], code = ResponseCode.NoCar };
+            var car = await _car.FindAsync(e => e.Id == id);
+            if (car is null) return new ResponseModel { message = _LocaLizer[SharedResourcesKey.NoCar], code = ResponseCode.NoCar };
 
             //  return new ResponseDataModel<StatusResponseModel> { data = new() { Status = (int)Lic.Status, ErrorMessage = ErrorMessage(Lic) } };
-            var result = new ResponseDataModel<List<StatusResponseModel>>();
-            result.data = new List<StatusResponseModel>();
-            foreach (var car in Cars)
-            {
-                result.data?.Add(new StatusResponseModel
-                {
-                    Id = car.Id,
-                    Status = (int)car.Status,
-                    ErrorMessage = ErrorMessage(car)
-                });
-            }
+            var result = new ResponseDataModel<StatusResponseModel>();
+            result.data = new() {
+                Status = (int)car.Status,
+                ErrorMessage = ErrorMessage(car)
+            };
             result.IsSuccess = true;
             return result;
         }

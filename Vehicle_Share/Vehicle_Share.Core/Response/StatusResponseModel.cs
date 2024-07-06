@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Vehicle_Share.Core.Response
 {
-    public class StatusResponseModel  : IdResponseModel
+    public class StatusResponseModel
     {
         public int Status { get; set; }
         public string? ErrorMessage { get; set; }
